@@ -1,10 +1,12 @@
-package dk.dtu.group22.beeware;
+package dk.dtu.group22.beeware.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+
+import dk.dtu.group22.beeware.R;
 
 public class MainActivity extends AppCompatActivity {
 
