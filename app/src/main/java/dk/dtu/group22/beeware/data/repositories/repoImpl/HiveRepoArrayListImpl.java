@@ -14,6 +14,7 @@ public class HiveRepoArrayListImpl implements HiveRepository {
 
     @Override
     public Hive getHive(int hiveId, Timestamp sinceTime, Timestamp untilTime) {
+
         return null;
     }
 
