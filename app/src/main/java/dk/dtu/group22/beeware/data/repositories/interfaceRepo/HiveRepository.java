@@ -9,9 +9,8 @@ public interface HiveRepository {
 
     /***
      * @param userId The id of the authenticated user
-     * @return returns all hives with only latest/current measurements
+     * @return returns all hives with only latest weight measurements (48hours)
      */
-
     List<Hive> getHives(int userId);
 
     /***
