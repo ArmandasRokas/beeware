@@ -4,9 +4,14 @@ import java.util.List;
 
 public class Hive {
     private int id;
+    private String name;
     private List<Measurement> measurements;
     private double weightDelta;
     private double currWeight;
+    private int weightStatus;
+    private int tempStatus;
+    private int humidStatus;
+    private int illumStatus;
 
     public double getWeightDelta() {
         return weightDelta;
