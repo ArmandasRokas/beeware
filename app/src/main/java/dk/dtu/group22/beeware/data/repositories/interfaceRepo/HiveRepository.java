@@ -20,7 +20,7 @@ public interface HiveRepository {
      * @param untilTime retrieves measurements for a hive until the given timestamp.
      * @return A hive with measurements recorded between sinceTime and untilTime.
      */
-    Hive getHive(int hiveId, Timestamp sinceTime, Timestamp untilTime);
+    Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime);
 
     void subscribeHive(User user, Hive hive) throws UserNoIdException, HiveNoIdException;
 

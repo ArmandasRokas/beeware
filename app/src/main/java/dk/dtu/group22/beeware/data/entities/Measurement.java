@@ -9,6 +9,17 @@ public class Measurement {
     private double humidity;
     private double illuminance;
 
+    @Override
+    public String toString() {
+        return "Measurement{" +
+                "timestamp=" + timestamp +
+                ", weight=" + weight +
+                ", tempIn=" + tempIn +
+                ", humidity=" + humidity +
+                ", illuminance=" + illuminance +
+                '}';
+    }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
