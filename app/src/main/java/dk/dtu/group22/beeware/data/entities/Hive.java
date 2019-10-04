@@ -13,6 +13,54 @@ public class Hive {
     private int humidStatus;
     private int illumStatus;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getCurrWeight() {
+        return currWeight;
+    }
+
+    public void setCurrWeight(double currWeight) {
+        this.currWeight = currWeight;
+    }
+
+    public int getWeightStatus() {
+        return weightStatus;
+    }
+
+    public void setWeightStatus(int weightStatus) {
+        this.weightStatus = weightStatus;
+    }
+
+    public int getTempStatus() {
+        return tempStatus;
+    }
+
+    public void setTempStatus(int tempStatus) {
+        this.tempStatus = tempStatus;
+    }
+
+    public int getHumidStatus() {
+        return humidStatus;
+    }
+
+    public void setHumidStatus(int humidStatus) {
+        this.humidStatus = humidStatus;
+    }
+
+    public int getIllumStatus() {
+        return illumStatus;
+    }
+
+    public void setIllumStatus(int illumStatus) {
+        this.illumStatus = illumStatus;
+    }
+
     public double getWeightDelta() {
         return weightDelta;
     }
