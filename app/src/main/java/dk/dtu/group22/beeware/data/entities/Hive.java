@@ -13,6 +13,21 @@ public class Hive {
     private int humidStatus;
     private int illumStatus;
 
+    @Override
+    public String toString() {
+        return "Hive{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", measurements=" + measurements +
+                ", weightDelta=" + weightDelta +
+                ", currWeight=" + currWeight +
+                ", weightStatus=" + weightStatus +
+                ", tempStatus=" + tempStatus +
+                ", humidStatus=" + humidStatus +
+                ", illumStatus=" + illumStatus +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

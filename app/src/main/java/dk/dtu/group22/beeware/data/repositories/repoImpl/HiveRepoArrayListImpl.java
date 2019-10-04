@@ -16,6 +16,7 @@ public class HiveRepoArrayListImpl implements HiveRepository {
     private static List<Integer> subscribeHives = new ArrayList<>();
     private static List<Hive> hiveList = new ArrayList<>();
     private static final int MINUTE_SUBTRACTION = 60000;
+    static final long CURR_TIME = 1570195921501L;
 
     static {
         // dummy subscriptions
@@ -24,14 +25,14 @@ public class HiveRepoArrayListImpl implements HiveRepository {
 
         // dummy hives
         Measurement meas1 = new Measurement();
-        meas1.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        meas1.setTimestamp(new Timestamp(CURR_TIME));
         meas1.setWeight(32.0);
         meas1.setTempIn(35.0);
         meas1.setHumidity(98.9);
         meas1.setIlluminance(50000);
 
         Measurement meas2 = new Measurement();
-        meas2.setTimestamp(new Timestamp(System.currentTimeMillis() - MINUTE_SUBTRACTION));
+        meas2.setTimestamp(new Timestamp(CURR_TIME - MINUTE_SUBTRACTION));
         meas2.setWeight(31.9);
         meas2.setTempIn(35.1);
         meas2.setHumidity(99.0);
@@ -55,10 +56,14 @@ public class HiveRepoArrayListImpl implements HiveRepository {
     public List<Hive> getHives(int userId) {
         return null;
     }
-
+    // TODO : implement timestams og throws
     @Override
-    public Hive getHive(int hiveId, Timestamp sinceTime, Timestamp untilTime) {
-
+    public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
+        for (int i = 0; i < hiveList.size(); i++) {
+            if(hive.getId() == hiveList.get(i).getId()){
+                return hiveList.get(i);
+            }
+        }
         return null;
     }
 
