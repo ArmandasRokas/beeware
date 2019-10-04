@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.User;
 
 public interface HiveRepository {
 
@@ -21,4 +22,15 @@ public interface HiveRepository {
      */
     Hive getHive(int hiveId, Timestamp sinceTime, Timestamp untilTime);
 
+    void subscribeHive(User user, Hive hive) throws UserNoIdException, HiveNoIdException;
+
+    List<Hive> getSubscribedHives(User user) throws UserNoIdException;
+
+    class UserNoIdException extends RuntimeException {
+        public UserNoIdException(String msg) {super(msg);}
+    }
+
+    class HiveNoIdException extends RuntimeException {
+        public HiveNoIdException(String msg) {super(msg);}
+    }
 }
