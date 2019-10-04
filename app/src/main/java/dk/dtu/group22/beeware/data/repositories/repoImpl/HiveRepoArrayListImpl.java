@@ -12,11 +12,14 @@ import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 public class HiveRepoArrayListImpl implements HiveRepository {
 
     private static List<Integer> subscribeHives = new ArrayList<>();
-
+    private static List<Hive> hiveList = new ArrayList<>();
 
     static {
         subscribeHives.add(102);
         subscribeHives.add(103);
+
+        Hive test1 = new Hive();
+        hiveList.add(new Hive());
     }
 
     public void cleanSubscribedHives(){
@@ -41,8 +44,15 @@ public class HiveRepoArrayListImpl implements HiveRepository {
         if(hive.getId() < 1){
             throw new HiveNoIdException("Hive id is not defined");
         }
+        for (int hiveId : subscribeHives) {
+            if (hive.getId() == hiveId) {
+                throw new HiveIdAlreadyExists("Hive id already exists");
+            }
+        }
         subscribeHives.add(hive.getId());
     }
+
+
 
     @Override
     public List<Hive> getSubscribedHives(User user) {
@@ -58,5 +68,20 @@ public class HiveRepoArrayListImpl implements HiveRepository {
             }
         }
         return hives;
+    }
+
+    @Override
+    public void unsubscribeHive(User user, Hive hive) {
+        if(user.getId() < 1){
+            throw new UserNoIdException("User id is not defined");
+        }
+        if(hive.getId() < 1){
+            throw new HiveNoIdException("Hive id is not defined");
+        }
+        for (int i = 0; i < subscribeHives.size(); i++) {
+            if (subscribeHives.get(i) == hive.getId()) {
+                subscribeHives.remove(i);
+            }
+        }
     }
 }

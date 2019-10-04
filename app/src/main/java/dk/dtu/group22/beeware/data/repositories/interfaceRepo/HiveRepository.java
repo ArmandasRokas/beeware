@@ -26,6 +26,8 @@ public interface HiveRepository {
 
     List<Hive> getSubscribedHives(User user) throws UserNoIdException;
 
+    void unsubscribeHive(User user, Hive hive);
+
     class UserNoIdException extends RuntimeException {
         public UserNoIdException(String msg) {super(msg);}
     }
@@ -33,4 +35,9 @@ public interface HiveRepository {
     class HiveNoIdException extends RuntimeException {
         public HiveNoIdException(String msg) {super(msg);}
     }
+
+    class HiveIdAlreadyExists extends RuntimeException {
+        public HiveIdAlreadyExists(String msg) {super(msg);}
+    }
+
 }
