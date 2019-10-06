@@ -16,12 +16,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //new Handler().postDelayed(() -> {
-            Intent intent = new Intent(this, GraphPrototype.class);
-            startActivity(intent);
-            finish();
-        //}, 10);
+        Intent intent = new Intent(this, GraphPrototype.class);
+        startActivity(intent);
+        finish();
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);

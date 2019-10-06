@@ -22,27 +22,31 @@ import dk.dtu.group22.beeware.R;
 
 public class GraphPrototype extends AppCompatActivity {
 
-    private LineChart lineChart;
+    private LineDataSet lineDataSetWeight;
+    private LineDataSet lineDataSetTemperature;
+    private LineDataSet lineDataSetSunlight;
+    private LineDataSet lineDataSetHumidity;
+    private int numOfDays = 365, defaultZoomInDays = 7; // default number of days loaded / shown
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_prototype);
         // Find chart in xml
-        lineChart = findViewById(R.id.lineChart);
+        LineChart lineChart = findViewById(R.id.lineChart);
 
         // Chart interaction settings
-        lineChart.setTouchEnabled(true);
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setPinchZoom(true);
+        //lineChart.setTouchEnabled(true);
+        //lineChart.setDragEnabled(true);
+        //lineChart.setScaleEnabled(false);
+        //lineChart.setPinchZoom(true);
 
         // Create (import) LineDataSets
-        LineDataSet lineDataSetWeight = new LineDataSet(randomEntries(10, 0, 90), "Weight (KG)");
-        LineDataSet lineDataSetTemperature = new LineDataSet(randomEntries(10, -24, 42), "Temperature (C\u00B0)");
-        LineDataSet lineDataSetLight = new LineDataSet(randomEntries(10, 0, 40), "Sunlight (Lux)");
-        LineDataSet lineDataSetHumidity = new LineDataSet(randomEntries(10, 0, 40), "Humidity (%)");
-
+        lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
+        lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
+        lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
+        lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
 
         // Format X- Axis to time string?
         //      yAxis.setValueFormatter(new MyValueFormatter());
@@ -50,19 +54,19 @@ public class GraphPrototype extends AppCompatActivity {
         //Set Y Axis dependency
         lineDataSetWeight.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSetTemperature.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        lineDataSetLight.setAxisDependency(YAxis.AxisDependency.LEFT);
+        lineDataSetSunlight.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSetHumidity.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         // Set colors and line width
         lineDataSetWeight.setColors(new int[]{android.R.color.darker_gray}, this);
         lineDataSetTemperature.setColors(new int[]{android.R.color.holo_red_light}, this);
-        lineDataSetLight.setColors(new int[]{android.R.color.holo_orange_light}, this);
+        lineDataSetSunlight.setColors(new int[]{android.R.color.holo_orange_light}, this);
         lineDataSetHumidity.setColors(new int[]{android.R.color.holo_blue_light}, this);
 
         lineDataSetWeight.setLineWidth(5);
         lineDataSetTemperature.setLineWidth(5);
-        lineDataSetLight.setLineWidth(2);
-        lineDataSetHumidity.setLineWidth(2);
+        lineDataSetSunlight.setLineWidth(1);
+        lineDataSetHumidity.setLineWidth(1);
 
         // Set text size
         lineChart.getXAxis().setTextSize(10);
@@ -73,36 +77,36 @@ public class GraphPrototype extends AppCompatActivity {
         //lineDataSetWeight.setCubicIntensity(0.1f);// Higher is more curved
         lineDataSetWeight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSetTemperature.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lineDataSetLight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        lineDataSetSunlight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSetHumidity.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 
         // Removing values and circle points from light and humidity graphs
-        lineDataSetLight.setDrawValues(false);
-        lineDataSetLight.setDrawCircles(false);
+        lineDataSetSunlight.setDrawValues(false);
+        lineDataSetSunlight.setDrawCircles(false);
         lineDataSetHumidity.setDrawValues(false);
         lineDataSetHumidity.setDrawCircles(false);
 
         // Style the light and humidity graphs
-        lineDataSetLight.setDrawFilled(true);
+        lineDataSetSunlight.setDrawFilled(true);
         lineDataSetHumidity.setDrawFilled(true);
-        lineDataSetLight.setFillColor(Color.YELLOW);
+        lineDataSetSunlight.setFillColor(Color.YELLOW);
         lineDataSetHumidity.setFillColor(Color.BLUE);
         //set the transparency
-        lineDataSetLight.setFillAlpha(20);
+        lineDataSetSunlight.setFillAlpha(20);
         lineDataSetHumidity.setFillAlpha(10);
 
         // Collect LineDataSets in a List
-        List<ILineDataSet> listOfSets = Arrays.asList(
+        List<ILineDataSet> LineDataSetList = Arrays.asList(
                 lineDataSetWeight,
                 lineDataSetTemperature,
-                lineDataSetLight,
+                lineDataSetSunlight,
                 lineDataSetHumidity
         );
 
         // Feed list of LineDataSets into a LineData object
-        LineData lineData = new LineData(listOfSets);
+        LineData lineData = new LineData(LineDataSetList);
 
-        // Set description text
+        // Set description text for LineChart
         Description description = new Description();
         description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
         description.setText("Example Hive Data");
@@ -110,15 +114,54 @@ public class GraphPrototype extends AppCompatActivity {
         // Fill chart with data
         lineChart.setData(lineData);
         lineChart.setDescription(description);
+
+        // Default zoom to one week or 'deafultZoomInDays'
+        lineChart.zoom(numOfDays / defaultZoomInDays, 0, numOfDays - 1, 0); // Scale is total days divided by shown days
+        lineChart.centerViewTo((float) numOfDays, (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
+
+        // TODO: Integrate vith view: Stupid test of toggle (show) method
+        showSunlight(false);
     }
 
-    protected List<Entry> randomEntries(int n, int minY, int maxY){
+    protected List<Entry> randomEntries(int n, int minY, int maxY) {
         List<Entry> res = new ArrayList<>();
-        for(int i = 0; i<n; ++i){
-            float randY = (float) Math.random()*(maxY-minY+1)+minY;
+        for (int i = 0; i <= n; ++i) {
+            float randY = (float) Math.random() * (maxY - minY + 1) + minY;
             res.add(new Entry((float) i, randY));
         }
         return res;
+    }
+
+    public void showWeight(boolean shown) {
+        if (shown) {
+            lineDataSetWeight.setVisible(true);
+        } else {
+            lineDataSetWeight.setVisible(false);
+        }
+    }
+
+    public void showTemperature(boolean shown) {
+        if (shown) {
+            lineDataSetTemperature.setVisible(true);
+        } else {
+            lineDataSetTemperature.setVisible(false);
+        }
+    }
+
+    public void showSunlight(boolean shown) {
+        if (shown) {
+            lineDataSetSunlight.setVisible(true);
+        } else {
+            lineDataSetSunlight.setVisible(false);
+        }
+    }
+
+    public void showHumidity(boolean shown) {
+        if (shown) {
+            lineDataSetHumidity.setVisible(true);
+        } else {
+            lineDataSetHumidity.setVisible(false);
+        }
     }
 }
