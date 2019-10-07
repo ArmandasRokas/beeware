@@ -80,6 +80,7 @@ public class HiveRepoArrayListImplTest {
         test1.setName("FHA_Stade102");
         test1.setMeasurements(measurements);
 
+
         // Act
         Hive hive_returned = hr.getHive(hive, new Timestamp(0) ,new Timestamp(System.currentTimeMillis()+60000));
         // Assert

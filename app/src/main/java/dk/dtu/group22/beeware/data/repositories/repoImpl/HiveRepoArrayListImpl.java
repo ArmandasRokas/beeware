@@ -51,7 +51,9 @@ public class HiveRepoArrayListImpl implements HiveRepository {
 
     public void cleanSubscribedHives(){
         subscribeHives  = new ArrayList<>();
+        //hiveList = new ArrayList<>();
     }
+
     @Override
     public List<Hive> getHives(int userId) {
         return null;
