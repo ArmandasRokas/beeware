@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         Intent ID = new Intent(this, HiveActivity.class);
-        ID.putExtra("label", "yolo");
+        String s = "" + recyclerView.getChildLayoutPosition(view);
+
+        ID.putExtra("label", s);
 
         startActivity(ID);
 
