@@ -21,11 +21,11 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public List<Hive> getHives(User user, int daysDelta) {
-        // TODO implement daysDelta
+        // TODO implement daysDelta. Armandas
         List<Hive> subscribedHives = hiveRepo.getSubscribedHives(user);
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for(Hive hive: subscribedHives){
-            // TODO implement timestamp
+            // TODO implement timestamp. Armandas
             Hive h = hiveRepo.getHive(hive, new Timestamp(0), new Timestamp(1570195921501L+1000));
             hivesWithMeasurements.add(h);
         }

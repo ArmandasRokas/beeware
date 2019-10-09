@@ -8,11 +8,8 @@ import dk.dtu.group22.beeware.data.entities.User;
 
 public interface HiveRepository {
 
-    /***
-     * @param userId The id of the authenticated user
-     * @return returns all hives with only latest weight measurements (48hours)
-     */
-    List<Hive> getHives(int userId);
+
+
 
     /***
      * @param hiveId The id of a hive
@@ -24,6 +21,11 @@ public interface HiveRepository {
 
     void subscribeHive(User user, Hive hive) throws UserNoIdException, HiveNoIdException;
 
+    /**
+     * @param user The user must have id
+     * @return
+     * @throws UserNoIdException
+     */
     List<Hive> getSubscribedHives(User user) throws UserNoIdException;
 
     void unsubscribeHive(User user, Hive hive);
