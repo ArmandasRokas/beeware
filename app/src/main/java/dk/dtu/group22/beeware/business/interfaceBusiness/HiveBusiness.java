@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.entities.User;
 
 public interface HiveBusiness {
@@ -15,6 +16,8 @@ public interface HiveBusiness {
      * @return A hive with the latest weight and weight delta
      */
     List<Hive> getHives(User user, int daysDelta);
+
+    Hive getHiveMeasurements(Hive hive, Timestamp fromTime, Timestamp untilTime);
 
     void subscribeHive(User user, Hive hive);
 }
