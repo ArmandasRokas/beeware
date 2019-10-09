@@ -9,6 +9,8 @@ import dk.dtu.group22.beeware.data.entities.User;
 
 public interface HiveBusiness {
 
+    // HiveBusiness hiveBusiness = new HiveBusinessImpl(new HiveRepoArrayListImpl());
+
     /**
      * @param user User must have id. For testing purposes user with id 1 should be used
      *             User user = new User();
