@@ -1,0 +1,93 @@
+package dk.dtu.group22.beeware.data.repositories.repoImpl;
+
+import org.junit.Test;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.Measurement;
+import dk.dtu.group22.beeware.data.entities.User;
+
+import static org.junit.Assert.*;
+
+public class HiveRepoArrayListImplTest {
+
+    @Test
+    public void givenUserAndHiveToSubsribe_returnSubsribedUserHivesContainsGivenHive() {
+        // Arrange
+        HiveRepoArrayListImpl hr = new HiveRepoArrayListImpl();
+        hr.cleanSubscribedHives();
+        User user = new User();
+        user.setId(1);
+        Hive hive = new Hive();
+        hive.setId(101);
+        // Act
+        hr.subscribeHive(user, hive);
+        List<Hive> hives = hr.getSubscribedHives(user);
+        // Assert
+        assertEquals(hive.getId(), hives.get(0).getId());
+    }
+
+    @Test
+    public void givenUserAndHiveToUnsubscribe_returnMissingSubscription() {
+        // Arrange
+        HiveRepoArrayListImpl hr = new HiveRepoArrayListImpl();
+        hr.cleanSubscribedHives();
+        User user = new User();
+        user.setId(1);
+        Hive hive = new Hive();
+        hive.setId(101);
+        hr.subscribeHive(user, hive);
+
+        // Act
+        hr.unsubscribeHive(user, hive);
+        List<Hive> hives = hr.getSubscribedHives(user);
+
+        // Assert
+        List<Hive> test = new ArrayList<>();
+        assertEquals(test, hives);
+    }
+
+    @Test
+    public void givenHiveWithId_returnHiveWithMeasurements(){
+        // Arrange
+        HiveRepoArrayListImpl hr = new HiveRepoArrayListImpl();
+        Hive hive = new Hive();
+        hive.setId(102);
+        final long CURR_TIME = 1570195921501L;
+        Measurement meas1 = new Measurement();
+        meas1.setTimestamp(new Timestamp(CURR_TIME));
+        meas1.setWeight(32.0);
+        meas1.setTempIn(35.0);
+        meas1.setHumidity(98.9);
+        meas1.setIlluminance(50000);
+
+        Measurement meas2 = new Measurement();
+        meas2.setTimestamp(new Timestamp(CURR_TIME -60000L));
+        meas2.setWeight(31.9);
+        meas2.setTempIn(35.1);
+        meas2.setHumidity(99.0);
+        meas2.setIlluminance(49900);
+
+        List<Measurement> measurements = new ArrayList<>();
+        measurements.add(meas1);
+        measurements.add(meas2);
+
+        Hive test1 = new Hive();
+        test1.setId(102);
+        test1.setName("FHA_Stade102");
+        test1.setMeasurements(measurements);
+
+
+        // Act
+        Hive hive_returned = hr.getHive(hive, new Timestamp(0) ,new Timestamp(System.currentTimeMillis()+60000));
+        // Assert
+        System.out.println(System.currentTimeMillis());
+        assertEquals(test1.toString(), hive_returned.toString());
+    }
+
+
+
+}
