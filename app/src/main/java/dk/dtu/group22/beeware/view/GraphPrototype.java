@@ -1,7 +1,10 @@
 package dk.dtu.group22.beeware.view;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,19 +25,52 @@ import dk.dtu.group22.beeware.R;
 
 public class GraphPrototype extends AppCompatActivity {
 
+    private ImageButton weightToggle;
+    private ImageButton tempToggle;
+    private ImageButton lightToggle;
+    private ImageButton humidToggle;
+
+    private LineChart lineChart;
     private LineDataSet lineDataSetWeight;
     private LineDataSet lineDataSetTemperature;
     private LineDataSet lineDataSetSunlight;
     private LineDataSet lineDataSetHumidity;
     private int numOfDays = 365, defaultZoomInDays = 7; // default number of days loaded and shown
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_prototype);
+
+        // Toggle buttons
+        weightToggle = findViewById(R.id.weightButton);
+        tempToggle = findViewById(R.id.tempButton);
+        lightToggle = findViewById(R.id.lightButton);
+        humidToggle = findViewById(R.id.humidButton);
+
+        weightToggle.setOnClickListener(v -> {
+            toggleWeight(lineDataSetWeight.isVisible());
+        });
+        tempToggle.setOnClickListener(v -> {
+            toggleTemperature(lineDataSetTemperature.isVisible());
+        });
+        lightToggle.setOnClickListener(v -> {
+            toggleSunlight(lineDataSetSunlight.isVisible());
+        });
+        humidToggle.setOnClickListener(v -> {
+            toggleHumidity(lineDataSetHumidity.isVisible());
+        });
+
+        // Show / hide menu and status bar
+        int orientation = this.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setPortraitMode();
+        } else {
+            setLandscapeMode();
+        }
+
         // Find chart in xml
-        LineChart lineChart = findViewById(R.id.lineChart);
+        lineChart = findViewById(R.id.lineChart);
 
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
@@ -122,7 +158,7 @@ public class GraphPrototype extends AppCompatActivity {
         lineChart.invalidate(); // refresh
 
         // Test of toggle (show) method
-        //showSunlight(false);
+        //toggleSunlight(false);
     }
 
     protected List<Entry> randomEntries(int n, int minY, int maxY) {
@@ -134,35 +170,51 @@ public class GraphPrototype extends AppCompatActivity {
         return res;
     }
 
-    public void showWeight(boolean shown) {
-        if (shown) {
+    private void setPortraitMode() {
+        getSupportActionBar().show();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Move buttons to top
+    }
+
+    private void setLandscapeMode() {
+        getSupportActionBar().hide();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Move buttons to left
+    }
+
+    public void toggleWeight(boolean shown) {
+        if (!shown) {
             lineDataSetWeight.setVisible(true);
         } else {
             lineDataSetWeight.setVisible(false);
         }
+        lineChart.invalidate();
     }
 
-    public void showTemperature(boolean shown) {
-        if (shown) {
+    public void toggleTemperature(boolean shown) {
+        if (!shown) {
             lineDataSetTemperature.setVisible(true);
         } else {
             lineDataSetTemperature.setVisible(false);
         }
+        lineChart.invalidate();
     }
 
-    public void showSunlight(boolean shown) {
-        if (shown) {
+    public void toggleSunlight(boolean shown) {
+        if (!shown) {
             lineDataSetSunlight.setVisible(true);
         } else {
             lineDataSetSunlight.setVisible(false);
         }
+        lineChart.invalidate();
     }
 
-    public void showHumidity(boolean shown) {
-        if (shown) {
+    public void toggleHumidity(boolean shown) {
+        if (!shown) {
             lineDataSetHumidity.setVisible(true);
         } else {
             lineDataSetHumidity.setVisible(false);
         }
+        lineChart.invalidate();
     }
 }
