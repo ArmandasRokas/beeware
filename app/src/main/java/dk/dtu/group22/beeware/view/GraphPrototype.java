@@ -26,7 +26,7 @@ public class GraphPrototype extends AppCompatActivity {
     private LineDataSet lineDataSetTemperature;
     private LineDataSet lineDataSetSunlight;
     private LineDataSet lineDataSetHumidity;
-    private int numOfDays = 365, defaultZoomInDays = 7; // default number of days loaded / shown
+    private int numOfDays = 365, defaultZoomInDays = 7; // default number of days loaded and shown
 
 
     @Override
@@ -37,10 +37,10 @@ public class GraphPrototype extends AppCompatActivity {
         LineChart lineChart = findViewById(R.id.lineChart);
 
         // Chart interaction settings
-        //lineChart.setTouchEnabled(true);
-        //lineChart.setDragEnabled(true);
-        //lineChart.setScaleEnabled(false);
-        //lineChart.setPinchZoom(true);
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(false);
+        lineChart.setPinchZoom(true);
 
         // Create (import) LineDataSets
         lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
@@ -91,7 +91,8 @@ public class GraphPrototype extends AppCompatActivity {
         lineDataSetHumidity.setDrawFilled(true);
         lineDataSetSunlight.setFillColor(Color.YELLOW);
         lineDataSetHumidity.setFillColor(Color.BLUE);
-        //set the transparency
+
+        //set the transparency of light and humidity
         lineDataSetSunlight.setFillAlpha(20);
         lineDataSetHumidity.setFillAlpha(10);
 
@@ -116,12 +117,12 @@ public class GraphPrototype extends AppCompatActivity {
         lineChart.setDescription(description);
 
         // Default zoom to one week or 'deafultZoomInDays'
-        lineChart.zoom(numOfDays / defaultZoomInDays, 0, numOfDays - 1, 0); // Scale is total days divided by shown days
+        lineChart.zoom(numOfDays / defaultZoomInDays, 0, numOfDays, 0); // Scale is total days divided by shown days
         lineChart.centerViewTo((float) numOfDays, (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
-        // TODO: Integrate vith view: Stupid test of toggle (show) method
-        showSunlight(false);
+        // Test of toggle (show) method
+        //showSunlight(false);
     }
 
     protected List<Entry> randomEntries(int n, int minY, int maxY) {
