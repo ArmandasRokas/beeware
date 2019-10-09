@@ -17,7 +17,15 @@ public interface HiveBusiness {
      */
     List<Hive> getHives(User user, int daysDelta);
 
-    Hive getHiveMeasurements(Hive hive, Timestamp fromTime, Timestamp untilTime);
+    /**
+     * @param hive Hive object, which must have valid id
+     * @param fromTime Timestamp object. Will be used to fetch measurements since the given time.
+     *                 new Timestamp(0) can be used to fetch all measurements
+     * @param untilTime Timestamp object. Will be used to fetch measurements until the given time.
+     *                  new Timestamp(System.currentTimeMillis()) can be used to fetch all measurements
+     * @return Returns a hive object with all measurements.
+     */
+    Hive getHive(Hive hive, Timestamp fromTime, Timestamp untilTime);
 
     void subscribeHive(User user, Hive hive);
 }

@@ -36,7 +36,7 @@ public class HiveBusinessImpl implements HiveBusiness {
     }
 
     @Override
-    public Hive getHiveMeasurements(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
+    public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
         return hiveRepo.getHive(hive, sinceTime, untilTime);
     }
 
