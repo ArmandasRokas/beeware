@@ -22,8 +22,9 @@ public class HiveRepoArrayListImpl implements HiveRepository {
         // dummy subscriptions
         subscribeHives.add(102);
         subscribeHives.add(103);
+        subscribeHives.add(104);
 
-        // dummy hives
+        // dummy hives 102
         Measurement meas1 = new Measurement();
         meas1.setTimestamp(new Timestamp(CURR_TIME));
         meas1.setWeight(32.0);
@@ -47,6 +48,57 @@ public class HiveRepoArrayListImpl implements HiveRepository {
         test1.setName("FHA_Stade102");
         test1.setMeasurements(measurements);
         hiveList.add(test1);
+
+        // dummy hive 103
+        Measurement meas103_1 = new Measurement();
+        meas103_1.setTimestamp(new Timestamp(CURR_TIME));
+        meas103_1.setWeight(33.0);
+        meas103_1.setTempIn(32.4);
+        meas103_1.setHumidity(99.4);
+        meas103_1.setIlluminance(45000);
+
+        Measurement meas103_2 = new Measurement();
+        meas103_2.setTimestamp(new Timestamp(CURR_TIME - MINUTE_SUBTRACTION));
+        meas103_2.setWeight(29.9);
+        meas103_2.setTempIn(36.1);
+        meas103_2.setHumidity(99.0);
+        meas103_2.setIlluminance(49900);
+
+        List<Measurement> measurements_103 = new ArrayList<>();
+        measurements_103.add(meas103_1);
+        measurements_103.add(meas103_2);
+
+        Hive test103 = new Hive();
+        test103.setId(103);
+        test103.setName("FHA_Stade103");
+        test103.setMeasurements(measurements_103);
+        hiveList.add(test103);
+
+        // dummy hive 104
+        Measurement meas104_1 = new Measurement();
+        meas104_1.setTimestamp(new Timestamp(CURR_TIME));
+        meas104_1.setWeight(33.0);
+        meas104_1.setTempIn(32.4);
+        meas104_1.setHumidity(99.4);
+        meas104_1.setIlluminance(45000);
+
+        Measurement meas104_2 = new Measurement();
+        meas104_2.setTimestamp(new Timestamp(CURR_TIME - MINUTE_SUBTRACTION));
+        meas104_2.setWeight(29.9);
+        meas104_2.setTempIn(36.1);
+        meas104_2.setHumidity(99.0);
+        meas104_2.setIlluminance(49900);
+
+        List<Measurement> measurements_104 = new ArrayList<>();
+        measurements_104.add(meas104_1);
+        measurements_104.add(meas104_2);
+
+        Hive hive104 = new Hive();
+        hive104.setId(104);
+        hive104.setName("FHA_Stade104");
+        hive104.setMeasurements(measurements_104);
+        hiveList.add(hive104);
+
     }
 
     public void cleanSubscribedHives(){
@@ -54,11 +106,7 @@ public class HiveRepoArrayListImpl implements HiveRepository {
         //hiveList = new ArrayList<>();
     }
 
-    @Override
-    public List<Hive> getHives(int userId) {
-        return null;
-    }
-    // TODO : implement timestams og throws
+    // TODO : implement timestams og throws. Armandas
     @Override
     public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
         for (int i = 0; i < hiveList.size(); i++) {
