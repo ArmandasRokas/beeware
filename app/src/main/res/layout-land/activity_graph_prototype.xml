@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/toggleBox"
-        android:layout_width="wrap_content"
+        android:layout_width="42dp"
         android:layout_height="0dp"
         android:background="#332727"
         android:orientation="vertical"
@@ -16,38 +16,50 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <ImageButton
             android:id="@+id/weightButton"
+            style="@android:style/Widget.DeviceDefault.ImageButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="#585749"
-            android:src="@drawable/weight" />
+            android:background="#222222"
+            android:scaleType="center"
+            android:src="@drawable/weight"
+            android:tint="#D6BFBF" />
 
         <ImageButton
             android:id="@+id/tempButton"
+            style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="#F44336"
-            android:src="@drawable/temperature" />
-
-        <ImageButton
-            android:id="@+id/humidButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="#00BCD4"
-            android:src="@drawable/humidity" />
+            android:background="#222222"
+            android:scaleType="center"
+            android:src="@drawable/temperature"
+            android:tint="#FF7575" />
 
         <ImageButton
             android:id="@+id/lightButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="#FFC107"
-            android:src="@drawable/sunlight" />
+            android:background="#222222"
+            android:scaleType="center"
+            android:src="@drawable/sunshine2"
+            android:tint="#FFE54E" />
+
+        <ImageButton
+            android:id="@+id/humidButton"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#222222"
+            android:scaleType="center"
+            android:src="@drawable/humidity"
+            android:tint="#67B9FF" />
+
     </LinearLayout>
 
     <LinearLayout

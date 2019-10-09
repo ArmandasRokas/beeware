@@ -75,8 +75,8 @@ public class GraphPrototype extends AppCompatActivity {
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(false);
-        lineChart.setPinchZoom(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setPinchZoom(false);
 
         // Create (import) LineDataSets
         lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
