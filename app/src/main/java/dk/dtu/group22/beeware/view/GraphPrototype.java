@@ -4,7 +4,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,10 +25,10 @@ import dk.dtu.group22.beeware.R;
 
 public class GraphPrototype extends AppCompatActivity {
 
-    private ImageButton weightToggle;
-    private ImageButton tempToggle;
-    private ImageButton lightToggle;
-    private ImageButton humidToggle;
+    private Button weightToggle;
+    private Button tempToggle;
+    private Button lightToggle;
+    private Button humidToggle;
 
     private LineChart lineChart;
     private LineDataSet lineDataSetWeight;
@@ -69,6 +69,12 @@ public class GraphPrototype extends AppCompatActivity {
             setLandscapeMode();
         }
 
+        // Colors
+        //weightColor = ContextCompat.getColor(this, R.color.BEE_graphWeight);
+        //tempColor = Color.valueOf(getColor(R.color.BEE_graphTemperature));
+        //lightColor = Color.valueOf(getColor(R.color.BEE_graphSunlight));
+        //humidColor = Color.valueOf(getColor(R.color.BEE_graphHumidity);
+
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
 
@@ -94,10 +100,10 @@ public class GraphPrototype extends AppCompatActivity {
         lineDataSetHumidity.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         // Set colors and line width
-        lineDataSetWeight.setColors(new int[]{android.R.color.darker_gray}, this);
-        lineDataSetTemperature.setColors(new int[]{android.R.color.holo_red_light}, this);
-        lineDataSetSunlight.setColors(new int[]{android.R.color.holo_orange_light}, this);
-        lineDataSetHumidity.setColors(new int[]{android.R.color.holo_blue_light}, this);
+        lineDataSetWeight.setColors(new int[]{R.color.BEE_graphWeight}, this);
+        lineDataSetTemperature.setColors(new int[]{R.color.BEE_graphTemperature}, this);
+        lineDataSetSunlight.setColors(new int[]{R.color.BEE_graphSunlight}, this);
+        lineDataSetHumidity.setColors(new int[]{R.color.BEE_graphHumidity}, this);
 
         lineDataSetWeight.setLineWidth(5);
         lineDataSetTemperature.setLineWidth(5);
@@ -145,7 +151,7 @@ public class GraphPrototype extends AppCompatActivity {
 
         // Set description text for LineChart
         Description description = new Description();
-        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
+        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[4]);
         description.setText("Example Hive Data");
 
         // Fill chart with data
@@ -185,10 +191,8 @@ public class GraphPrototype extends AppCompatActivity {
     public void toggleWeight(boolean shown) {
         if (!shown) {
             lineDataSetWeight.setVisible(true);
-            weightToggle.setBackgroundColor(Color.parseColor("#ff444444"));
         } else {
             lineDataSetWeight.setVisible(false);
-            weightToggle.setBackgroundColor(Color.parseColor("#ff222222"));
         }
         lineChart.invalidate();
     }

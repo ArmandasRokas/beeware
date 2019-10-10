@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="#222222"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,7 +28,7 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/guidelineUnderHiveTitle"
-            app:layout_constraintEnd_toStartOf="@id/guideline4"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,12 +42,12 @@
             android:background="#00574D4D"
             android:textAlignment="textStart"
             android:tooltipText="Hive settings"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_manage" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/hiveDescriptionTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -59,7 +59,7 @@
             android:textColor="@android:color/darker_gray"
             app:layout_constraintBottom_toTopOf="@+id/guidelineUnderHiveTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/settingsButton" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -68,106 +68,101 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" />
 
-        <TextView
-            android:id="@+id/weightTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="55 kg (+5)"
-            android:textAlignment="textEnd"
-            android:textColor="#FF4040"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guidelineUnderHiveTitle" />
-
-        <TextView
-            android:id="@+id/TemperatureTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:text="55 C°"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/guidelineUnderHiveTitle" />
-
-        <TextView
-            android:id="@+id/HumidityTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
-            android:text="55 %"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightTextView" />
-
-        <TextView
-            android:id="@+id/sunlightTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
-            android:text="55 Lux"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/TemperatureTextView"
-            app:layout_constraintVertical_bias="0.0" />
-
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.50121653" />
 
-        <LinearLayout
-            android:id="@+id/horizontalBorder"
-            android:layout_width="2dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="#CFCDCD"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toEndOf="@+id/weightTextView"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/guidelineUnderHiveTitle"></LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/verticalBorder"
+        <Button
+            android:id="@+id/weightButton"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="64dp"
-            android:background="#CFCDCD"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="#00000000"
+            android:foreground="@drawable/weight"
+            android:foregroundGravity="center|right|center_horizontal"
+            android:text="55 kg (+5)"
+            android:textAlignment="center"
+            android:textColor="@android:color/primary_text_dark"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightTextView"></LinearLayout>
+            app:layout_constraintTop_toTopOf="@+id/guidelineUnderHiveTitle" />
+
+        <Button
+            android:id="@+id/tempButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:background="#00000000"
+            android:foreground="@drawable/temperature"
+            android:foregroundGravity="left|center"
+            android:foregroundTint="@color/BEE_graphTemperature"
+            android:text="55 C°"
+            android:textColor="@android:color/primary_text_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/guidelineUnderHiveTitle" />
+
+        <Button
+            android:id="@+id/lightButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#00000000"
+            android:foreground="@drawable/sunshine2"
+            android:foregroundGravity="center|right"
+            android:foregroundTint="@color/BEE_graphSunlight"
+            android:text="55 lux"
+            android:textColor="@android:color/primary_text_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weightButton" />
+
+        <Button
+            android:id="@+id/humidButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="#00000000"
+            android:foreground="@drawable/humidity"
+            android:foregroundGravity="left|center"
+            android:foregroundTint="@color/BEE_graphHumidity"
+            android:text="55 %"
+            android:textAlignment="center"
+            android:textColor="@android:color/primary_text_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/tempButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/toggleBox"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoBox">
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/unitBox"
@@ -209,60 +204,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unitBox" />
-
-    <LinearLayout
-        android:id="@+id/toggleBox"
-        android:layout_width="0dp"
-        android:layout_height="42dp"
-        android:background="#FFFFFF"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoBox">
-
-        <ImageButton
-            android:id="@+id/weightButton"
-            style="@android:style/Widget.DeviceDefault.ImageButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#222222"
-            android:scaleType="center"
-            android:src="@drawable/weight"
-            android:tint="#D6BFBF" />
-
-        <ImageButton
-            android:id="@+id/tempButton"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#222222"
-            android:scaleType="center"
-            android:src="@drawable/temperature"
-            android:tint="#FF7575" />
-
-        <ImageButton
-            android:id="@+id/lightButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#222222"
-            android:scaleType="center"
-            android:src="@drawable/sunshine2"
-            android:tint="#FFE54E" />
-
-        <ImageButton
-            android:id="@+id/humidButton"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#222222"
-            android:scaleType="center"
-            android:src="@drawable/humidity"
-            android:tint="#67B9FF" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
