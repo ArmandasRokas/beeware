@@ -185,8 +185,10 @@ public class GraphPrototype extends AppCompatActivity {
     public void toggleWeight(boolean shown) {
         if (!shown) {
             lineDataSetWeight.setVisible(true);
+            weightToggle.setBackgroundColor(Color.parseColor("#ff444444"));
         } else {
             lineDataSetWeight.setVisible(false);
+            weightToggle.setBackgroundColor(Color.parseColor("#ff222222"));
         }
         lineChart.invalidate();
     }
