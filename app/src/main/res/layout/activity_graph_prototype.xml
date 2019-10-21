@@ -25,7 +25,7 @@
             android:layout_marginEnd="16dp"
             android:text="Hive 55"
             android:textAlignment="textEnd"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/guidelineUnderHiveTitle"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -88,7 +88,7 @@
             android:foregroundGravity="center|right|center_horizontal"
             android:text="55 kg (+5)"
             android:textAlignment="center"
-            android:textColor="@android:color/primary_text_dark"
+            android:textColor="@android:color/holo_red_light"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guidelineUnderHiveTitle" />
