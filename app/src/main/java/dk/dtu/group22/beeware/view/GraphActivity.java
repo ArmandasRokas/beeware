@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -33,7 +34,9 @@ import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 
 //import java.time.Instant;
 
-public class GraphPrototype extends AppCompatActivity {
+public class GraphActivity extends AppCompatActivity {
+
+    private GraphViewModel graphViewModel;
 
     private Button weightToggle;
     private Button tempToggle;
@@ -45,12 +48,13 @@ public class GraphPrototype extends AppCompatActivity {
     private LineDataSet lineDataSetTemperature;
     private LineDataSet lineDataSetSunlight;
     private LineDataSet lineDataSetHumidity;
-    private int numOfDays = 365, defaultZoomInDays = 7; // default number of days loaded and shown
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_prototype);
+        // Model class for this activity. Saves state.
+        graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
 
         // Toggle buttons
         weightToggle = findViewById(R.id.weightButton);
@@ -79,12 +83,6 @@ public class GraphPrototype extends AppCompatActivity {
             setLandscapeMode();
         }
 
-        // Colors
-        //weightColor = ContextCompat.getColor(this, R.color.BEE_graphWeight);
-        //tempColor = Color.valueOf(getColor(R.color.BEE_graphTemperature));
-        //lightColor = Color.valueOf(getColor(R.color.BEE_graphSunlight));
-        //humidColor = Color.valueOf(getColor(R.color.BEE_graphHumidity);
-
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
 
@@ -102,15 +100,16 @@ public class GraphPrototype extends AppCompatActivity {
         lineChart.setScaleEnabled(true);
         lineChart.setPinchZoom(false);
 
-        // Create (import) LineDataSets
-        //lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
-        //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
-        //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
-        //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
-        lineDataSetWeight = new LineDataSet(extractWeight(rawHiveData), "Weight");
-        lineDataSetTemperature = new LineDataSet(extractTemperature(rawHiveData), "Temperature");
-        lineDataSetSunlight = new LineDataSet(extractIlluminance(rawHiveData), "Sunlight");
-        lineDataSetHumidity = new LineDataSet(extractHumidity(rawHiveData), "Humidity");
+        // Import LineDataSets
+        int numOfDays = 365;
+        lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
+        lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
+        lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
+        lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
+        //lineDataSetWeight = new LineDataSet(extractWeight(rawHiveData), "Weight");
+        //lineDataSetTemperature = new LineDataSet(extractTemperature(rawHiveData), "Temperature");
+        //lineDataSetSunlight = new LineDataSet(extractIlluminance(rawHiveData), "Sunlight");
+        //lineDataSetHumidity = new LineDataSet(extractHumidity(rawHiveData), "Humidity");
         System.out.println(extractTemperature(rawHiveData).toString());
 
         // Format X- Axis to time string?
@@ -182,12 +181,17 @@ public class GraphPrototype extends AppCompatActivity {
         lineChart.setDescription(description);
 
         // Default zoom to one week or 'deafultZoomInDays'
-        lineChart.zoom(numOfDays / defaultZoomInDays, 0, numOfDays, 0); // Scale is total days divided by shown days
+        lineChart.zoom(graphViewModel.getDefaultZoom(), 0, graphViewModel.getxCenter(), 0);
         lineChart.centerViewTo((float) numOfDays, (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
-        // Test of toggle (show) method
-        //toggleSunlight(false);
+        // Get zoom from state
+
+        // Get lineDataSet visibility from state.
+        lineDataSetWeight.setVisible(graphViewModel.isWeightLineVisible());
+        lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
+        lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
+        lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
     }
 
     protected List<Entry> randomEntries(int n, int minY, int maxY) {
@@ -202,32 +206,36 @@ public class GraphPrototype extends AppCompatActivity {
     private void setPortraitMode() {
         getSupportActionBar().show();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Move buttons to top
+
     }
 
     private void setLandscapeMode() {
         getSupportActionBar().hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Move buttons to left
+
     }
 
     public void toggleWeight(boolean shown) {
         lineDataSetWeight.setVisible(!shown);
+        graphViewModel.setWeightLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleTemperature(boolean shown) {
         lineDataSetTemperature.setVisible(!shown);
+        graphViewModel.setTemperatureLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleSunlight(boolean shown) {
         lineDataSetSunlight.setVisible(!shown);
+        graphViewModel.setSunlightLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleHumidity(boolean shown) {
         lineDataSetHumidity.setVisible(!shown);
+        graphViewModel.setHumidityLineVisible(!shown);
         lineChart.invalidate();
     }
 
@@ -235,41 +243,30 @@ public class GraphPrototype extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        //outState.putBoolean("weightVisible", lineDataSetWeight.isVisible());
-        //outState.putBoolean("temperatureVisible", lineDataSetTemperature.isVisible());
-        //outState.putBoolean("sunlightVisible", lineDataSetSunlight.isVisible());
-        //outState.putBoolean("humidityVisible", lineDataSetHumidity.isVisible());
-
-        boolean[] visibleLines = {
-                lineDataSetWeight.isVisible(),
-                lineDataSetTemperature.isVisible(),
-                lineDataSetSunlight.isVisible(),
-                lineDataSetHumidity.isVisible()};
-        outState.putBooleanArray("visibleLines", visibleLines);
-
-        float[] lowestXAndRange = {lineChart.getLowestVisibleX(), lineChart.getVisibleXRange()};
-        outState.putFloatArray("lowestXandRange", lowestXAndRange);
+        float xCenter = lineChart.getLowestVisibleX() + lineChart.getVisibleXRange() / 2;
+        graphViewModel.setxCenter(xCenter);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        // Get the saved x center and show.
+        lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
     }
 
-    public List<Entry> extractWeight(Hive hive){
+    public List<Entry> extractWeight(Hive hive) {
         List<Entry> res = new ArrayList<>();
-        for (Measurement measure : hive.getMeasurements() ){
-           float time = (float) measure.getTimestamp().getTime();
-           float weight = (float) measure.getWeight();
-           res.add(new Entry(time, weight));
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            float weight = (float) measure.getWeight();
+            res.add(new Entry(time, weight));
         }
         return res;
     }
 
-    public List<Entry> extractTemperature(Hive hive){
+    public List<Entry> extractTemperature(Hive hive) {
         List<Entry> res = new ArrayList<>();
-        for (Measurement measure : hive.getMeasurements() ){
+        for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float temp = (float) measure.getTempIn();
             res.add(new Entry(time, temp));
@@ -277,9 +274,9 @@ public class GraphPrototype extends AppCompatActivity {
         return res;
     }
 
-    public List<Entry> extractIlluminance(Hive hive){
+    public List<Entry> extractIlluminance(Hive hive) {
         List<Entry> res = new ArrayList<>();
-        for (Measurement measure : hive.getMeasurements() ){
+        for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
             res.add(new Entry(time, illum));
@@ -287,9 +284,9 @@ public class GraphPrototype extends AppCompatActivity {
         return res;
     }
 
-    public List<Entry> extractHumidity(Hive hive){
+    public List<Entry> extractHumidity(Hive hive) {
         List<Entry> res = new ArrayList<>();
-        for (Measurement measure : hive.getMeasurements() ){
+        for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
             res.add(new Entry(time, humid));
@@ -298,22 +295,21 @@ public class GraphPrototype extends AppCompatActivity {
     }
 
     // Filters time intervals from a list,
-    // Only picks midknight when timeinterval is greater than 24hours
+    // Only picks midnight when time interval is greater than 24hours
 
     /**
-     *
      * @param hive
      * @param start
      * @param end
      * @return A list containing measurements, in correct order, from start to end.
      */
-    public List<Measurement> filterTimeInterval(Hive hive, Timestamp start, Timestamp end){
+    public List<Measurement> filterTimeInterval(Hive hive, Timestamp start, Timestamp end) {
         //TODO: Optimize with binary search.
         List<Measurement> res = new ArrayList<>();
-        for(Measurement measure : hive.getMeasurements()){
+        for (Measurement measure : hive.getMeasurements()) {
             Timestamp t = measure.getTimestamp();
             // start <= t <= end
-            if(start.compareTo(t) <= 0 && t.compareTo(end) <= 0){
+            if (start.compareTo(t) <= 0 && t.compareTo(end) <= 0) {
                 res.add(measure);
             }
         }
