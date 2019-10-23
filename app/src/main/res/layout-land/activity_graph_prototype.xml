@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.GraphPrototype">
+
+    <LinearLayout
+        android:id="@+id/toggleBox"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:background="@color/BEE_darkGrayBG"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/weightButton"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:foreground="@drawable/weight"
+            android:foregroundGravity="center_vertical|center" />
+
+        <Button
+            android:id="@+id/tempButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#271529"
+            android:foreground="@drawable/temperature"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/BEE_graphTemperature" />
+
+        <Button
+            android:id="@+id/lightButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#2B2916"
+            android:foreground="@drawable/sunshine2"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/BEE_graphSunlight" />
+
+        <Button
+            android:id="@+id/humidButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#121731"
+            android:foreground="@drawable/humidity"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/BEE_graphHumidity" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/unitBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/toggleBox"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/axisLeftLegend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:text="@string/leftAxisLegend"
+            android:textAlignment="textStart" />
+
+        <TextView
+            android:id="@+id/axisRightLegend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:text="@string/rightAxisLegend"
+            android:textAlignment="textEnd" />
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/toggleBox"
+        app:layout_constraintTop_toBottomOf="@id/unitBox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

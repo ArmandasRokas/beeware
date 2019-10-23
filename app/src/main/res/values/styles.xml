@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- Color for the navigation bar (triangle, circle, square) -->
+        <item name="android:navigationBarColor">@color/BEE_darkGrayBG</item>
+
     </style>
 
 </resources>

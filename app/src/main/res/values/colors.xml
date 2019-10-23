@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF780A</color>
-    <color name="colorPrimaryDark">#FF780A</color>
+    <!--<color name="colorPrimary">#FF780A</color>
+    <color name="colorPrimaryDark">#FF780A</color>-->
+    <color name="colorPrimary">#f3a500</color>
+    <color name="colorPrimaryDark">#f3a500</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!--Default dark gray color for background and navbar-->
+    <color name="BEE_darkGrayBG">#222222</color>
+
+
+    <color name="BEE_graphWeight">#777777</color>
+    <color name="BEE_graphTemperature">#ab3593</color>
+    <color name="BEE_graphSunlight">#FFD700</color>
+    <color name="BEE_graphHumidity">#00BFFF</color>
+
 </resources>
