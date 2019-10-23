@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -210,40 +211,53 @@ public class GraphPrototype extends AppCompatActivity {
     }
 
     public void toggleWeight(boolean shown) {
-        if (!shown) {
-            lineDataSetWeight.setVisible(true);
-        } else {
-            lineDataSetWeight.setVisible(false);
-        }
+        lineDataSetWeight.setVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleTemperature(boolean shown) {
-        if (!shown) {
-            lineDataSetTemperature.setVisible(true);
-        } else {
-            lineDataSetTemperature.setVisible(false);
-        }
+        lineDataSetTemperature.setVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleSunlight(boolean shown) {
-        if (!shown) {
-            lineDataSetSunlight.setVisible(true);
-        } else {
-            lineDataSetSunlight.setVisible(false);
-        }
+        lineDataSetSunlight.setVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleHumidity(boolean shown) {
-        if (!shown) {
-            lineDataSetHumidity.setVisible(true);
-        } else {
-            lineDataSetHumidity.setVisible(false);
-        }
+        lineDataSetHumidity.setVisible(!shown);
         lineChart.invalidate();
     }
+
+    // Saving state of chart
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //outState.putBoolean("weightVisible", lineDataSetWeight.isVisible());
+        //outState.putBoolean("temperatureVisible", lineDataSetTemperature.isVisible());
+        //outState.putBoolean("sunlightVisible", lineDataSetSunlight.isVisible());
+        //outState.putBoolean("humidityVisible", lineDataSetHumidity.isVisible());
+
+        boolean[] visibleLines = {
+                lineDataSetWeight.isVisible(),
+                lineDataSetTemperature.isVisible(),
+                lineDataSetSunlight.isVisible(),
+                lineDataSetHumidity.isVisible()};
+        outState.putBooleanArray("visibleLines", visibleLines);
+
+        float[] lowestXAndRange = {lineChart.getLowestVisibleX(), lineChart.getVisibleXRange()};
+        outState.putFloatArray("lowestXandRange", lowestXAndRange);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+}
+
+
 
     public List<Entry> extractWeight(Hive hive){
         List<Entry> res = new ArrayList<>();
