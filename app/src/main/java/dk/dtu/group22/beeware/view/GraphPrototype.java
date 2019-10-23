@@ -17,11 +17,19 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.sql.Timestamp;
+//import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
+import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.Measurement;
+import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 
 public class GraphPrototype extends AppCompatActivity {
 
@@ -78,6 +86,14 @@ public class GraphPrototype extends AppCompatActivity {
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
 
+        // Simulate hive data
+
+        HiveRepository hiveRepoArrayList = new HiveRepoArrayListImpl();
+        HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
+        Hive newHive = new Hive();
+        newHive.setId(102);
+        Hive rawHiveData = hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
@@ -85,10 +101,15 @@ public class GraphPrototype extends AppCompatActivity {
         lineChart.setPinchZoom(false);
 
         // Create (import) LineDataSets
-        lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
-        lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
-        lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
-        lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
+        //lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
+        //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
+        //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
+        //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
+        lineDataSetWeight = new LineDataSet(extractWeight(rawHiveData), "Weight");
+        lineDataSetTemperature = new LineDataSet(extractTemperature(rawHiveData), "Temperature");
+        lineDataSetSunlight = new LineDataSet(extractIlluminance(rawHiveData), "Sunlight");
+        lineDataSetHumidity = new LineDataSet(extractHumidity(rawHiveData), "Humidity");
+        System.out.println(extractTemperature(rawHiveData).toString());
 
         // Format X- Axis to time string?
         //      yAxis.setValueFormatter(new MyValueFormatter());
@@ -223,4 +244,68 @@ public class GraphPrototype extends AppCompatActivity {
         }
         lineChart.invalidate();
     }
+
+    public List<Entry> extractWeight(Hive hive){
+        List<Entry> res = new ArrayList<>();
+        for (Measurement measure : hive.getMeasurements() ){
+           float time = (float) measure.getTimestamp().getTime();
+           float weight = (float) measure.getWeight();
+           res.add(new Entry(time, weight));
+        }
+        return res;
+    }
+
+    public List<Entry> extractTemperature(Hive hive){
+        List<Entry> res = new ArrayList<>();
+        for (Measurement measure : hive.getMeasurements() ){
+            float time = (float) measure.getTimestamp().getTime();
+            float temp = (float) measure.getTempIn();
+            res.add(new Entry(time, temp));
+        }
+        return res;
+    }
+
+    public List<Entry> extractIlluminance(Hive hive){
+        List<Entry> res = new ArrayList<>();
+        for (Measurement measure : hive.getMeasurements() ){
+            float time = (float) measure.getTimestamp().getTime();
+            float illum = (float) measure.getIlluminance();
+            res.add(new Entry(time, illum));
+        }
+        return res;
+    }
+
+    public List<Entry> extractHumidity(Hive hive){
+        List<Entry> res = new ArrayList<>();
+        for (Measurement measure : hive.getMeasurements() ){
+            float time = (float) measure.getTimestamp().getTime();
+            float humid = (float) measure.getHumidity();
+            res.add(new Entry(time, humid));
+        }
+        return res;
+    }
+
+    // Filters time intervals from a list,
+    // Only picks midknight when timeinterval is greater than 24hours
+
+    /**
+     *
+     * @param hive
+     * @param start
+     * @param end
+     * @return A list containing measurements, in correct order, from start to end.
+     */
+    public List<Measurement> filterTimeInterval(Hive hive, Timestamp start, Timestamp end){
+        //TODO: Optimize with binary search.
+        List<Measurement> res = new ArrayList<>();
+        for(Measurement measure : hive.getMeasurements()){
+            Timestamp t = measure.getTimestamp();
+            // start <= t <= end
+            if(start.compareTo(t) <= 0 && t.compareTo(end) <= 0){
+                res.add(measure);
+            }
+        }
+        return res;
+    }
 }
+
