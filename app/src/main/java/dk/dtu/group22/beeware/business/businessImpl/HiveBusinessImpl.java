@@ -12,20 +12,24 @@ import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.entities.User;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
+import dk.dtu.group22.beeware.data.repositories.interfaceRepo.UserRepository;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.UserRepoArrayListImpl;
 
 public class HiveBusinessImpl implements HiveBusiness {
 
     private HiveRepository hiveRepo;
+    private UserRepository userRepository;
 
-    public HiveBusinessImpl(HiveRepository hiveRepo){
-        this.hiveRepo = hiveRepo;
+    public HiveBusinessImpl(){
+        this.hiveRepo = new HiveRepoArrayListImpl();
+        this.userRepository = new UserRepoArrayListImpl();
     }
 
     @Override
     public List<Hive> getHives(User user, int daysDelta) {
         // TODO implement daysDelta. Armandas
-        List<Hive> subscribedHives = hiveRepo.getSubscribedHives(user);
+        List<Hive> subscribedHives = userRepository.getSubscribedHives(user);
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for(Hive hive: subscribedHives){
             // TODO implement timestamp. Armandas
@@ -42,6 +46,10 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public void subscribeHive(User user, Hive hive) {
-        hiveRepo.subscribeHive(user, hive);
+        userRepository.subscribeHive(user, hive);
+    }
+
+    public UserRepository getUserRepository(){
+        return this.userRepository;
     }
 }
