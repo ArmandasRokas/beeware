@@ -88,8 +88,7 @@ public class GraphPrototype extends AppCompatActivity {
 
         // Simulate hive data
 
-        HiveRepository hiveRepoArrayList = new HiveRepoArrayListImpl();
-        HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
+        HiveBusiness hiveBusiness = new HiveBusinessImpl();
         Hive newHive = new Hive();
         newHive.setId(102);
         Hive rawHiveData = hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
