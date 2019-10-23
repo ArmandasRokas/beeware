@@ -19,7 +19,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.sql.Timestamp;
-//import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +30,8 @@ import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
+
+//import java.time.Instant;
 
 public class GraphPrototype extends AppCompatActivity {
 
@@ -255,9 +256,6 @@ public class GraphPrototype extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
-}
-
-
 
     public List<Entry> extractWeight(Hive hive){
         List<Entry> res = new ArrayList<>();
