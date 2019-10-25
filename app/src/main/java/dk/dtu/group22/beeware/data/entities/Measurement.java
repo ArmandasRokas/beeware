@@ -9,6 +9,14 @@ public class Measurement {
     private double humidity;
     private double illuminance;
 
+    public Measurement(Timestamp timestamp, double weight, double tempIn, double humidity, double illuminance){
+        this.timestamp = timestamp;
+        this.weight = weight;
+        this.tempIn = tempIn;
+        this.humidity = humidity;
+        this.illuminance = illuminance;
+    }
+
     @Override
     public String toString() {
         return "Measurement{" +
