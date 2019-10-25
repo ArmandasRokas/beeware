@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.view;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -57,6 +58,13 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph_prototype);
         // Model class for this activity. Saves state.
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
+
+        Intent intent = getIntent();
+
+        String idString = intent.getStringExtra("idString");
+
+        Log.d(TAG, "onCreate: Got " + idString);
+
 
         // Toggle buttons
         weightToggle = findViewById(R.id.weightButton);

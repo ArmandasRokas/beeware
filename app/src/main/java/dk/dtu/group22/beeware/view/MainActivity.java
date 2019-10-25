@@ -1,19 +1,14 @@
 package dk.dtu.group22.beeware.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import dk.dtu.group22.beeware.R;
 
@@ -52,10 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public void onClickHive(View view) {
 
 
-        Intent ID = new Intent(this, HiveActivity.class);
+        Intent ID = new Intent(this, GraphActivity.class);
         String s = "" + recyclerView.getChildLayoutPosition(view);
-
-        ID.putExtra("label", s);
+        ID.putExtra("idString", s);
 
         startActivity(ID);
 
