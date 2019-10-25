@@ -34,7 +34,11 @@ public class HiveBusinessImpl implements HiveBusiness {
         for(Hive hive: subscribedHives){
             // TODO implement timestamp. Armandas
             Hive h = hiveRepo.getHive(hive, new Timestamp(0), new Timestamp(1570195921501L+1000));
-            hivesWithMeasurements.add(h);
+            if (h == null){
+                throw new HiveNotFound("Hive with id " + hive.getId() + " does not exits.");
+            } else {
+                hivesWithMeasurements.add(h);
+            }
         }
         return hivesWithMeasurements;
     }

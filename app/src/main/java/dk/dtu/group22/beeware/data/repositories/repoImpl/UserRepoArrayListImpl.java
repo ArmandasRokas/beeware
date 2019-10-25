@@ -15,7 +15,7 @@ public class UserRepoArrayListImpl implements UserRepository{
         // dummy subscriptions
         subscribeHives.add(102);
         subscribeHives.add(103);
-        subscribeHives.add(104);
+        //subscribeHives.add(104);
     }
 
     public void cleanSubscribedHives(){
