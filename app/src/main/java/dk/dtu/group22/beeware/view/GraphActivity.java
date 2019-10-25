@@ -95,8 +95,7 @@ public class GraphActivity extends AppCompatActivity {
 
         // Simulate hive data
         HiveRepository hiveRepoArrayList = new HiveRepoArrayListImpl();
-        HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
-
+        //HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
         HiveBusiness hiveBusiness = new HiveBusinessImpl();
         Hive newHive = new Hive();
         newHive.setId(102);
