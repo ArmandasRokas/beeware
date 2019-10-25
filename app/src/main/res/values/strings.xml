@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Beeware</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bistade">Bistade</string>
+    <string name="stade1">Stade1</string>
     <string name="leftAxisLegend">Kg</string>
     <string name="rightAxisLegend">C°</string>
 </resources>
