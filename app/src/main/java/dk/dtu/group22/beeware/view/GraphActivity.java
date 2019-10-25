@@ -58,11 +58,8 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph_prototype);
         // Model class for this activity. Saves state.
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
-
         Intent intent = getIntent();
-
         String idString = intent.getStringExtra("idString");
-
         Log.d(TAG, "onCreate: Got " + idString);
 
 
@@ -99,6 +96,8 @@ public class GraphActivity extends AppCompatActivity {
         // Simulate hive data
         HiveRepository hiveRepoArrayList = new HiveRepoArrayListImpl();
         HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
+
+        HiveBusiness hiveBusiness = new HiveBusinessImpl();
         Hive newHive = new Hive();
         newHive.setId(102);
         Hive rawHiveData = hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
@@ -123,7 +122,6 @@ public class GraphActivity extends AppCompatActivity {
 
         // Format X- Axis to time string?
         //      yAxis.setValueFormatter(new MyValueFormatter());
-
 
         //Set Y Axis dependency
         lineDataSetWeight.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -213,13 +211,11 @@ public class GraphActivity extends AppCompatActivity {
     private void setPortraitMode() {
         getSupportActionBar().show();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
     }
 
     private void setLandscapeMode() {
         getSupportActionBar().hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
     }
 
     public void toggleWeight(boolean shown) {

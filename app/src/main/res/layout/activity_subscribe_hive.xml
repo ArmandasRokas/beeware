@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.SubscribeHiveActivity">
+
+    <EditText
+        android:id="@+id/hiveIdET"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="58dp"
+        android:layout_marginEnd="129dp"
+        android:layout_marginBottom="19dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/confirmHiveIdSubscribeBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enterHiveIdTV"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/confirmHiveIdSubscribeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="549dp"
+        android:text="Confirm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/hiveIdET"
+        app:layout_constraintTop_toBottomOf="@+id/hiveIdET" />
+
+    <TextView
+        android:id="@+id/enterHiveIdTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="84dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="11dp"
+        android:text="Enter hive id:"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/hiveIdET"
+        app:layout_constraintEnd_toStartOf="@+id/hiveIdET"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="58dp"
+        android:text="Subscribed hives"
+        app:layout_constraintEnd_toEndOf="@+id/confirmHiveIdSubscribeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/confirmHiveIdSubscribeBtn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

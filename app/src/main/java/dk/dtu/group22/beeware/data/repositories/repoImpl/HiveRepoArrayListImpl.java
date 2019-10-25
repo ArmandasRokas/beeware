@@ -13,17 +13,11 @@ import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 
 public class HiveRepoArrayListImpl implements HiveRepository {
 
-    private static List<Integer> subscribeHives = new ArrayList<>();
     private static List<Hive> hiveList = new ArrayList<>();
     private static final int MINUTE_SUBTRACTION = 60000;
     static final long CURR_TIME = 1570195921501L;
 
     static {
-        // dummy subscriptions
-        subscribeHives.add(102);
-        subscribeHives.add(103);
-        subscribeHives.add(104);
-
         // dummy hives 102
         Measurement meas1 = new Measurement();
         meas1.setTimestamp(new Timestamp(CURR_TIME));
@@ -101,10 +95,7 @@ public class HiveRepoArrayListImpl implements HiveRepository {
 
     }
 
-    public void cleanSubscribedHives(){
-        subscribeHives  = new ArrayList<>();
-        //hiveList = new ArrayList<>();
-    }
+
 
     // TODO : implement timestams og throws. Armandas
     @Override
@@ -115,54 +106,5 @@ public class HiveRepoArrayListImpl implements HiveRepository {
             }
         }
         return null;
-    }
-
-    @Override
-    public void subscribeHive(User user, Hive hive) {
-        if(user.getId() < 1){
-            throw new UserNoIdException("User id is not defined");
-        }
-        if(hive.getId() < 1){
-            throw new HiveNoIdException("Hive id is not defined");
-        }
-        for (int hiveId : subscribeHives) {
-            if (hive.getId() == hiveId) {
-                throw new HiveIdAlreadyExists("Hive id already exists");
-            }
-        }
-        subscribeHives.add(hive.getId());
-    }
-
-
-
-    @Override
-    public List<Hive> getSubscribedHives(User user) {
-        if(user.getId() < 1){
-            throw new UserNoIdException("User id is not defined");
-        }
-        List<Hive> hives = new ArrayList<>();
-        for(int hiveId: subscribeHives){
-            if(hiveId > 0){
-                Hive hive = new Hive();
-                hive.setId(hiveId);
-                hives.add(hive);
-            }
-        }
-        return hives;
-    }
-
-    @Override
-    public void unsubscribeHive(User user, Hive hive) {
-        if(user.getId() < 1){
-            throw new UserNoIdException("User id is not defined");
-        }
-        if(hive.getId() < 1){
-            throw new HiveNoIdException("Hive id is not defined");
-        }
-        for (int i = 0; i < subscribeHives.size(); i++) {
-            if (subscribeHives.get(i) == hive.getId()) {
-                subscribeHives.remove(i);
-            }
-        }
     }
 }
