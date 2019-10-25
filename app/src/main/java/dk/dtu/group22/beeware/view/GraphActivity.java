@@ -175,7 +175,7 @@ public class GraphActivity extends AppCompatActivity {
         // Set description text for LineChart
         Description description = new Description();
         description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[4]);
-        description.setText("Example Hive Data");
+        description.setText("Hive name");
 
         // Fill chart with data
         lineChart.setData(lineData);
