@@ -12,24 +12,29 @@ import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.entities.User;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
+import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveSubscriptionRepository;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.UserRepository;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveSubscriptionRepoHiveToolImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.UserRepoArrayListImpl;
 
 public class HiveBusinessImpl implements HiveBusiness {
 
     private HiveRepository hiveRepo;
     private UserRepository userRepository;
+    private HiveSubscriptionRepository hiveSubscriptionRepository;
 
     public HiveBusinessImpl(){
         this.hiveRepo = new HiveRepoArrayListImpl();
         this.userRepository = new UserRepoArrayListImpl();
+        this.hiveSubscriptionRepository = new HiveSubscriptionRepoHiveToolImpl();
     }
 
     @Override
     public List<Hive> getHives(User user, int daysDelta) {
         // TODO implement daysDelta. Armandas
         List<Hive> subscribedHives = userRepository.getSubscribedHives(user);
+        /* // TODO uncomment these then getHive is implemented
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for(Hive hive: subscribedHives){
             // TODO implement timestamp. Armandas
@@ -41,6 +46,8 @@ public class HiveBusinessImpl implements HiveBusiness {
             }
         }
         return hivesWithMeasurements;
+        */
+        return subscribedHives;
     }
 
     @Override
@@ -50,7 +57,26 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public void subscribeHive(User user, Hive hive) {
-        userRepository.subscribeHive(user, hive);
+        try{
+            userRepository.subscribeHive(user, hive);
+        } catch (Exception e){
+            // TODO add exception handling
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Hive> getHivesToSubscribe() {
+        try{
+            List<Hive> hives = hiveSubscriptionRepository.getHivesToSubscribe();
+            if(hives == null || hives.isEmpty()){
+                throw new HivesToSubscribeNoFound("Error. Unable to fetch data");
+            } else{
+                return hives;
+            }
+        } catch (Exception e){
+            throw new HivesToSubscribeNoFound(e.getMessage());
+        }
     }
 
     public UserRepository getUserRepository(){
