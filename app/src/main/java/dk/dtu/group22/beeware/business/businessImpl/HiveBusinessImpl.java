@@ -34,6 +34,7 @@ public class HiveBusinessImpl implements HiveBusiness {
     public List<Hive> getHives(User user, int daysDelta) {
         // TODO implement daysDelta. Armandas
         List<Hive> subscribedHives = userRepository.getSubscribedHives(user);
+        /* // TODO uncomment these then getHive is implemented
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for(Hive hive: subscribedHives){
             // TODO implement timestamp. Armandas
@@ -45,6 +46,8 @@ public class HiveBusinessImpl implements HiveBusiness {
             }
         }
         return hivesWithMeasurements;
+        */
+        return subscribedHives;
     }
 
     @Override

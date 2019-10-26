@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private HiveBusiness hiveBusiness;
     private TextView errorTv;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe_hive_recycl);
         errorTv = findViewById(R.id.errorSubscribeHives);
+        progressBar = findViewById(R.id.indeterminateBar);
         recyclerView = findViewById(R.id.hivesToSubRV);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -56,8 +59,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
             String errorMsg = null;
             @Override
             protected void onPreExecute() {
-                //progressBar.setVisibility(View.VISIBLE);
-               // confirmBtn.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
             }
             @Override
             protected Object doInBackground(Object... arg0) {
@@ -73,8 +75,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Object titler) {
-                //progressBar.setVisibility(View.INVISIBLE);
-                //confirmBtn.setEnabled(true);
+                progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null){
                     errorTv.setText(errorMsg);
                 } else{
