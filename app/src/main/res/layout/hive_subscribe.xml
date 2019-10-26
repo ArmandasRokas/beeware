@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:id="@+id/linearLayout2">
+
+    <TextView
+        android:id="@+id/hiveNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        tools:layout_conversion_absoluteHeight="20dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_conversion_absoluteWidth="121dp" />
+
+    <Button
+        android:id="@+id/hiveToSubBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subscribe" />
+</LinearLayout>

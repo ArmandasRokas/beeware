@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         //RecyclerAdapter.ImageViewHolder();
 
+        Intent ID = new Intent(this, SubscribeHiveActivityRecycl.class);
+        startActivity(ID);
+
 
 
     }

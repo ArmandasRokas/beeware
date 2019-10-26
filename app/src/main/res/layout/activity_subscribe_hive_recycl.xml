@@ -6,4 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".view.SubscribeHiveActivityRecycl">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hivesToSubRV"
+        android:layout_width="423dp"
+        android:layout_height="743dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
