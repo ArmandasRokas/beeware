@@ -8,6 +8,17 @@ public class Measurement {
     private double tempIn;
     private double humidity;
     private double illuminance;
+    //TODO: Remove this once no test depends on it
+    public Measurement(){
+    }
+
+    public Measurement(Timestamp timestamp, double weight, double tempIn, double humidity, double illuminance){
+        this.timestamp = timestamp;
+        this.weight = weight;
+        this.tempIn = tempIn;
+        this.humidity = humidity;
+        this.illuminance = illuminance;
+    }
 
     @Override
     public String toString() {
