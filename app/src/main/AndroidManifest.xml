@@ -12,6 +12,9 @@
         <activity android:name=".view.GraphActivity"></activity>
         <activity android:name=".view.HiveActivity"></activity>
         <activity android:name=".view.SubscribeHiveActivity"></activity>
+        <activity android:name=".view.SubscribeHiveActivityRecycl"></activity>
+        <activity android:name=".view.GraphPrototype" />
+        <activity android:name=".view.SubscribeHiveActivity" />
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

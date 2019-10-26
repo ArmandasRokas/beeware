@@ -32,4 +32,8 @@ public interface HiveBusiness {
     Hive getHive(Hive hive, Timestamp fromTime, Timestamp untilTime);
 
     void subscribeHive(User user, Hive hive);
+
+    class HiveNotFound extends RuntimeException {
+        public HiveNotFound(String msg) {super(msg);}
+    }
 }
