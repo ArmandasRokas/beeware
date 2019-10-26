@@ -57,7 +57,12 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public void subscribeHive(User user, Hive hive) {
-        userRepository.subscribeHive(user, hive);
+        try{
+            userRepository.subscribeHive(user, hive);
+        } catch (Exception e){
+            // TODO add exception handling
+            e.printStackTrace();
+        }
     }
 
     @Override

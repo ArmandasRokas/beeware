@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         //RecyclerAdapter.ImageViewHolder();
 
-        Intent ID = new Intent(this, SubscribeHiveActivityRecycl.class);
-        startActivity(ID);
-
-
-
     }
         public boolean onCreateOptionsMenu (Menu menu){
             MenuInflater inflater = getMenuInflater();
@@ -54,6 +51,18 @@ public class MainActivity extends AppCompatActivity {
             return super.onCreateOptionsMenu(menu);
         }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Handle item selection
+        switch(item.getItemId()){
+            case R.id.subscribeHiveOP:
+                Intent ID = new Intent(this, SubscribeHiveActivityRecycl.class);
+                startActivity(ID);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     public void onClickHive(View view) {
 

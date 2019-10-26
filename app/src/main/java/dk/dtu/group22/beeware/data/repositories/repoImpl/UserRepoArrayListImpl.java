@@ -50,13 +50,13 @@ public class UserRepoArrayListImpl implements UserRepository{
         subscribeHives.add(hive2);
         subscribeHives.add(hive3);
         subscribeHives.add(hive4);
-        subscribeHives.add(hive5);
+    /*    subscribeHives.add(hive5);
         subscribeHives.add(hive6);
         subscribeHives.add(hive7);
         subscribeHives.add(hive8);
         subscribeHives.add(hive9);
         subscribeHives.add(hive10);
-        subscribeHives.add(hive11);
+        subscribeHives.add(hive11);*/
 
 
         //subscribeHives.add(104);
