@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
+import dk.dtu.group22.beeware.data.entities.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,10 +21,15 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerAdapter adapter;
+    private HiveBusiness hiveBusiness;
+    private User user;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        hiveBusiness = new HiveBusinessImpl();
+        user = new User();
+        user.setId(1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerview);
@@ -29,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecyclerAdapter();
+        adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
         recyclerView.setAdapter(adapter);
 
         //RecyclerAdapter.ImageViewHolder();
