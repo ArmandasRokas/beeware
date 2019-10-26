@@ -38,4 +38,8 @@ public interface HiveBusiness {
     class HiveNotFound extends RuntimeException {
         public HiveNotFound(String msg) {super(msg);}
     }
+
+    class HivesToSubscribeNoFound extends RuntimeException {
+        public HivesToSubscribeNoFound(String msg) {super(msg);}
+    }
 }

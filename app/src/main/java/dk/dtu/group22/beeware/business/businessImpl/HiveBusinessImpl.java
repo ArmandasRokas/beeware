@@ -59,7 +59,16 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public List<Hive> getHivesToSubscribe() {
-        return hiveSubscriptionRepository.getHivesToSubscribe();
+        try{
+            List<Hive> hives = hiveSubscriptionRepository.getHivesToSubscribe();
+            if(hives == null || hives.isEmpty()){
+                throw new HivesToSubscribeNoFound("Error. Unable to fetch data");
+            } else{
+                return hives;
+            }
+        } catch (Exception e){
+            throw new HivesToSubscribeNoFound(e.getMessage());
+        }
     }
 
     public UserRepository getUserRepository(){

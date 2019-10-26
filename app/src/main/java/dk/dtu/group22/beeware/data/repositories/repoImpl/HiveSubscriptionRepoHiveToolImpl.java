@@ -22,7 +22,9 @@ public class HiveSubscriptionRepoHiveToolImpl implements HiveSubscriptionReposit
             e.printStackTrace();
         }
 
-        System.out.println("Title: " + doc.title());
+        if(doc == null){
+            throw  new UnableToFetchData("Error. Unable to fetch data");
+        }
 
         Element content = doc.getElementById("green");
         //   System.out.println(content.toString());

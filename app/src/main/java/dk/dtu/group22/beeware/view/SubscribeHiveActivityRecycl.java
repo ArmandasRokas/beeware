@@ -26,13 +26,15 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private HiveBusiness hiveBusiness;
+    private TextView errorTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         hiveBusiness = new HiveBusinessImpl();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe_hive_recycl);
-
+        errorTv = findViewById(R.id.errorSubscribeHives);
         recyclerView = findViewById(R.id.hivesToSubRV);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -51,6 +53,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
         new AsyncTask() {
             List<Hive> hives;
+            String errorMsg = null;
             @Override
             protected void onPreExecute() {
                 //progressBar.setVisibility(View.VISIBLE);
@@ -62,6 +65,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
                     hives = hiveBusiness.getHivesToSubscribe();
                     return null;
                 } catch (Exception e) {
+                    errorMsg = e.getMessage();
                     e.printStackTrace();
                     return e;
                 }
@@ -71,9 +75,12 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
             protected void onPostExecute(Object titler) {
                 //progressBar.setVisibility(View.INVISIBLE);
                 //confirmBtn.setEnabled(true);
-
-                 mAdapter = new SubscribeHivesAdapter(hives);
-                 recyclerView.setAdapter(mAdapter);
+                if (errorMsg != null){
+                    errorTv.setText(errorMsg);
+                } else{
+                    mAdapter = new SubscribeHivesAdapter(hives);
+                    recyclerView.setAdapter(mAdapter);
+                }
             }
         }.execute();
 
