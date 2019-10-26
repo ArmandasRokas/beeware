@@ -33,6 +33,8 @@ public interface HiveBusiness {
 
     void subscribeHive(User user, Hive hive);
 
+    List<Hive> getHivesToSubscribe();
+
     class HiveNotFound extends RuntimeException {
         public HiveNotFound(String msg) {super(msg);}
     }

@@ -4,16 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
 
 public class SubscribeHiveActivityRecycl extends AppCompatActivity {
@@ -21,9 +25,11 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private HiveBusiness hiveBusiness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        hiveBusiness = new HiveBusinessImpl();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe_hive_recycl);
 
@@ -42,17 +48,36 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
                 .toArray(String[]::new);
         */
 
-        List<Hive> hives = new ArrayList<>();
-        Hive hive1 = new Hive();
-        hive1.setId(1);
-        hive1.setName("First");
-        Hive hive2 = new Hive();
-        hive2.setId(2);
-        hive2.setName("Second");
-        hives.add(hive1);
-        hives.add(hive2);
-        mAdapter = new SubscribeHivesAdapter(hives);
-        recyclerView.setAdapter(mAdapter);
+
+        new AsyncTask() {
+            List<Hive> hives;
+            @Override
+            protected void onPreExecute() {
+                //progressBar.setVisibility(View.VISIBLE);
+               // confirmBtn.setEnabled(false);
+            }
+            @Override
+            protected Object doInBackground(Object... arg0) {
+                try {
+                    hives = hiveBusiness.getHivesToSubscribe();
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object titler) {
+                //progressBar.setVisibility(View.INVISIBLE);
+                //confirmBtn.setEnabled(true);
+
+                 mAdapter = new SubscribeHivesAdapter(hives);
+                 recyclerView.setAdapter(mAdapter);
+            }
+        }.execute();
+
+
     }
 
 }
@@ -65,11 +90,12 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView textView;
+        //public TextView textView;
+        public Button subHiveBtn;
         public MyViewHolder(View v) {
             super(v);
-            textView = v.findViewById(R.id.hiveNameTv);
-
+            //textView = v.findViewById(R.id.hiveNameTv);
+            subHiveBtn = v.findViewById(R.id.hiveToSubBtn);
         }
     }
 
@@ -95,9 +121,17 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         //System.out.println((mDataset.get(position).getName()));
-        holder.textView.setText(mDataset.get(position).getName());
-
+        //holder.textView.setText(mDataset.get(position).getName());
+        holder.subHiveBtn.setText(mDataset.get(position).getName());
+        holder.subHiveBtn.setOnClickListener(
+                v -> {
+                    // TODO hiveBusiness.subscribeHive
+                    System.out.println(mDataset.get(position).getId());
+                }
+        );
     }
+
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
