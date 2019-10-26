@@ -20,6 +20,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
 import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.User;
 
 public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
@@ -92,6 +93,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
 class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.MyViewHolder> {
     private List<Hive> mDataset;
+    private HiveBusiness hiveBusiness = new HiveBusinessImpl();
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -133,8 +135,13 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
         holder.subHiveBtn.setText(mDataset.get(position).getName());
         holder.subHiveBtn.setOnClickListener(
                 v -> {
-                    // TODO hiveBusiness.subscribeHive
-                    System.out.println(mDataset.get(position).getId());
+                    // TODO hardcoded user
+                    User user = new User();
+                    user.setId(1);
+                    Hive hive = new Hive();
+                    hive.setId(mDataset.get(position).getId());
+                    hive.setName(mDataset.get(position).getName());
+                    hiveBusiness.subscribeHive(user, hive );
                 }
         );
     }

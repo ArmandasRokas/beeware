@@ -65,5 +65,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(ID);
 
     }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
+        recyclerView.setAdapter(adapter);
+    }
 }
 
