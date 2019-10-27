@@ -15,6 +15,7 @@ import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveSubscriptionRepository;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.UserRepository;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoHiveToolImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveSubscriptionRepoHiveToolImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.UserRepoArrayListImpl;
 
@@ -25,7 +26,7 @@ public class HiveBusinessImpl implements HiveBusiness {
     private HiveSubscriptionRepository hiveSubscriptionRepository;
 
     public HiveBusinessImpl(){
-        this.hiveRepo = new HiveRepoArrayListImpl();
+        this.hiveRepo = new HiveRepoHiveToolImpl();
         this.userRepository = new UserRepoArrayListImpl();
         this.hiveSubscriptionRepository = new HiveSubscriptionRepoHiveToolImpl();
     }

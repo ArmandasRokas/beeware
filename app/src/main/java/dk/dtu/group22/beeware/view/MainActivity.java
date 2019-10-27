@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         //RecyclerAdapter.ImageViewHolder();
+        Intent ID = new Intent(this, TestingHiveTool.class);
+        startActivity(ID);
+
 
     }
         public boolean onCreateOptionsMenu (Menu menu){
