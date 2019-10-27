@@ -24,7 +24,7 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
 
         // Calculates number of days
         long milliseconds = untilTime.getTime() - sinceTime.getTime();
-        int numOfDays = (int) (milliseconds / (1000*60*60*24));
+        int numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
 
         System.out.println("since: " + sinceDate + " until: " + untilDate);
 
