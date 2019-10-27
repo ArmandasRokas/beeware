@@ -63,12 +63,11 @@ public class TestingHiveTool extends AppCompatActivity {
             @Override
             protected void onPostExecute(Object titler) {
           //      progressBar.setVisibility(View.INVISIBLE);
-          //      if (errorMsg != null){
-           //         errorTv.setText(errorMsg);
-           //     } else{
-           //         mAdapter = new SubscribeHivesAdapter(hives);
-           //         recyclerView.setAdapter(mAdapter);
-           //     }
+                if (errorMsg != null){
+                    //errorTv.setText(errorMsg);
+                } else{
+                //TODO call method that produces graph with hive.
+                }
             }
         }.execute();
 

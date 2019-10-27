@@ -4,14 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.IOException;
-
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-
-
 import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 
@@ -25,14 +19,13 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
          * It solves the problem when the graph is zoomed out.
          */
 
-
-
-       // String startTime = "2019-08-19";
-       // String endTime = "2019-10-26";
-
         String sinceDate = sinceTime.toString().split(" ")[0];
         String untilDate = untilTime.toString().split(" ")[0];
-        int numOfDays = 7;
+        
+        // Calculates number of days
+        long milliseconds = untilTime.getTime() - sinceTime.getTime();
+        int numOfDays = (int) (milliseconds / (1000*60*60*24));
+
         System.out.println("since: " + sinceDate + " until: " + untilDate);
 
         Document doc = null;
