@@ -21,7 +21,7 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
 
         String sinceDate = sinceTime.toString().split(" ")[0];
         String untilDate = untilTime.toString().split(" ")[0];
-        
+
         // Calculates number of days
         long milliseconds = untilTime.getTime() - sinceTime.getTime();
         int numOfDays = (int) (milliseconds / (1000*60*60*24));
@@ -48,7 +48,7 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
             if(raw_data.length < 17){
                 break;
             }
-
+            // TODO implement creation of a hive object using raw_data
             System.out.println(raw_data[0] + " " + raw_data[1] + " " + raw_data[2] + " " + raw_data[3]);
 
         }
