@@ -262,6 +262,7 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     void showEmptyDatasets() {
+        // Defines behaviour when no data is available
         Log.d(TAG, "onCreate: Could not load hive data.");
         Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
         List<Entry> nullEntries = new ArrayList<>();
