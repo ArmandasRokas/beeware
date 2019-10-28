@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +19,7 @@ import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
 import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.User;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int CONTENT_VIEW_ID = 10101010;
     private RecyclerView recyclerView;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerAdapter adapter;
     private HiveBusiness hiveBusiness;
     private User user;
+    private ImageButton subHiveButton;
 
 
     @Override
@@ -42,14 +45,19 @@ public class MainActivity extends AppCompatActivity {
         adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
         recyclerView.setAdapter(adapter);
 
+        subHiveButton = findViewById(R.id.subHiveBtn);
+        subHiveButton.setOnClickListener(this);
+
         //RecyclerAdapter.ImageViewHolder();
 
     }
-        public boolean onCreateOptionsMenu (Menu menu){
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu, menu);
-            return super.onCreateOptionsMenu(menu);
-        }
+
+    /*
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -63,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 
     public void onClickHive(View view) {
 
@@ -82,5 +91,12 @@ public class MainActivity extends AppCompatActivity {
         adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
         recyclerView.setAdapter(adapter);
     }
-}
 
+    @Override
+    public void onClick(View view) {
+        if (view == subHiveButton) {
+            Intent ID = new Intent(this, SubscribeHiveActivityRecycl.class);
+            startActivity(ID);
+        }
+    }
+}
