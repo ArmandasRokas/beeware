@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -113,12 +114,16 @@ public class GraphActivity extends AppCompatActivity {
         //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
         //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
         //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
-        lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(rawHiveData), "Weight");
-        lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(rawHiveData), "Temperature");
-        lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(rawHiveData), "Sunlight");
-        lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(rawHiveData), "Humidity");
-        Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature(rawHiveData).toString());
-
+        try {
+            lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(rawHiveData), "Weight");
+            lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(rawHiveData), "Temperature");
+            lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(rawHiveData), "Sunlight");
+            lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(rawHiveData), "Humidity");
+            Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature(rawHiveData).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showEmptyDatasets();
+        }
         // Format X- Axis to time string?
         //      yAxis.setValueFormatter(new MyValueFormatter());
 
@@ -254,6 +259,17 @@ public class GraphActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Get the saved x center and show.
         lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
+    }
+
+    void showEmptyDatasets() {
+        Log.d(TAG, "onCreate: Could not load hive data.");
+        Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
+        List<Entry> nullEntries = new ArrayList<>();
+        nullEntries.add(new Entry(0, 0));
+        lineDataSetWeight = new LineDataSet(nullEntries, "Weight");
+        lineDataSetTemperature = new LineDataSet(nullEntries, "Temperature");
+        lineDataSetSunlight = new LineDataSet(nullEntries, "Sunlight");
+        lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
     }
 }
 
