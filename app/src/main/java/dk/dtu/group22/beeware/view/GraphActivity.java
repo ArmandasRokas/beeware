@@ -204,18 +204,28 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
         lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
+
+        // Back arrow button in action bar
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    // Makes the three dotted dropdown in the action bar
     @Override
     public boolean onCreateOptionsMenu (Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.hivemoredropdown, menu);
+        getMenuInflater().inflate(R.menu.hivemoredropdown, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    // Handles the three dotted dropdown choice
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

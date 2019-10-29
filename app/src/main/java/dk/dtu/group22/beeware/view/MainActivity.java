@@ -54,15 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.accountbutton, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
