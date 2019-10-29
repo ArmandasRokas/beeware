@@ -5,15 +5,18 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -66,6 +69,7 @@ public class GraphActivity extends AppCompatActivity {
         String idString = intent.getStringExtra("idString");
         Log.d(TAG, "onCreate: Got " + idString);
 
+        setupToolbar();
 
         // Toggle buttons
         weightToggle = findViewById(R.id.weightButton);
@@ -205,9 +209,31 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
 
-        // Back arrow button in action bar
+    }
+
+    public void setupToolbar() {
+        // Sets the toolbar for the activity
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Calculate ActionBar's height
+        TextView toolbar_title = findViewById(R.id.toolbar_title);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        params.setMarginEnd(actionBarHeight + 10);
+        params.setMarginStart(actionBarHeight);
+        toolbar_title.setLayoutParams(params);
+
+        // account logo button left side on toolbar
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar_title.setText("Replace with hivename");
     }
 
     // Makes the three dotted dropdown in the action bar
