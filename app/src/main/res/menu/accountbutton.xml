@@ -4,6 +4,6 @@
         android:id="@+id/accountbutton"
         android:title=""
         app:showAsAction="always"
-        android:icon="@drawable/ic_account_logo"
+        android:icon="@drawable/ic_account_dark"
         />
 </menu>

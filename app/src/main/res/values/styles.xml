@@ -11,8 +11,13 @@
         <item name="android:navigationBarColor">@android:color/white</item>
         <item name="android:windowLightNavigationBar">true</item>
 
+        <!-- Color for the status bar -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Size of the action bar -->
+        <item name="actionBarSize">60dip</item>
+        <item name="android:actionBarSize">60dip</item>
 
     </style>
 

@@ -50,25 +50,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //RecyclerAdapter.ImageViewHolder();
 
         // account logo button left side on action bar
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_account_logo);// set drawable icon
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_account_dark);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu (Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.accountbutton, menu);
         return super.onCreateOptionsMenu(menu);
     }
+    */
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        int id = item.getItemId();
-
-        if (id == R.id.accountbutton) {
-            Intent i = new Intent(this, PersonalSettings.class);
-            startActivity(i);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent(this, PersonalSettings.class);
+                startActivity(i);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
