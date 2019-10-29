@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".view.MainActivity">
 
 
@@ -23,7 +24,7 @@
         android:layout_height="75dp"
         android:background="@drawable/roundbutton"
         android:backgroundTint="#0099B3"
-        android:elevation="10dp"
+        android:elevation="5dp"
         android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
