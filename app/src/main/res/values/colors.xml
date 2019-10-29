@@ -2,8 +2,8 @@
 <resources>
     <!--<color name="colorPrimary">#FF780A</color>
     <color name="colorPrimaryDark">#FF780A</color>-->
-    <color name="colorPrimary">#f3a500</color>
-    <color name="colorPrimaryDark">#f3a500</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#80000000</color>
     <color name="colorAccent">#D81B60</color>
 
     <!--Default dark gray color for background and navbar-->

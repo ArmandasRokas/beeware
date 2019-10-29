@@ -24,7 +24,7 @@
         android:background="@drawable/roundbutton"
         android:backgroundTint="#0099B3"
         android:elevation="10dp"
-        android:src="@drawable/ic_plus_icon"
+        android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
