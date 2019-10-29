@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -16,9 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
@@ -142,11 +141,13 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         //public TextView textView;
-        public Button subHiveBtn;
+        public TextView subHiveName;
+        public Switch subHiveSwitch;
         public MyViewHolder(View v) {
             super(v);
             //textView = v.findViewById(R.id.hiveNameTv);
-            subHiveBtn = v.findViewById(R.id.hiveToSubBtn);
+            subHiveName = v.findViewById(R.id.subscribe_name);
+            subHiveSwitch = v.findViewById(R.id.subscribe_switch);
         }
     }
 
@@ -173,8 +174,10 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
         // - replace the contents of the view with that element
         //System.out.println((mDataset.get(position).getName()));
         //holder.textView.setText(mDataset.get(position).getName());
-        holder.subHiveBtn.setText(mDataset.get(position).getName());
-        holder.subHiveBtn.setOnClickListener(
+        holder.subHiveName.setText(mDataset.get(position).getName());
+
+        // TODO: Ændre dette så det passer med at være en switch (indlæs subbed hives og tick dem on, samt fjern hives når ticket off)
+        holder.subHiveSwitch.setOnClickListener(
                 v -> {
                     // TODO hardcoded user
                     User user = new User();

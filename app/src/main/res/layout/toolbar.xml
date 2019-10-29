@@ -7,12 +7,12 @@
 
     <TextView
         android:id="@+id/toolbar_title"
+        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text=""
-        android:textColor="@android:color/black"
-        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
         android:layout_marginEnd="?android:attr/actionBarSize"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text=""
+        android:textColor="@android:color/black" />
 
 </androidx.appcompat.widget.Toolbar>
