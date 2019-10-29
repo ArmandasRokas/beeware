@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -50,28 +49,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //RecyclerAdapter.ImageViewHolder();
 
+        // account logo button left side on action bar
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_account_logo);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /*
+    @Override
     public boolean onCreateOptionsMenu (Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.accountbutton, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //Handle item selection
-        switch(item.getItemId()){
-            case R.id.subscribeHiveOP:
-                Intent ID = new Intent(this, SubscribeHiveActivityRecycl.class);
-                startActivity(ID);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+
+        int id = item.getItemId();
+
+        if (id == R.id.accountbutton) {
+            Intent i = new Intent(this, PersonalSettings.class);
+            startActivity(i);
         }
+        return super.onOptionsItemSelected(item);
     }
-    */
 
     public void onClickHive(View view) {
 

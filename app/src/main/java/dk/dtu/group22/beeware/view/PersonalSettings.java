@@ -1,8 +1,10 @@
-package dk.dtu.group22.beeware;
+package dk.dtu.group22.beeware.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import dk.dtu.group22.beeware.R;
 
 public class PersonalSettings extends AppCompatActivity {
 

@@ -5,6 +5,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -83,7 +86,7 @@ public class GraphActivity extends AppCompatActivity {
             toggleHumidity(lineDataSetHumidity.isVisible());
         });
 
-        // Show / hide menu and status bar
+        // Show / hide hivemoredropdown and status bar
         int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitMode();
@@ -201,6 +204,19 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
         lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.hivemoredropdown, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
     }
 
     protected List<Entry> randomEntries(int n, int minY, int maxY) {

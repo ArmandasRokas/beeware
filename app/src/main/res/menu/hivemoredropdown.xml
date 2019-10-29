@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/annotation"
+        android:title="New annotation"/>
+    <item android:id="@+id/hiddenInterval"
+        android:title="New hidden interval"/>
+    <item android:id="@+id/listofadditions"
+        android:title="List of additions"/>
+</menu>
