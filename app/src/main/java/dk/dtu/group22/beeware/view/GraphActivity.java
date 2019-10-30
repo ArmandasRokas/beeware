@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,7 +27,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,8 +67,6 @@ public class GraphActivity extends AppCompatActivity {
         String idString = intent.getStringExtra("idString");
         Log.d(TAG, "onCreate: Got " + idString);
 
-        setupToolbar();
-
         // Toggle buttons
         weightToggle = findViewById(R.id.weightButton);
         tempToggle = findViewById(R.id.tempButton);
@@ -93,6 +89,7 @@ public class GraphActivity extends AppCompatActivity {
         // Show / hide hivemoredropdown and status bar
         int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setupToolbar();
             setPortraitMode();
         } else {
             setLandscapeMode();
@@ -107,7 +104,8 @@ public class GraphActivity extends AppCompatActivity {
         HiveBusiness hiveBusiness = new HiveBusinessImpl();
         Hive newHive = new Hive();
         newHive.setId(102);
-        Hive rawHiveData = hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+
+        Hive rawHiveData = null; //hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
 
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
@@ -266,12 +264,12 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void setPortraitMode() {
-        getSupportActionBar().show();
+        //getSupportActionBar().show();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     private void setLandscapeMode() {
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
