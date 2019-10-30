@@ -21,9 +21,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
 import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
+import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.User;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private HiveBusiness hiveBusiness;
     private User user;
     private ImageButton subHiveButton;
+    private ImageAdapter imageAdapter;
+    private List<Hive> hives;
+    private TextView listEmptyTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +53,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_hive_overview);
 
         gridView = findViewById(R.id.gridView);
-        
+        listEmptyTv = findViewById(R.id.emptyListTV);
+
+        setupSubscribedHives();
 
         setupToolbar();
 
-        recyclerView = findViewById(R.id.recyclerview);
-        layoutManager = new GridLayoutManager(this,2);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
-        recyclerView.setAdapter(adapter);
+
+        //recyclerView = findViewById(R.id.recyclerview);
+        //layoutManager = new GridLayoutManager(this,2);
+        //recyclerView.setHasFixedSize(true);
+        //recyclerView.setLayoutManager(layoutManager);
+
+        //adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
+        //recyclerView.setAdapter(adapter);
 
         subHiveButton = findViewById(R.id.subHiveBtn);
         subHiveButton.setOnClickListener(this);
 
         //RecyclerAdapter.ImageViewHolder();
 
+    }
+
+    void setupSubscribedHives() {
+        hives = hiveBusiness.getHives(user,1);
+        if (hives.size() == 0){
+            listEmptyTv.setVisibility(View.VISIBLE);
+        } else {
+            listEmptyTv.setVisibility(View.INVISIBLE);
+            imageAdapter = new ImageAdapter(this, hives);
+            gridView.setAdapter(imageAdapter);
+
+        }
     }
 
     public void setupToolbar() {
@@ -91,13 +113,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClickHive(View view) {
 
-
+/*
         Intent ID = new Intent(this, GraphActivity.class);
         String s = "" + recyclerView.getChildLayoutPosition(view);
         ID.putExtra("idString", s);
 
         ImageAdapter imageAdapter = new ImageAdapter(this);
         gridView.setAdapter(imageAdapter);
+        */
+
 
     }
 
@@ -105,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-        adapter = new RecyclerAdapter(hiveBusiness.getHives(user,2));
-        recyclerView.setAdapter(adapter);
+        setupSubscribedHives();
     }
 
     @Override

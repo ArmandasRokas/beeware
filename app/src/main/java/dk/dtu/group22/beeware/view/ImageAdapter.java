@@ -8,21 +8,30 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
+import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.User;
 
 public class ImageAdapter extends BaseAdapter {
 
     Context ctx;
+    List<Hive> hives;
+    HiveBusiness hiveBusiness;
 
-    ImageAdapter(Context ctx){
+    ImageAdapter(Context ctx, List<Hive> hives){
+        this.ctx = ctx;
+        this.hives = hives;
 
-    this.ctx = ctx;
     }
 
     @Override
     public int getCount() {
         //amount of hives
-        return 12;
+        return hives.size();
     }
 
     @Override
@@ -46,12 +55,17 @@ public class ImageAdapter extends BaseAdapter {
         }
 
 
-        ImageView img = (ImageView)gridView.findViewById(R.id.myImage);
+        ImageView img = (ImageView) gridView.findViewById(R.id.myImage);
         TextView title = gridView.findViewById(R.id.album_title);
 
         img.setImageResource(R.drawable.beehive2);
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        title.setText("Stade" + position);
+            }
+        });
+        title.setText(hives.get(position).getName());
 
 
         return gridView;
