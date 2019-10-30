@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/username_text"
-        android:layout_width="260dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:paddingLeft="15dp"
@@ -149,14 +149,43 @@
         android:id="@+id/confirm_button"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/roundedbutton"
         android:backgroundTint="#0099B3"
         android:text="CONFIRM CHANGES"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/push_notifications_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/push_notifications_switch"
+        app:layout_constraintTop_toBottomOf="@+id/push_notifications_text"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/push_notifications_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:text="Allow push notifications"
+        android:textAlignment="textStart"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/email_field"
+        app:layout_constraintStart_toEndOf="@+id/push_notifications_switch"
+        app:layout_constraintTop_toTopOf="@+id/push_notifications_switch"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Switch
+        android:id="@+id/push_notifications_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/email_field"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/email_field"
         app:layout_constraintTop_toBottomOf="@+id/email_field"
         app:layout_constraintVertical_bias="0.0" />
