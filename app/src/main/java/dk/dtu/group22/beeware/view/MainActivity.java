@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int CONTENT_VIEW_ID = 10101010;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerAdapter adapter;
     private HiveBusiness hiveBusiness;
     private User user;
     private ImageButton subHiveButton;
