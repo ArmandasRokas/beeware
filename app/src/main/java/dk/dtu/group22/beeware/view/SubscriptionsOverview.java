@@ -29,7 +29,7 @@ import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.User;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class SubscriptionsOverview extends AppCompatActivity implements View.OnClickListener {
 
     GridView gridView;
     private static final int CONTENT_VIEW_ID = 10101010;

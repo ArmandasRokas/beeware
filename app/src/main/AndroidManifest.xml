@@ -12,20 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.PersonalSettings"></activity>
-        <activity android:name=".view.TestingHiveTool"></activity>
-        <activity android:name=".view.GraphActivity" />
-        <activity android:name=".view.GraphViewModel" />
-        <activity android:name=".view.RecyclerAdapter" />
-        <activity android:name=".view.SubscribeHiveActivity" />
-        <activity android:name=".view.SubscribeHiveActivityRecycl" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.PersonalSettings" />
+        <activity android:name=".view.TestingHiveTool" />
+        <activity android:name=".view.GraphActivity" />
+        <activity android:name=".view.GraphViewModel" />
+        <activity android:name=".view.RecyclerAdapter" />
+        <activity android:name=".view.SubscribeHiveActivity" />
+        <activity android:name=".view.SubscribeHiveActivityRecycl" />
+        <activity android:name=".view.SubscriptionsOverview"/>
     </application>
 
 </manifest>
