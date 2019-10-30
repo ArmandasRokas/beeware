@@ -13,51 +13,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import dk.dtu.group22.beeware.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int CONTENT_VIEW_ID = 10101010;
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerAdapter adapter;
-
+    GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recyclerView = findViewById(R.id.recyclerview);
-        layoutManager = new GridLayoutManager(this,2);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        setContentView(R.layout.activity_hive_overview);
 
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
+        gridView = findViewById(R.id.gridView);
 
-        //RecyclerAdapter.ImageViewHolder();
-
-
-
-    }
-        public boolean onCreateOptionsMenu (Menu menu){
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu, menu);
-            return super.onCreateOptionsMenu(menu);
-        }
-
-
-    public void onClickHive(View view) {
-
-
-        Intent ID = new Intent(this, HiveActivity.class);
-        String s = "" + recyclerView.getChildLayoutPosition(view);
-
-        ID.putExtra("label", s);
-
-        startActivity(ID);
+        ImageAdapter imageAdapter = new ImageAdapter(this);
+        gridView.setAdapter(imageAdapter);
 
     }
 }
