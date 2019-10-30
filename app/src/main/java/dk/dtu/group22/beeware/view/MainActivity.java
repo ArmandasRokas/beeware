@@ -7,6 +7,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -25,6 +28,7 @@ import dk.dtu.group22.beeware.data.entities.User;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    GridView gridView;
     private static final int CONTENT_VIEW_ID = 10101010;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -33,14 +37,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private User user;
     private ImageButton subHiveButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         hiveBusiness = new HiveBusinessImpl();
         user = new User();
         user.setId(1);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        setContentView(R.layout.activity_hive_overview);
+
+        gridView = findViewById(R.id.gridView);
+        
 
         setupToolbar();
 
@@ -89,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String s = "" + recyclerView.getChildLayoutPosition(view);
         ID.putExtra("idString", s);
 
-        startActivity(ID);
+        ImageAdapter imageAdapter = new ImageAdapter(this);
+        gridView.setAdapter(imageAdapter);
 
     }
 
