@@ -10,11 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -44,10 +46,10 @@ public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
 
-    private Button weightToggle;
-    private Button tempToggle;
-    private Button lightToggle;
-    private Button humidToggle;
+    private Switch weightToggle;
+    private Switch tempToggle;
+    private Switch lightToggle;
+    private Switch humidToggle;
 
     private LineChart lineChart;
     private LineDataSet lineDataSetWeight;
@@ -68,11 +70,12 @@ public class GraphActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Got " + idString);
 
         // Toggle buttons
-        weightToggle = findViewById(R.id.weightButton);
-        tempToggle = findViewById(R.id.tempButton);
-        lightToggle = findViewById(R.id.lightButton);
-        humidToggle = findViewById(R.id.humidButton);
+        weightToggle = findViewById(R.id.weight_switch);
+        tempToggle = findViewById(R.id.temperature_switch);
+        lightToggle = findViewById(R.id.luminance_switch);
+        humidToggle = findViewById(R.id.humidity_switch);
 
+        // TODO: disse passer nok ikke længere efter skiftet til switches
         weightToggle.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.isVisible());
         });
@@ -232,7 +235,7 @@ public class GraphActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Replace with hivename");
+        toolbar_title.setText("Hive x");
     }
 
     // Makes the three dotted dropdown in the action bar
