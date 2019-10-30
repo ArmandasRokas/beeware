@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,9 @@ public class ImageAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
+                Intent ID = new Intent(ctx, GraphActivity.class);
+                ID.putExtra("hiveid", hives.get(position).getId());
+                ctx.startActivity(ID);
             }
         });
         title.setText(hives.get(position).getName());
