@@ -13,6 +13,7 @@ import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.entities.User;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.UserRepoArrayListImpl;
 
 import static org.junit.Assert.*;
 
@@ -20,10 +21,10 @@ public class HiveBusinessImplTest {
     final long CURR_TIME = 1570195921501L;
     @Test
     public void givenUser_returnHiveSubscribed(){
-        HiveRepoArrayListImpl hiveRepoArrayList = new HiveRepoArrayListImpl();
-        HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
-        hiveRepoArrayList.cleanSubscribedHives();
 
+        HiveBusinessImpl hiveBusiness = new HiveBusinessImpl();
+        UserRepoArrayListImpl userRepo = (UserRepoArrayListImpl) hiveBusiness.getUserRepository();
+        userRepo.cleanSubscribedHives();
         User user = new User();
         user.setId(1);
 
@@ -65,8 +66,7 @@ public class HiveBusinessImplTest {
     }
     @Test
     public void givenHiveWithId_returnHiveWithMeasurements(){
-        HiveRepoArrayListImpl hiveRepoArrayList = new HiveRepoArrayListImpl();
-        HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
+        HiveBusiness hiveBusiness = new HiveBusinessImpl();
 
         final long CURR_TIME = 1570195921501L;
         Measurement meas1 = new Measurement();
