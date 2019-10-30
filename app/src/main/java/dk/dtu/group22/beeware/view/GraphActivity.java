@@ -5,11 +5,18 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -62,6 +69,7 @@ public class GraphActivity extends AppCompatActivity {
         String idString = intent.getStringExtra("idString");
         Log.d(TAG, "onCreate: Got " + idString);
 
+        setupToolbar();
 
         // Toggle buttons
         weightToggle = findViewById(R.id.weightButton);
@@ -82,7 +90,7 @@ public class GraphActivity extends AppCompatActivity {
             toggleHumidity(lineDataSetHumidity.isVisible());
         });
 
-        // Show / hide menu and status bar
+        // Show / hide hivemoredropdown and status bar
         int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitMode();
@@ -113,12 +121,16 @@ public class GraphActivity extends AppCompatActivity {
         //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
         //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
         //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
-        lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(rawHiveData), "Weight");
-        lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(rawHiveData), "Temperature");
-        lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(rawHiveData), "Sunlight");
-        lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(rawHiveData), "Humidity");
-        Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature(rawHiveData).toString());
-
+        try {
+            lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(rawHiveData), "Weight");
+            lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(rawHiveData), "Temperature");
+            lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(rawHiveData), "Sunlight");
+            lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(rawHiveData), "Humidity");
+            Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature(rawHiveData).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showEmptyDatasets();
+        }
         // Format X- Axis to time string?
         //      yAxis.setValueFormatter(new MyValueFormatter());
 
@@ -196,6 +208,51 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
         lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
+
+    }
+
+    public void setupToolbar() {
+        // Sets the toolbar for the activity
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Calculate ActionBar's height
+        TextView toolbar_title = findViewById(R.id.toolbar_title);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        params.setMarginEnd(actionBarHeight + 10);
+        params.setMarginStart(actionBarHeight);
+        toolbar_title.setLayoutParams(params);
+
+        // account logo button left side on toolbar
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar_title.setText("Replace with hivename");
+    }
+
+    // Makes the three dotted dropdown in the action bar
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        getMenuInflater().inflate(R.menu.hivemoredropdown, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // Handles the three dotted dropdown choice
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected List<Entry> randomEntries(int n, int minY, int maxY) {
@@ -254,6 +311,18 @@ public class GraphActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Get the saved x center and show.
         lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
+    }
+
+    void showEmptyDatasets() {
+        // Defines behaviour when no data is available
+        Log.d(TAG, "onCreate: Could not load hive data.");
+        Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
+        List<Entry> nullEntries = new ArrayList<>();
+        nullEntries.add(new Entry(0, 0));
+        lineDataSetWeight = new LineDataSet(nullEntries, "Weight");
+        lineDataSetTemperature = new LineDataSet(nullEntries, "Temperature");
+        lineDataSetSunlight = new LineDataSet(nullEntries, "Sunlight");
+        lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
     }
 }
 

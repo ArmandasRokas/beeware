@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/more"
+        android:icon="@drawable/ic_more_vertical"
+        android:title=""
+        app:showAsAction="always">
+        <menu>
+            <item android:id="@+id/annotation"
+                android:title="New annotation"
+                app:showAsAction="never"/>
+
+            <item android:id="@+id/hiddenInterval"
+                android:title="New hidden interval"
+                app:showAsAction="never"/>
+
+            <item android:id="@+id/listofadditions"
+                android:title="List of additions"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+</menu>

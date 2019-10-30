@@ -11,10 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.GraphActivity"></activity>
-        <activity android:name=".view.HiveActivity"></activity>
-        <activity android:name=".view.SubscribeHiveActivity"></activity>
-        <activity android:name=".view.SubscribeHiveActivityRecycl"></activity>
+        <activity android:name=".view.PersonalSettings"></activity>
+        <activity android:name=".view.GraphActivity" />
+        <activity android:name=".view.HiveActivity" />
+        <activity android:name=".view.SubscribeHiveActivity" />
+        <activity android:name=".view.SubscribeHiveActivityRecycl" />
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
