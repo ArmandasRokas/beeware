@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         subHiveButton.setOnClickListener(this);
 
         //RecyclerAdapter.ImageViewHolder();
-        Intent ID = new Intent(this, TestingHiveTool.class);
-        startActivity(ID);
+        //Intent ID = new Intent(this, TestingHiveTool.class);
+        //startActivity(ID);
 
 
     }
