@@ -211,6 +211,7 @@ public class GraphActivity extends AppCompatActivity {
 
     }
 
+    // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);

@@ -10,11 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".view.PersonalSettings"></activity>
         <activity android:name=".view.TestingHiveTool"></activity>
         <activity android:name=".view.GraphActivity" />
-        <activity android:name=".view.HiveActivity" />
+        <activity android:name=".view.GraphViewModel" />
+        <activity android:name=".view.RecyclerAdapter" />
         <activity android:name=".view.SubscribeHiveActivity" />
         <activity android:name=".view.SubscribeHiveActivityRecycl" />
         <activity android:name=".view.MainActivity">

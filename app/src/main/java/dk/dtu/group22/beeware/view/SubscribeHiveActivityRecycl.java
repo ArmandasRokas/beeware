@@ -94,6 +94,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
     }
 
+    // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -118,6 +119,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
         toolbar_title.setText("Subscriptions");
     }
 
+    // When back arrow button is pressed
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

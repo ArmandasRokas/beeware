@@ -20,6 +20,7 @@ public class PersonalSettings extends AppCompatActivity {
         setupToolbar();
     }
 
+    // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -44,6 +45,7 @@ public class PersonalSettings extends AppCompatActivity {
         toolbar_title.setText("Personal settings");
     }
 
+    // When back arrow button is pressed
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

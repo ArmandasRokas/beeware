@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // Replaces action bar with toolbar
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
+    // When back arrow button is pressed
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
