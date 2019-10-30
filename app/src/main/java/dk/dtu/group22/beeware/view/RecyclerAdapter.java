@@ -59,7 +59,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ImageV
             album = itemView.findViewById(R.id.album);
             albumTitle = itemView.findViewById(R.id.album_title);
         }
-
+K
         @Override
         public void onClick(View v) {
 
