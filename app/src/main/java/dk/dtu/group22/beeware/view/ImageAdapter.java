@@ -55,8 +55,7 @@ public class ImageAdapter extends BaseAdapter {
             gridView = inflater.inflate(R.layout.custom_image_layout, null );
         }
 
-
-        ImageView img = (ImageView) gridView.findViewById(R.id.myImage);
+        ImageView img = (ImageView) gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
 
         img.setImageResource(R.drawable.beehive2);
@@ -70,7 +69,6 @@ public class ImageAdapter extends BaseAdapter {
             }
         });
         title.setText(hives.get(position).getName());
-
 
         return gridView;
     }
