@@ -62,6 +62,7 @@ public class TestingHiveTool extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Object titler) {
+                System.out.println(hive);
           //      progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null){
                     //errorTv.setText(errorMsg);
@@ -70,6 +71,9 @@ public class TestingHiveTool extends AppCompatActivity {
                 }
             }
         }.execute();
+
+    }
+    private void updateText(Hive hive){
 
     }
 }

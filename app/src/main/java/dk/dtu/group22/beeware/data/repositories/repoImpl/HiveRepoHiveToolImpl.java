@@ -6,12 +6,27 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 
 public class HiveRepoHiveToolImpl implements HiveRepository {
     @Override
     public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
+
+        final int timestampIndex = 0;
+        final int weightIndex = 1;
+        final int tempIndex = 8;
+        final int humidityIndex = 9;
+        final int illuminanceIndex = 6;
+
+        List<Measurement> data_measure = new ArrayList<>();
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
@@ -50,8 +65,38 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
             }
             // TODO implement creation of a hive object using raw_data
             System.out.println(raw_data[0] + " " + raw_data[1] + " " + raw_data[2] + " " + raw_data[3]);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            Timestamp timestamp = new Timestamp(0);
+            try {
+                Date date = dateFormat.parse(raw_data[timestampIndex]);
+                timestamp = new Timestamp(date.getTime());
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+
+            Double weightLbs = parseToDoubleOrNeg(raw_data[weightIndex]);
+            Double weightKg = parseToDoubleOrNeg(raw_data[weightIndex]) * 0.45359237;
+
+            Double tempF = parseToDoubleOrNeg(raw_data[tempIndex]);
+            Double tempC = (tempF - 32.0) * 5 / 9;
+
+            Double humidity = parseToDoubleOrNeg(raw_data[humidityIndex]);
+
+            Double illuminance = parseToDoubleOrNeg(raw_data[illuminanceIndex]);
+
+            data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
 
         }
-        return null;
+        hive.setMeasurements(data_measure);
+        return hive;
+    }
+
+
+    Double parseToDoubleOrNeg(String string) {
+        try {
+            return Double.parseDouble(string);
+        } catch (Exception e) {
+            return -1.0;
+        }
     }
 }
