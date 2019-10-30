@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.PersonalSettings"></activity>
+        <activity android:name=".view.TestingHiveTool"></activity>
         <activity android:name=".view.GraphActivity" />
         <activity android:name=".view.HiveActivity" />
         <activity android:name=".view.SubscribeHiveActivity" />
