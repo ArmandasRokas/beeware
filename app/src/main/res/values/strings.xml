@@ -6,4 +6,6 @@
     <string name="bistade">Bistade</string>
     <string name="stade1">Stade1</string>
     <string name="hive">Hive</string>
+    <string name="leftAxisLegend">Kg</string>
+    <string name="rightAxisLegend">C°</string>
 </resources>

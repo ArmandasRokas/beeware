@@ -10,12 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.data.entities.Hive;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ImageViewHolder> {
 
+    private List<Hive> hives;
+    public RecyclerAdapter(List<Hive> myDataset) {
+        this.hives = myDataset;
+    }
 
 //?????????????????????????????????????????????????????????????
     @NonNull
@@ -31,13 +38,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ImageV
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
 
         holder.album.setImageResource(R.drawable.beehive2);
-        holder.albumTitle.setText("Hive " + position);
+        //holder.albumTitle.setText("Hive " + position);
+        holder.albumTitle.setText(hives.get(position).getName());
         holder.ID = position;
     }
 
     @Override
     public int getItemCount() {
-        return 12;
+        return hives.size();
     }
     public static class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

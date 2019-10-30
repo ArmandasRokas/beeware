@@ -9,6 +9,8 @@ import dk.dtu.group22.beeware.data.entities.User;
 
 public interface HiveBusiness {
 
+    // HiveBusiness hiveBusiness = new HiveBusinessImpl(new HiveRepoArrayListImpl());
+
     /**
      * @param user User must have id. For testing purposes user with id 1 should be used
      *             User user = new User();
@@ -30,4 +32,14 @@ public interface HiveBusiness {
     Hive getHive(Hive hive, Timestamp fromTime, Timestamp untilTime);
 
     void subscribeHive(User user, Hive hive);
+
+    List<Hive> getHivesToSubscribe();
+
+    class HiveNotFound extends RuntimeException {
+        public HiveNotFound(String msg) {super(msg);}
+    }
+
+    class HivesToSubscribeNoFound extends RuntimeException {
+        public HivesToSubscribeNoFound(String msg) {super(msg);}
+    }
 }
