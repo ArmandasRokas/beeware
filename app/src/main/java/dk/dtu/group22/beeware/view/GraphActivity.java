@@ -248,10 +248,22 @@ public class GraphActivity extends AppCompatActivity {
     // Handles the three dotted dropdown choice
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.annotation:
+                intent = new Intent(this, AddAnnotation.class);
+                startActivity(intent);
+                break;
+            case R.id.hiddenInterval:
+                intent = new Intent(this, AddHiddenInterval.class);
+                startActivity(intent);
+                break;
+            case R.id.listofadditions:
+                intent = new Intent(this, ListOfAdditions.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
