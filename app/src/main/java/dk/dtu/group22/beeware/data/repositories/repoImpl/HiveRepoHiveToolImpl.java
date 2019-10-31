@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -42,7 +44,7 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
         int numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
 
         System.out.println("since: " + sinceDate + " until: " + untilDate);
-
+        /*
         Document doc = null;
         try {
             doc = Jsoup.connect("http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id="+
@@ -56,13 +58,18 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
 
         Elements elements = doc.getElementsByTag("div");
         Element e = elements.get(2);
-        String[] lines = e.wholeText().split("\n");
+         */
+        String data = DummyCSVData.month_data ;
+
+        String[] lines = data.split("\n");
+        System.out.println(lines[2]);
 
         for(int i = 2; i<lines.length; i++){
-            String[] raw_data = lines[i].split("(,|\\s)");
-            if(raw_data.length < 17){
+            String[] raw_data = lines[i].split(",");
+            /*if(raw_data.length < 17){
                 break;
             }
+             */
             // TODO implement creation of a hive object using raw_data
             System.out.println(raw_data[0] + " " + raw_data[1] + " " + raw_data[2] + " " + raw_data[3]);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
@@ -88,6 +95,8 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
 
         }
         hive.setMeasurements(data_measure);
+        System.out.println("Parsing done");
+        System.out.println(hive.toString());
         return hive;
     }
 
