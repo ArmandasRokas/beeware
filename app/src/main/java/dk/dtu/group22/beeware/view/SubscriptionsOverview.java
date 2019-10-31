@@ -1,11 +1,14 @@
 package dk.dtu.group22.beeware.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,9 +36,12 @@ public class SubscriptionsOverview extends AppCompatActivity implements View.OnC
     private ImageAdapter imageAdapter;
     private List<Hive> hives;
     private TextView listEmptyTv;
+    private ProgressBar progressBar;
+    private Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ctx = this;
         hiveBusiness = new HiveBusinessImpl();
         user = new User();
         user.setId(1);
@@ -45,6 +51,7 @@ public class SubscriptionsOverview extends AppCompatActivity implements View.OnC
 
         gridView = findViewById(R.id.gridView);
         listEmptyTv = findViewById(R.id.emptyListTV);
+        progressBar = findViewById(R.id.progressBarOverview);
 
         setupSubscribedHives();
 
@@ -71,15 +78,44 @@ public class SubscriptionsOverview extends AppCompatActivity implements View.OnC
     }
 
     void setupSubscribedHives() {
-        hives = hiveBusiness.getHives(user,1);
-        if (hives.size() == 0){
-            listEmptyTv.setVisibility(View.VISIBLE);
-        } else {
-            listEmptyTv.setVisibility(View.INVISIBLE);
-            imageAdapter = new ImageAdapter(this, hives);
-            gridView.setAdapter(imageAdapter);
 
-        }
+        new AsyncTask() {
+            List<Hive> hives;
+            String errorMsg = null;
+            @Override
+            protected void onPreExecute() {
+                listEmptyTv.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            @Override
+            protected Object doInBackground(Object... arg0) {
+                try {
+                    hives = hiveBusiness.getHives(user, 1);
+                    return null;
+                } catch (Exception e) {
+                    errorMsg = e.getMessage();
+                    e.printStackTrace();
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object titler) {
+                progressBar.setVisibility(View.INVISIBLE);
+                if (errorMsg != null){
+                  //  errorTv.setText(errorMsg);
+                } else{
+                    if (hives.size() == 0){
+                        listEmptyTv.setVisibility(View.VISIBLE);
+                    } else {
+                        listEmptyTv.setVisibility(View.INVISIBLE);
+                        imageAdapter = new ImageAdapter(ctx, hives);
+                        gridView.setAdapter(imageAdapter);
+
+                    }
+                }
+            }
+        }.execute();
     }
 
     // Replaces action bar with toolbar

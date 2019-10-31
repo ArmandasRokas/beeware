@@ -33,13 +33,13 @@ public class HiveBusinessImpl implements HiveBusiness {
 
     @Override
     public List<Hive> getHives(User user, int daysDelta) {
-        // TODO implement daysDelta. Armandas
+        // TODO implement daysDelta. Armandas. Days delta is how many days back needs to fetched from today
+        long now = System.currentTimeMillis();
+        long since = now - (86400000 * daysDelta);
         List<Hive> subscribedHives = userRepository.getSubscribedHives(user);
-        /* // TODO uncomment these then getHive is implemented
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for(Hive hive: subscribedHives){
-            // TODO implement timestamp. Armandas
-            Hive h = hiveRepo.getHive(hive, new Timestamp(0), new Timestamp(1570195921501L+1000));
+            Hive h = hiveRepo.getHive(hive, new Timestamp(since), new Timestamp(now));
             if (h == null){
                 throw new HiveNotFound("Hive with id " + hive.getId() + " does not exits.");
             } else {
@@ -47,8 +47,6 @@ public class HiveBusinessImpl implements HiveBusiness {
             }
         }
         return hivesWithMeasurements;
-        */
-        return subscribedHives;
     }
 
     @Override
