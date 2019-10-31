@@ -149,6 +149,7 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
             super(v);
             //textView = v.findViewById(R.id.hiveNameTv);
             subHiveName = v.findViewById(R.id.subscribe_name);
+            // TODO: Når recycleren genbruger switch'ene, tickes de ikke tilbage på off
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
         }
     }

@@ -31,7 +31,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Add 25 to the title's margin
         TextView toolbar_title = findViewById(R.id.toolbar_title);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
+        params.setMarginEnd(+ 25);
+        toolbar_title.setLayoutParams(params);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
