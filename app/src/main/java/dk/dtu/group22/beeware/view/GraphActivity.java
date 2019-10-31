@@ -43,7 +43,6 @@ import dk.dtu.group22.beeware.data.entities.Hive;
 public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
-    private Button weightToggle, tempToggle, lightToggle, humidToggle;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ProgressBar progressBar;
 
@@ -59,23 +58,18 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
 
+        weightSwitch = findViewById(R.id.weightSwitch);
+        tempSwitch = findViewById(R.id.tempSwitch);
+        lightSwitch = findViewById(R.id.lightSwitch);
+        humidSwitch = findViewById(R.id.humidSwitch);
+
         // Show / hide activity bar and big toggles on rotation
         int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setupToolbar();
             setPortraitMode();
-            // Toggle switches
-            weightSwitch = findViewById(R.id.weightSwitch);
-            tempSwitch = findViewById(R.id.tempSwitch);
-            lightSwitch = findViewById(R.id.lightSwitch);
-            humidSwitch = findViewById(R.id.humidSwitch);
         } else {
             setLandscapeMode();
-            // Toggle buttons
-            weightToggle = findViewById(R.id.weightButton);
-            tempToggle = findViewById(R.id.tempButton);
-            lightToggle = findViewById(R.id.lightButton);
-            humidToggle = findViewById(R.id.humidButton);
         }
 
         progressBar = findViewById(R.id.progressBar);
@@ -87,21 +81,19 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     public void renderGraph() {
-        // Set listener for small togglebuttons
-        /*
-        weightToggle.setOnClickListener(v -> {
+        // Set listener for small switches TODO: Implement as switch
+        weightSwitch.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.isVisible());
         });
-        tempToggle.setOnClickListener(v -> {
+        tempSwitch.setOnClickListener(v -> {
             toggleTemperature(lineDataSetTemperature.isVisible());
         });
-        lightToggle.setOnClickListener(v -> {
+        lightSwitch.setOnClickListener(v -> {
             toggleSunlight(lineDataSetSunlight.isVisible());
         });
-        humidToggle.setOnClickListener(v -> {
+        humidSwitch.setOnClickListener(v -> {
             toggleHumidity(lineDataSetHumidity.isVisible());
         });
-        */
 
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
