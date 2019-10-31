@@ -21,54 +21,39 @@
         android:id="@+id/toggleBox"
         android:layout_width="50dp"
         android:layout_height="0dp"
-        android:background="@color/BEE_darkGrayBG"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/weightButton"
-            style="@style/Widget.AppCompat.Button"
+        <Switch
+            android:id="@+id/weightSwitch"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:foreground="@drawable/weight"
-            android:foregroundGravity="center_vertical|center"
-            android:foregroundTint="#3C3636" />
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:thumbTint="#817B7B" />
 
-        <Button
-            android:id="@+id/tempButton"
+        <Switch
+            android:id="@+id/tempSwitch"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:foreground="@drawable/temperature"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/BEE_graphTemperature" />
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:thumbTint="#A47DEE" />
 
-        <Button
-            android:id="@+id/lightButton"
+        <Switch
+            android:id="@+id/lightSwitch"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:foreground="@drawable/sunshine2"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/BEE_graphSunlight" />
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:thumbTint="#D8C40C" />
 
-        <Button
-            android:id="@+id/humidButton"
+        <Switch
+            android:id="@+id/humidSwitch"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:foreground="@drawable/humidity"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/BEE_graphHumidity" />
-
-
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:buttonTintMode="src_atop"
+            android:thumbTint="#7EBFF3" />
     </LinearLayout>
 
     <LinearLayout
