@@ -31,21 +31,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:thumbTint="#817B7B" />
+            android:thumbTint="@color/BEE_graphWeight" />
 
         <Switch
             android:id="@+id/tempSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:thumbTint="#A47DEE" />
+            android:thumbTint="@color/BEE_graphTemperature" />
 
         <Switch
             android:id="@+id/lightSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:thumbTint="#D8C40C" />
+            android:thumbTint="@color/BEE_graphSunlight" />
 
         <Switch
             android:id="@+id/humidSwitch"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:buttonTintMode="src_atop"
-            android:thumbTint="#7EBFF3" />
+            android:thumbTint="@color/BEE_graphHumidity" />
     </LinearLayout>
 
     <LinearLayout

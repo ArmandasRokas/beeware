@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -49,6 +48,8 @@ public class GraphActivity extends AppCompatActivity {
     private LineChart lineChart;
     private LineDataSet lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
+    private int hiveId;
+    private String hiveName;
 
     private final String TAG = "GraphActivity";
 
@@ -57,6 +58,10 @@ public class GraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
+
+        Intent intent = getIntent();
+        hiveId = intent.getIntExtra("hiveid", -1);
+        hiveName = intent.getStringExtra("hivename");
 
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
@@ -74,10 +79,9 @@ public class GraphActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
-        // Get current hive
+        // Get current hive and store in graphViewModel
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
-        int id = 0;
-        asyncTask.execute(id);
+        asyncTask.execute(hiveId);
     }
 
     public void renderGraph() {
@@ -224,7 +228,7 @@ public class GraphActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Hive x");
+        toolbar_title.setText(hiveName);
     }
 
     // Makes the three dotted dropdown in the action bar
@@ -346,7 +350,9 @@ public class GraphActivity extends AppCompatActivity {
         protected String doInBackground(Integer... id) {
             // Todo: pass the real hive
             try {
-                graphViewModel.downloadHiveData(new Hive());
+                Hive tempHive = new Hive();
+                tempHive.setId(hiveId);
+                graphViewModel.downloadHiveData(tempHive);
             } catch (Exception e) {
                 e.printStackTrace();
             }

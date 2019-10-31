@@ -81,9 +81,9 @@ public class GraphViewModel extends ViewModel {
 
     // Data handling for graph
     public void downloadHiveData(Hive tempHive) {
-        // TODO: Pass the selected hive!
+        // TODO: Pass the selected hive! And make sensible settings for timestamp
         if (hive == null || hive.getMeasurements() == null) {
-            hive = hiveBusiness.getHive(tempHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            hive = hiveBusiness.getHive(tempHive, new Timestamp(System.currentTimeMillis() - (1000 * 3600 * 24 * 7)), new Timestamp(System.currentTimeMillis()));
             Log.d(TAG, "downloadHiveData: Downloading hive data.");
         }
     }

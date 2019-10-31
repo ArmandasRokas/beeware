@@ -12,10 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
 import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
-import dk.dtu.group22.beeware.data.entities.User;
 
 public class ImageAdapter extends BaseAdapter {
 
@@ -55,7 +53,7 @@ public class ImageAdapter extends BaseAdapter {
             gridView = inflater.inflate(R.layout.custom_image_layout, null );
         }
 
-        ImageView img = (ImageView) gridView.findViewById(R.id.album);
+        ImageView img = gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
 
         img.setImageResource(R.drawable.beehive2);
