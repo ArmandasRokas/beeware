@@ -2,23 +2,15 @@ package dk.dtu.group22.beeware.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -29,7 +21,7 @@ import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.User;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class SubscriptionsOverview extends AppCompatActivity implements View.OnClickListener {
 
     GridView gridView;
     private static final int CONTENT_VIEW_ID = 10101010;
@@ -90,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // Replaces action bar with toolbar
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -101,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
+    // When back arrow button is pressed
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

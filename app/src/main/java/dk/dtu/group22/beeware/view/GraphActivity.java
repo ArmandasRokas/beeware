@@ -3,14 +3,17 @@ package dk.dtu.group22.beeware.view;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,55 +31,64 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
-import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
-import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
-import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 
 //import java.time.Instant;
 
 public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
-
-    private Button weightToggle;
-    private Button tempToggle;
-    private Button lightToggle;
-    private Button humidToggle;
+    private Button weightToggle, tempToggle, lightToggle, humidToggle;
+    private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
+    private ProgressBar progressBar;
 
     private LineChart lineChart;
-    private LineDataSet lineDataSetWeight;
-    private LineDataSet lineDataSetTemperature;
-    private LineDataSet lineDataSetSunlight;
-    private LineDataSet lineDataSetHumidity;
+    private LineDataSet lineDataSetWeight, lineDataSetTemperature,
+            lineDataSetSunlight, lineDataSetHumidity;
 
     private final String TAG = "GraphActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_graph_prototype);
-        // Model class for this activity. Saves state.
+        setContentView(R.layout.activity_graph);
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
-        Intent intent = getIntent();
-        String idString = intent.getStringExtra("idString");
-        Log.d(TAG, "onCreate: Got " + idString);
 
-        setupToolbar();
+        // Show / hide activity bar and big toggles on rotation
+        int orientation = this.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setupToolbar();
+            setPortraitMode();
+            // Toggle switches
+            weightSwitch = findViewById(R.id.weightSwitch);
+            tempSwitch = findViewById(R.id.tempSwitch);
+            lightSwitch = findViewById(R.id.lightSwitch);
+            humidSwitch = findViewById(R.id.humidSwitch);
+        } else {
+            setLandscapeMode();
+            // Toggle buttons
+            weightToggle = findViewById(R.id.weightButton);
+            tempToggle = findViewById(R.id.tempButton);
+            lightToggle = findViewById(R.id.lightButton);
+            humidToggle = findViewById(R.id.humidButton);
+        }
 
-        // Toggle buttons
-        weightToggle = findViewById(R.id.weightButton);
-        tempToggle = findViewById(R.id.tempButton);
-        lightToggle = findViewById(R.id.lightButton);
-        humidToggle = findViewById(R.id.humidButton);
+        progressBar = findViewById(R.id.progressBar);
 
+        // Get current hive
+        DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
+        int id = 0;
+        asyncTask.execute(id);
+    }
+
+    public void renderGraph() {
+        // Set listener for small togglebuttons
+        /*
         weightToggle.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.isVisible());
         });
@@ -89,25 +101,11 @@ public class GraphActivity extends AppCompatActivity {
         humidToggle.setOnClickListener(v -> {
             toggleHumidity(lineDataSetHumidity.isVisible());
         });
-
-        // Show / hide hivemoredropdown and status bar
-        int orientation = this.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setPortraitMode();
-        } else {
-            setLandscapeMode();
-        }
+        */
 
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
 
-        // Simulate hive data
-        HiveRepository hiveRepoArrayList = new HiveRepoArrayListImpl();
-        //HiveBusiness hiveBusiness = new HiveBusinessImpl(hiveRepoArrayList);
-        HiveBusiness hiveBusiness = new HiveBusinessImpl();
-        Hive newHive = new Hive();
-        newHive.setId(102);
-        Hive rawHiveData = hiveBusiness.getHive(newHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
 
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
@@ -122,11 +120,11 @@ public class GraphActivity extends AppCompatActivity {
         //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
         //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
         try {
-            lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(rawHiveData), "Weight");
-            lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(rawHiveData), "Temperature");
-            lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(rawHiveData), "Sunlight");
-            lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(rawHiveData), "Humidity");
-            Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature(rawHiveData).toString());
+            lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(), "Weight");
+            lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(), "Temperature");
+            lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(), "Sunlight");
+            lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(), "Humidity");
+            Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
         } catch (Exception e) {
             e.printStackTrace();
             showEmptyDatasets();
@@ -211,6 +209,7 @@ public class GraphActivity extends AppCompatActivity {
 
     }
 
+    // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -222,7 +221,7 @@ public class GraphActivity extends AppCompatActivity {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         params.setMarginEnd(actionBarHeight + 10);
         params.setMarginStart(actionBarHeight);
@@ -233,12 +232,12 @@ public class GraphActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Replace with hivename");
+        toolbar_title.setText("Hive x");
     }
 
     // Makes the three dotted dropdown in the action bar
     @Override
-    public boolean onCreateOptionsMenu (Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.hivemoredropdown, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -246,10 +245,22 @@ public class GraphActivity extends AppCompatActivity {
     // Handles the three dotted dropdown choice
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.annotation:
+                intent = new Intent(this, AddAnnotation.class);
+                startActivity(intent);
+                break;
+            case R.id.hiddenInterval:
+                intent = new Intent(this, AddHiddenInterval.class);
+                startActivity(intent);
+                break;
+            case R.id.listofadditions:
+                intent = new Intent(this, ListOfAdditions.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -265,12 +276,10 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void setPortraitMode() {
-        getSupportActionBar().show();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     private void setLandscapeMode() {
-        getSupportActionBar().hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -302,15 +311,23 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        float xCenter = lineChart.getLowestVisibleX() + lineChart.getVisibleXRange() / 2;
-        graphViewModel.setxCenter(xCenter);
+        try {
+            float xCenter = lineChart.getLowestVisibleX() + lineChart.getVisibleXRange() / 2;
+            graphViewModel.setxCenter(xCenter);
+        } catch (Exception e) {
+            Log.d(TAG, "onSaveInstanceState: Could not store zoom.");
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        // Get the saved x center and show.
-        lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
+        // Get the saved x center and show
+        try {
+            lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
+        } catch (Exception e) {
+            Log.d(TAG, "onRestoreInstanceState: Could not find zoom.");
+        }
     }
 
     void showEmptyDatasets() {
@@ -323,6 +340,38 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature = new LineDataSet(nullEntries, "Temperature");
         lineDataSetSunlight = new LineDataSet(nullEntries, "Sunlight");
         lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
+    }
+
+
+    private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Integer... id) {
+            // Todo: pass the real hive
+            try {
+                graphViewModel.downloadHiveData(new Hive());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                renderGraph();
+                progressBar.setVisibility(View.INVISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
 

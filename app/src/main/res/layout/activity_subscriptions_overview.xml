@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".view.MainActivity"
-    android:fitsSystemWindows="true">
+    tools:context=".view.SubscriptionsOverview"
+    android:fitsSystemWindows="true"
+    android:background="?android:colorBackground">
 
     <include
         android:id="@+id/toolbar"

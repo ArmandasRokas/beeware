@@ -1,5 +1,7 @@
 package dk.dtu.group22.beeware.view;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 
 import com.github.mikephil.charting.data.Entry;
@@ -8,17 +10,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
 import dk.dtu.group22.beeware.data.entities.Measurement;
 
 public class GraphViewModel extends ViewModel {
+    private final String TAG = "GraphViewModel";
+    private HiveBusiness hiveBusiness = new HiveBusinessImpl();
+
+    private Hive hive;
 
     // State
-
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false;
 
-    // TODO: Update these with real data:
+    // TODO: Update zoom settings with real data:
     // Center at last value in array to show current time.
     // Default Zoom is (all data points) / (how many data points you want to see).
     // (e.g. Year / Week)
@@ -73,9 +80,16 @@ public class GraphViewModel extends ViewModel {
     }
 
     // Data handling for graph
+    public void downloadHiveData(Hive tempHive) {
+        // TODO: Pass the selected hive!
+        if (hive == null || hive.getMeasurements() == null) {
+            hive = hiveBusiness.getHive(tempHive, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            Log.d(TAG, "downloadHiveData: Downloading hive data.");
+        }
+    }
 
 
-    public List<Entry> extractWeight(Hive hive) {
+    public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
@@ -85,7 +99,7 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-    public List<Entry> extractTemperature(Hive hive) {
+    public List<Entry> extractTemperature() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
@@ -95,7 +109,7 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-    public List<Entry> extractIlluminance(Hive hive) {
+    public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
@@ -105,7 +119,7 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-    public List<Entry> extractHumidity(Hive hive) {
+    public List<Entry> extractHumidity() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();

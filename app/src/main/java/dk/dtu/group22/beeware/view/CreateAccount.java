@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import dk.dtu.group22.beeware.R;
 
-public class PersonalSettings extends AppCompatActivity {
+public class CreateAccount extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_settings);
+        setContentView(R.layout.activity_create_account);
         setupToolbar();
     }
 
@@ -42,7 +42,7 @@ public class PersonalSettings extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Personal settings");
+        toolbar_title.setText("Create an account");
     }
 
     // When back arrow button is pressed
@@ -56,5 +56,4 @@ public class PersonalSettings extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
