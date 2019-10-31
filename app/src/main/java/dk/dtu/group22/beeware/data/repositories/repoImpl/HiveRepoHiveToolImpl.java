@@ -49,7 +49,8 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
                     hive.getId()+"&start_time=" +
                     sinceDate+ "+23%3A59%3A59&end_time=" +
                     untilDate+ "+23%3A59%3A59&hive_id="+hive.getId()+"&number_of_days=" +
-                    numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv").get();
+                    numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
+                    .timeout(100*1000).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +66,7 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
             }
             // TODO implement creation of a hive object using raw_data
 
-            System.out.println(raw_data[0] + ", " + raw_data[1] + ", " + raw_data[2] + ", " + raw_data[illuminanceIndex]);
+            //System.out.println(raw_data[0] + ", " + raw_data[1] + ", " + raw_data[2] + ", " + raw_data[illuminanceIndex]);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
             Timestamp timestamp = new Timestamp(0);
             try {
