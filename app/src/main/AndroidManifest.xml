@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.ListOfAdditions"></activity>
+        <activity android:name=".view.ForgotPassword"></activity>
+        <activity android:name=".view.CreateAccount" />
+        <activity android:name=".view.ListOfAdditions" />
         <activity android:name=".view.AddHiddenInterval" />
         <activity android:name=".view.AddAnnotation" />
         <activity android:name=".view.Login">

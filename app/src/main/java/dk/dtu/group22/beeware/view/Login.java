@@ -15,6 +15,7 @@ import dk.dtu.group22.beeware.R;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private Button login_button;
+    private TextView create_account, forgot_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setupToolbar();
         login_button = findViewById(R.id.login_button);
         login_button.setOnClickListener(this);
+        create_account = findViewById(R.id.login_create_account);
+        create_account.setOnClickListener(this);
+        forgot_password = findViewById(R.id.login_forgot);
+        forgot_password.setOnClickListener(this);
     }
 
     // Replaces action bar with toolbar
@@ -49,6 +54,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             Intent intent = new Intent(this, SubscriptionsOverview.class);
             // Flag makes the back stack ignored when changing view
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else if (view == create_account) {
+            Intent intent = new Intent(this, CreateAccount.class);
+            startActivity(intent);
+        } else if (view == forgot_password) {
+            Intent intent = new Intent(this, ForgotPassword.class);
             startActivity(intent);
         }
     }

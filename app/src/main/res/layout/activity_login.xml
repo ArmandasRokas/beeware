@@ -18,7 +18,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/plaintextborderbox"
         android:ems="10"
-        android:hint="Username"
+        android:hint="Username or email"
         android:inputType="textPersonName"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
