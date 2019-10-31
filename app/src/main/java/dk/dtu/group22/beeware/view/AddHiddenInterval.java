@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import dk.dtu.group22.beeware.R;
 
-public class PersonalSettings extends AppCompatActivity {
+public class AddHiddenInterval extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_settings);
+        setContentView(R.layout.activity_add_hidden_interval);
         setupToolbar();
     }
 
@@ -42,7 +42,7 @@ public class PersonalSettings extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Personal settings");
+        toolbar_title.setText("Hive x interval");
     }
 
     // When back arrow button is pressed

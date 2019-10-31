@@ -72,7 +72,7 @@ public class HiveBusinessImpl implements HiveBusiness {
         try{
             List<Hive> hives = hiveSubscriptionRepository.getHivesToSubscribe();
             if(hives == null || hives.isEmpty()){
-                throw new HivesToSubscribeNoFound("Error. Unable to fetch data");
+                throw new HivesToSubscribeNoFound("Business error. Unable to fetch data");
             } else{
                 return hives;
             }

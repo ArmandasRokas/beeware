@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".view.GraphActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/lineChart"
+        app:layout_constraintTop_toBottomOf="@+id/unitBox" />
+
     <LinearLayout
         android:id="@+id/toggleBox"
         android:layout_width="50dp"
@@ -22,16 +33,17 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#00000000"
+            android:background="#ffffff"
             android:foreground="@drawable/weight"
-            android:foregroundGravity="center_vertical|center" />
+            android:foregroundGravity="center_vertical|center"
+            android:foregroundTint="#3C3636" />
 
         <Button
             android:id="@+id/tempButton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#271529"
+            android:background="#ffffff"
             android:foreground="@drawable/temperature"
             android:foregroundGravity="center"
             android:foregroundTint="@color/BEE_graphTemperature" />
@@ -41,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#2B2916"
+            android:background="#ffffff"
             android:foreground="@drawable/sunshine2"
             android:foregroundGravity="center"
             android:foregroundTint="@color/BEE_graphSunlight" />
@@ -51,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#121731"
+            android:background="#ffffff"
             android:foreground="@drawable/humidity"
             android:foregroundGravity="center"
             android:foregroundTint="@color/BEE_graphHumidity" />

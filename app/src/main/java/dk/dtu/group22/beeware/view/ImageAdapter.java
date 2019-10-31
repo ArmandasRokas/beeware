@@ -66,7 +66,7 @@ public class ImageAdapter extends BaseAdapter {
 
                 Intent ID = new Intent(ctx, GraphActivity.class);
                 ID.putExtra("hiveid", hives.get(position).getId());
-                // putExtra hive name
+                ID.putExtra("hivename", hives.get(position).getName());
                 ctx.startActivity(ID);
             }
         });
