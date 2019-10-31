@@ -56,7 +56,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
 
-        ImageView img = (ImageView) gridView.findViewById(R.id.myImage);
+        ImageView img = (ImageView) gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
 
         img.setImageResource(R.drawable.beehive2);
