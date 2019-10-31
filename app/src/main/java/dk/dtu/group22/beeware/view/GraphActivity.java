@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Switch;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -38,22 +36,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
-import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
-import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
-import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 
 //import java.time.Instant;
 
 public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
-
-    private Switch weightToggle;
-    private Switch tempToggle;
-    private Switch lightToggle;
-    private Switch humidToggle;
     private Button weightToggle, tempToggle, lightToggle, humidToggle;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ProgressBar progressBar;
