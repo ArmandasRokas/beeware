@@ -1,20 +1,15 @@
 package dk.dtu.group22.beeware.business.businessImpl;
 
-import android.widget.ArrayAdapter;
-
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
-import dk.dtu.group22.beeware.data.entities.Measurement;
 import dk.dtu.group22.beeware.data.entities.User;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveSubscriptionRepository;
 import dk.dtu.group22.beeware.data.repositories.interfaceRepo.UserRepository;
-import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoHiveToolImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveSubscriptionRepoHiveToolImpl;
 import dk.dtu.group22.beeware.data.repositories.repoImpl.UserRepoArrayListImpl;
@@ -43,10 +38,19 @@ public class HiveBusinessImpl implements HiveBusiness {
             if (h == null){
                 throw new HiveNotFound("Hive with id " + hive.getId() + " does not exits.");
             } else {
+                h = calculateCurrValuesAndStatus(h);
                 hivesWithMeasurements.add(h);
             }
+
+
         }
         return hivesWithMeasurements;
+    }
+    private Hive calculateCurrValuesAndStatus(Hive hive){
+        hive.setCurrWeight(hive.getMeasurements().get(hive.getMeasurements().size()-1).getWeight());
+        System.out.println(hive.getMeasurements().get(0).getTimestamp().toString().substring(8,10));
+        // TODO calculate delta. Idea loop over array of measurments and when day is changed. (the day of curr measurment is not equal to the day of next measurment)
+        return hive;
     }
 
     @Override
