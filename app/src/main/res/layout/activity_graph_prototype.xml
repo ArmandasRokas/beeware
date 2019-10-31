@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.GraphActivity"
+    android:fitsSystemWindows="true">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/hiveDescriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="Green hive, back garden, left"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/weight_static_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hiveDescriptionTextView" />
+
+    <ImageView
+        android:id="@+id/weight_graph_color"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hiveDescriptionTextView"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/weight_static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="Weight:"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/weight_graph_color"
+        app:layout_constraintTop_toBottomOf="@id/hiveDescriptionTextView" />
+
+    <TextView
+        android:id="@+id/weight_variable_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="66kg +6"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/weight_switch"
+        app:layout_constraintStart_toEndOf="@+id/weight_static_text"
+        app:layout_constraintTop_toBottomOf="@+id/hiveDescriptionTextView" />
+
+    <Switch
+        android:id="@+id/weight_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hiveDescriptionTextView" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/temperature_static_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weight_static_text" />
+
+    <ImageView
+        android:id="@+id/temperature_graph_color"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_graph_color"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/temperature_static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="Temperature:"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/temperature_graph_color"
+        app:layout_constraintTop_toBottomOf="@+id/weight_static_text" />
+
+    <TextView
+        android:id="@+id/temperature_variable_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="35,5C"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/temperature_switch"
+        app:layout_constraintStart_toEndOf="@+id/temperature_static_text"
+        app:layout_constraintTop_toBottomOf="@+id/weight_variable_text" />
+
+    <Switch
+        android:id="@+id/temperature_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_switch" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/luminance_static_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temperature_static_text" />
+
+    <ImageView
+        android:id="@+id/luminance_graph_color"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperature_graph_color"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/luminance_static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="Sunlight:"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/luminance_graph_color"
+        app:layout_constraintTop_toBottomOf="@+id/temperature_static_text" />
+
+    <TextView
+        android:id="@+id/luminance_variable_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="1000"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/luminance_switch"
+        app:layout_constraintStart_toEndOf="@+id/luminance_static_text"
+        app:layout_constraintTop_toBottomOf="@+id/temperature_variable_text" />
+
+    <Switch
+        android:id="@+id/luminance_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperature_switch" />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/humidity_static_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/luminance_static_text" />
+
+    <ImageView
+        android:id="@+id/humidity_graph_color"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/luminance_graph_color"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/humidity_static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="Humidity:"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/humidity_graph_color"
+        app:layout_constraintTop_toBottomOf="@+id/luminance_static_text" />
+
+    <TextView
+        android:id="@+id/humidity_variable_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="97%"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/humidity_switch"
+        app:layout_constraintStart_toEndOf="@+id/humidity_static_text"
+        app:layout_constraintTop_toBottomOf="@+id/luminance_variable_text" />
+
+    <Switch
+        android:id="@+id/humidity_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/luminance_switch" />
+
+    <View
+        android:id="@+id/line5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/unitBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidity_static_text" />
+
+    <LinearLayout
+        android:id="@+id/unitBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/lineChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humidity_static_text">
+
+        <TextView
+            android:id="@+id/axisLeftLegend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:text="@string/leftAxisLegend"
+            android:textAlignment="textStart" />
+
+        <TextView
+            android:id="@+id/axisRightLegend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:text="@string/rightAxisLegend"
+            android:textAlignment="textEnd" />
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unitBox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

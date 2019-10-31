@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".view.ListOfAdditions"></activity>
+        <activity android:name=".view.AddHiddenInterval" />
+        <activity android:name=".view.AddAnnotation" />
         <activity android:name=".view.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +29,7 @@
         <activity android:name=".view.RecyclerAdapter" />
         <activity android:name=".view.SubscribeHiveActivity" />
         <activity android:name=".view.SubscribeHiveActivityRecycl" />
-        <activity android:name=".view.SubscriptionsOverview"/>
+        <activity android:name=".view.SubscriptionsOverview" />
     </application>
 
 </manifest>

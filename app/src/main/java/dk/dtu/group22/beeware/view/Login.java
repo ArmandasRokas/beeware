@@ -33,7 +33,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         TextView toolbar_title = findViewById(R.id.toolbar_title);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbar_title.setText("Log in");

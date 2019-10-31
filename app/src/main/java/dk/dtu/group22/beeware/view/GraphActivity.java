@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.view;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -35,7 +38,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.businessImpl.HiveBusinessImpl;
+import dk.dtu.group22.beeware.business.interfaceBusiness.HiveBusiness;
 import dk.dtu.group22.beeware.data.entities.Hive;
+import dk.dtu.group22.beeware.data.repositories.interfaceRepo.HiveRepository;
+import dk.dtu.group22.beeware.data.repositories.repoImpl.HiveRepoArrayListImpl;
 
 //import java.time.Instant;
 
@@ -43,6 +50,10 @@ public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
 
+    private Switch weightToggle;
+    private Switch tempToggle;
+    private Switch lightToggle;
+    private Switch humidToggle;
     private Button weightToggle, tempToggle, lightToggle, humidToggle;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ProgressBar progressBar;
@@ -232,7 +243,7 @@ public class GraphActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText("Replace with hivename");
+        toolbar_title.setText("Hive x");
     }
 
     // Makes the three dotted dropdown in the action bar
@@ -245,10 +256,22 @@ public class GraphActivity extends AppCompatActivity {
     // Handles the three dotted dropdown choice
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.annotation:
+                intent = new Intent(this, AddAnnotation.class);
+                startActivity(intent);
+                break;
+            case R.id.hiddenInterval:
+                intent = new Intent(this, AddHiddenInterval.class);
+                startActivity(intent);
+                break;
+            case R.id.listofadditions:
+                intent = new Intent(this, ListOfAdditions.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
