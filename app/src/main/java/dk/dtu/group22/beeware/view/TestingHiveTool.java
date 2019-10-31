@@ -65,6 +65,7 @@ public class TestingHiveTool extends AppCompatActivity {
                 System.out.println(hive);
           //      progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null){
+                    hive.toString();
                     //errorTv.setText(errorMsg);
                 } else{
                 //TODO call method that produces graph with hive.

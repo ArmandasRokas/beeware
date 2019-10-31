@@ -22,8 +22,8 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
 
         final int timestampIndex = 0;
         final int weightIndex = 1;
-        final int tempIndex = 8;
-        final int humidityIndex = 9;
+        final int tempIndex = 2;
+        final int humidityIndex = 3; // inside
         final int illuminanceIndex = 6;
 
         List<Measurement> data_measure = new ArrayList<>();
@@ -59,12 +59,13 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
         String[] lines = e.wholeText().split("\n");
 
         for(int i = 2; i<lines.length; i++){
-            String[] raw_data = lines[i].split("(,|\\s)");
-            if(raw_data.length < 17){
+            String[] raw_data = lines[i].split(",");
+            if(raw_data.length < 16){
                 break;
             }
             // TODO implement creation of a hive object using raw_data
-            System.out.println(raw_data[0] + " " + raw_data[1] + " " + raw_data[2] + " " + raw_data[3]);
+
+            System.out.println(raw_data[0] + ", " + raw_data[1] + ", " + raw_data[2] + ", " + raw_data[illuminanceIndex]);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
             Timestamp timestamp = new Timestamp(0);
             try {
@@ -75,11 +76,11 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
             }
 
             Double weightLbs = parseToDoubleOrNeg(raw_data[weightIndex]);
-            Double weightKg = parseToDoubleOrNeg(raw_data[weightIndex]) * 0.45359237;
-
-            Double tempF = parseToDoubleOrNeg(raw_data[tempIndex]);
-            Double tempC = (tempF - 32.0) * 5 / 9;
-
+            //Double weightKg = parseToDoubleOrNeg(raw_data[weightIndex]) * 0.45359237;
+            Double weightKg = parseToDoubleOrNeg(raw_data[weightIndex]);
+            //Double tempF = parseToDoubleOrNeg(raw_data[tempIndex]);
+            //Double tempC = (tempF - 32.0) * 5 / 9;
+            Double tempC = parseToDoubleOrNeg(raw_data[tempIndex]);
             Double humidity = parseToDoubleOrNeg(raw_data[humidityIndex]);
 
             Double illuminance = parseToDoubleOrNeg(raw_data[illuminanceIndex]);
