@@ -19,7 +19,7 @@
 
     <LinearLayout
         android:id="@+id/toggleDecoration"
-        android:layout_width="5dp"
+        android:layout_width="10dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,21 +35,21 @@
             android:background="@color/BEE_graphWeight" />
 
         <View
-            android:id="@+id/view3"
+            android:id="@+id/tempLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/BEE_graphTemperature" />
 
         <View
-            android:id="@+id/view4"
+            android:id="@+id/lightLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/BEE_graphSunlight" />
 
         <View
-            android:id="@+id/view5"
+            android:id="@+id/humidLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
