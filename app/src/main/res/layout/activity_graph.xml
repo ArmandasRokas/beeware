@@ -35,31 +35,102 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <TextView
-            android:id="@+id/humidDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="36dp"
-            android:text="%"
-            android:textSize="18sp"
+        <View
+            android:id="@+id/weightDecorativeLine"
+            android:layout_width="20dp"
+            android:layout_height="5dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/BEE_graphWeight"
+            app:layout_constraintBottom_toBottomOf="@+id/weightSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
+
+        <View
+            android:id="@+id/tempDecorativeLine"
+            android:layout_width="20dp"
+            android:layout_height="5dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/BEE_graphTemperature"
+            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
+
+        <View
+            android:id="@+id/lightDecorativeLine"
+            android:layout_width="20dp"
+            android:layout_height="5dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/BEE_graphSunlight"
+            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
+
+        <View
+            android:id="@+id/humidDecorativeLine"
+            android:layout_width="20dp"
+            android:layout_height="5dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/BEE_graphHumidity"
             app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
+
 
         <TextView
             android:id="@+id/weightText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="21dp"
+            android:layout_marginStart="8dp"
             android:gravity="center_vertical"
             android:text="Weight"
             android:textColor="#000000"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/weightSwitch"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/weightDetails"
+            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
             app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
+
+        <TextView
+            android:id="@+id/tempText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Temperature"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
+            app:layout_constraintEnd_toStartOf="@+id/tempDetails"
+            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
+            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
+
+        <TextView
+            android:id="@+id/lightText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Light"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
+            app:layout_constraintEnd_toStartOf="@+id/lightDetails"
+            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
+            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
+
+        <TextView
+            android:id="@+id/humidText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Humidity"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
+            app:layout_constraintEnd_toStartOf="@+id/humidDetails"
+            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
+            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
 
         <TextView
             android:id="@+id/weightDetails"
@@ -72,32 +143,6 @@
             app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
             app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
 
-        <Switch
-            android:id="@+id/weightSwitch"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            android:thumbTint="@color/BEE_graphWeight"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tempText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:gravity="center_vertical"
-            android:text="Temperature"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/subscribe_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
-
         <TextView
             android:id="@+id/tempDetails"
             android:layout_width="wrap_content"
@@ -109,34 +154,8 @@
             app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
             app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
 
-        <Switch
-            android:id="@+id/tempSwitch"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            android:thumbTint="@color/BEE_graphTemperature"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightSwitch" />
-
         <TextView
-            android:id="@+id/lightText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:gravity="center_vertical"
-            android:text="Light"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/subscribe_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
-
-        <TextView
-            android:id="@+id/tempDetails2"
+            android:id="@+id/lightDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="36dp"
@@ -146,32 +165,49 @@
             app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
             app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
 
+        <TextView
+            android:id="@+id/humidDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:text="%"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
+            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
+            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
+
+        <Switch
+            android:id="@+id/weightSwitch"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="20dp"
+            android:paddingEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/tempSwitch"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="20dp"
+            android:paddingEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weightSwitch" />
+
         <Switch
             android:id="@+id/lightSwitch"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_marginEnd="20dp"
             android:paddingEnd="15dp"
-            android:thumbTint="@color/BEE_graphSunlight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tempSwitch" />
-
-        <TextView
-            android:id="@+id/humidText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="9dp"
-            android:gravity="center_vertical"
-            android:text="Humidity"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/subscribe_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
 
         <Switch
             android:id="@+id/humidSwitch"
@@ -179,11 +215,11 @@
             android:layout_height="75dp"
             android:layout_marginEnd="20dp"
             android:paddingEnd="15dp"
-            android:thumbTint="@color/BEE_graphHumidity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lightSwitch" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
