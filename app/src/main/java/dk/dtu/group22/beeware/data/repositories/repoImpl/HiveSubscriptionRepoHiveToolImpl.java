@@ -23,7 +23,7 @@ public class HiveSubscriptionRepoHiveToolImpl implements HiveSubscriptionReposit
         }
 
         if(doc == null){
-            throw  new UnableToFetchData("Error. Unable to fetch data");
+            throw new UnableToFetchData("Doc error. Unable to fetch data");
         }
 
         Element content = doc.getElementById("green");

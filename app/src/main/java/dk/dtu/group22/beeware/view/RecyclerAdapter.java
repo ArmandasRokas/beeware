@@ -17,6 +17,9 @@ import dk.dtu.group22.beeware.data.entities.Hive;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+/**
+ * Deprecated class
+ */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ImageViewHolder> {
 
     private List<Hive> hives;

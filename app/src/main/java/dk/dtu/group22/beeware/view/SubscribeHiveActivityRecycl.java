@@ -94,6 +94,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
 
     }
 
+    // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
         // Sets the toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -118,6 +119,7 @@ public class SubscribeHiveActivityRecycl extends AppCompatActivity {
         toolbar_title.setText("Subscriptions");
     }
 
+    // When back arrow button is pressed
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -147,6 +149,7 @@ class SubscribeHivesAdapter extends RecyclerView.Adapter<SubscribeHivesAdapter.M
             super(v);
             //textView = v.findViewById(R.id.hiveNameTv);
             subHiveName = v.findViewById(R.id.subscribe_name);
+            // TODO: Når recycleren genbruger switch'ene, tickes de ikke tilbage på off
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
         }
     }
