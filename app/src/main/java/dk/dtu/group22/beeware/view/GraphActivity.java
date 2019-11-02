@@ -22,17 +22,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.data.entities.Hive;
@@ -50,6 +56,7 @@ public class GraphActivity extends AppCompatActivity {
             lineDataSetSunlight, lineDataSetHumidity;
     private int hiveId;
     private String hiveName;
+    private double currentWeight, weightDelta, currentTemp, currentLigth, currentHumidity;
 
     private final String TAG = "GraphActivity";
 
@@ -59,16 +66,24 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
 
+        // Get Summary data for weight
         Intent intent = getIntent();
         hiveId = intent.getIntExtra("hiveid", -1);
         hiveName = intent.getStringExtra("hivename");
+        currentWeight = 100.00; // TODO: get data same way as above
+        weightDelta = -1.000;
+
+        progressBar = findViewById(R.id.progressBar);
 
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
 
-        // Show / hide activity bar and big toggles on rotation
+        // Weight is checked by default
+        weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
+
+        // Show / hide activity bar and big switches on rotation
         int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setupToolbar();
@@ -77,15 +92,16 @@ public class GraphActivity extends AppCompatActivity {
             setLandscapeMode();
         }
 
-        progressBar = findViewById(R.id.progressBar);
-
-        // Get current hive and store in graphViewModel
+        // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
         asyncTask.execute(hiveId);
     }
 
+
+    // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
     public void renderGraph() {
-        // Set listener for small switches TODO: Implement as switch
+
+        // Set listener for small switches.
         weightSwitch.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.isVisible());
         });
@@ -99,9 +115,13 @@ public class GraphActivity extends AppCompatActivity {
             toggleHumidity(lineDataSetHumidity.isVisible());
         });
 
+        // Update values in summary TODO: Calculate in Viewodel
+        currentTemp = 0;
+        currentLigth = 0;
+        currentHumidity = 0;
+
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
-
 
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
@@ -110,7 +130,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setPinchZoom(false);
 
         // Import LineDataSets
-        int numOfDays = 365;
+        //int numOfDays = 365;
         //lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
         //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
         //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
@@ -125,7 +145,25 @@ public class GraphActivity extends AppCompatActivity {
             e.printStackTrace();
             showEmptyDatasets();
         }
-        // Format X- Axis to time string?
+
+        // Format X- Axis to time string
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setValueFormatter(new DateFormatter());
+        /*
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(){
+
+
+            @Override
+            public String getFormattedValue(float value) {
+                Date date = new Date((long)value);
+                SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH);
+                System.out.println(simpleDateFormatter.format(date));
+                return simpleDateFormatter.format(date);
+            }
+        });
+        */
+
         //      yAxis.setValueFormatter(new MyValueFormatter());
 
         //Set Y Axis dependency
@@ -169,8 +207,8 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setFillColor(Color.BLUE);
 
         //set the transparency of light and humidity
-        lineDataSetSunlight.setFillAlpha(20);
-        lineDataSetHumidity.setFillAlpha(10);
+        lineDataSetSunlight.setFillAlpha(30);
+        lineDataSetHumidity.setFillAlpha(20);
 
         // Collect LineDataSets in a List
         List<ILineDataSet> LineDataSetList = Arrays.asList(
@@ -186,7 +224,7 @@ public class GraphActivity extends AppCompatActivity {
         // Set description text for LineChart
         Description description = new Description();
         description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[4]);
-        description.setText("Hive name");
+        description.setText(hiveName);
 
         // Fill chart with data
         lineChart.setData(lineData);
@@ -194,7 +232,7 @@ public class GraphActivity extends AppCompatActivity {
 
         // Default zoom to one week or 'deafultZoomInDays'
         lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
-        lineChart.centerViewTo((float) numOfDays, (float) 0, lineDataSetWeight.getAxisDependency());
+        lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
         // Get lineDataSet visibility from state.
@@ -204,6 +242,7 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
 
     }
+
 
     // Replaces action bar with toolbar and sets the title of the activity right
     public void setupToolbar() {
@@ -262,15 +301,20 @@ public class GraphActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected List<Entry> randomEntries(int n, int minY, int maxY) {
-        List<Entry> res = new ArrayList<>();
-        for (int i = 0; i <= n; ++i) {
-            float randY = (float) Math.random() * (maxY - minY + 1) + minY;
-            res.add(new Entry((float) i, randY));
-        }
-        return res;
-    }
+    // -----------------------------------------------------------------------------
+    // Old test method for generating random data
+    //protected List<Entry> randomEntries(int n, int minY, int maxY) {
+    //    List<Entry> res = new ArrayList<>();
+    //    for (int i = 0; i <= n; ++i) {
+    //        float randY = (float) Math.random() * (maxY - minY + 1) + minY;
+    //        res.add(new Entry((float) i, randY));
+    //    }
+    //    return res;
+    // }
+    //------------------------------------------------------------------------------
 
+
+    // Handles layout xml for screen orientation
     private void setPortraitMode() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
@@ -279,6 +323,7 @@ public class GraphActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
         lineDataSetWeight.setVisible(!shown);
         graphViewModel.setWeightLineVisible(!shown);
@@ -303,7 +348,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    // Saving state of chart
+    // Saving state of chart on screen rotation
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -315,6 +360,7 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    // Restore scrolled point when rotating screen
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -326,8 +372,8 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    // Showing empty graph if downloading fails
     void showEmptyDatasets() {
-        // Defines behaviour when no data is available
         Log.d(TAG, "onCreate: Could not load hive data.");
         Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
         List<Entry> nullEntries = new ArrayList<>();
@@ -338,7 +384,18 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
     }
 
+    // Format dates for graph X axis
+    private class DateFormatter extends ValueFormatter {
 
+        @Override
+        public String getAxisLabel(float value, AxisBase axis) {
+            return new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH)
+                    .format(new Date((long) value));
+        }
+    }
+
+
+    // This task downloads data and initalizes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
         protected void onPreExecute() {

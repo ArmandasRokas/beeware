@@ -29,7 +29,7 @@ public class GraphViewModel extends ViewModel {
     // Center at last value in array to show current time.
     // Default Zoom is (all data points) / (how many data points you want to see).
     // (e.g. Year / Week)
-    private float xCenter = 365, defaultZoom = 365 / 7;
+    private float xCenter = 0, defaultZoom = 1;
 
     public float getxCenter() {
         return xCenter;
@@ -83,11 +83,13 @@ public class GraphViewModel extends ViewModel {
     public void downloadHiveData(Hive tempHive) {
         // TODO: Pass the selected hive! And make sensible settings for timestamp
         if (hive == null || hive.getMeasurements() == null) {
+            // One week!
             hive = hiveBusiness.getHive(tempHive, new Timestamp(System.currentTimeMillis() - (1000 * 3600 * 24 * 7)), new Timestamp(System.currentTimeMillis()));
             Log.d(TAG, "downloadHiveData: Downloading hive data.");
         }
     }
 
+    // TODO: Set max values and scale illuminance and humidity
 
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
