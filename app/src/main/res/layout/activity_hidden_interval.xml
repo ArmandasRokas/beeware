@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.HiddenInterval">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar"/>
+
+    <EditText
+        android:id="@+id/interval_title"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/plaintextborderbox"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="text"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/interval_from_text"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:gravity="bottom"
+        android:paddingLeft="15dp"
+        android:text="From"
+        app:layout_constraintEnd_toEndOf="@+id/interval_title"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/interval_title"
+        app:layout_constraintTop_toBottomOf="@+id/interval_title" />
+
+    <EditText
+        android:id="@+id/interval_from_date"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/plaintextborderbox"
+        android:ems="10"
+        android:hint="Date &amp; time"
+        android:inputType="datetime"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/interval_from_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/interval_from_text"
+        app:layout_constraintTop_toBottomOf="@+id/interval_from_text" />
+
+    <TextView
+        android:id="@+id/interval_to_text"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:gravity="bottom"
+        android:paddingLeft="15dp"
+        android:text="To"
+        app:layout_constraintEnd_toEndOf="@+id/interval_from_date"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/interval_from_date"
+        app:layout_constraintTop_toBottomOf="@+id/interval_from_date" />
+
+    <EditText
+        android:id="@+id/interval_to_date"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/plaintextborderbox"
+        android:ems="10"
+        android:hint="Date &amp; time"
+        android:inputType="datetime"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/interval_to_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/interval_to_text"
+        app:layout_constraintTop_toBottomOf="@+id/interval_to_text" />
+
+    <EditText
+        android:id="@+id/interval_description"
+        android:layout_width="280dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/plaintextborderbox"
+        android:ems="10"
+        android:gravity="start"
+        android:hint="Description"
+        android:inputType="text"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/interval_to_date"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/interval_to_date"
+        app:layout_constraintTop_toBottomOf="@+id/interval_to_date"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/annotation_add_button"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/roundedbutton"
+        android:backgroundTint="#0099B3"
+        android:text="Add interval"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/interval_description"
+        app:layout_constraintHorizontal_bias="0.582"
+        app:layout_constraintStart_toStartOf="@+id/interval_description"
+        app:layout_constraintTop_toBottomOf="@+id/interval_description"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
