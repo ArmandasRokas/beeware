@@ -126,8 +126,8 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
         setSupportActionBar(toolbar);
 
         // account logo button left side on custom_toolbar
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_account_dark);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_account_dark);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 

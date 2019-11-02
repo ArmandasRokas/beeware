@@ -17,21 +17,19 @@
         <activity android:name=".presentation.Additions" />
         <activity android:name=".presentation.HiddenInterval" />
         <activity android:name=".presentation.Annotation" />
-        <activity android:name=".presentation.unused.Login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".presentation.unused.Login" />
         <activity android:name=".presentation.unused.PersonalSettings" />
         <activity android:name=".presentation.TestingHiveTool" />
         <activity android:name=".presentation.GraphActivity" />
         <activity android:name=".presentation.GraphViewModel" />
-        <activity android:name=".presentation.RecyclerAdapter" />
         <activity android:name=".presentation.unused.SubscribeHiveActivity" />
         <activity android:name=".presentation.SubscribeRecycler" />
-        <activity android:name=".presentation.Overview" />
+        <activity android:name=".presentation.Overview" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
