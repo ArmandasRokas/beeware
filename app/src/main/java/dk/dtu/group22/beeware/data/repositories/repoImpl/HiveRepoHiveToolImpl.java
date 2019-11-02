@@ -64,7 +64,6 @@ public class HiveRepoHiveToolImpl implements HiveRepository {
             if(raw_data.length < 16){
                 break;
             }
-            // TODO implement creation of a hive object using raw_data
 
             //System.out.println(raw_data[0] + ", " + raw_data[1] + ", " + raw_data[2] + ", " + raw_data[illuminanceIndex]);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");

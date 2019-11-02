@@ -55,6 +55,7 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView img = gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
+        TextView weight = gridView.findViewById(R.id.album_weight);
 
         img.setImageResource(R.drawable.beehive2);
         img.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +69,7 @@ public class ImageAdapter extends BaseAdapter {
             }
         });
         title.setText(hives.get(position).getName());
+        weight.setText(hives.get(position).getCurrWeight() + " +3"); // TODO hardcoded +3
 
         return gridView;
     }
