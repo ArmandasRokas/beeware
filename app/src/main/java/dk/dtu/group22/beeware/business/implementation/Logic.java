@@ -1,5 +1,7 @@
 package dk.dtu.group22.beeware.business.implementation;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,12 +26,21 @@ public class Logic implements ILogic {
     private IUser userArraylist;
     private ISubscription subscriptionHivetool;
     private ISubscriptionManager subscriptionManager;
+    private Context ctx;
+
 
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
         this.userArraylist = new UserArraylist();
         this.subscriptionHivetool = new SubscriptionHivetool();
-        this.subscriptionManager = new SubscriptionManager();
+    }
+
+    public Logic(Context ctx) {
+        this.ctx = ctx;
+        this.hiveHivetool = new HiveHivetool();
+        this.userArraylist = new UserArraylist();
+        this.subscriptionHivetool = new SubscriptionHivetool();
+        this.subscriptionManager = new SubscriptionManager(ctx);
     }
 
     @Override
@@ -149,18 +160,20 @@ public class Logic implements ILogic {
     }
 
     @Override
-    public void saveSubscription(int id) {
-        saveSubscription(id);
+    public void saveSubscription(int id) throws IOException {
+        subscriptionManager.saveSubscription(id);
     }
 
     @Override
     public ArrayList<Integer> getSubscriptions() throws IOException {
-        return subscriptionManager.getSubscriptions();
+        subscriptionManager.getSubscriptions();
+        //TODO lav map til arrayList
+        return null;
     }
 
     @Override
-    public void deleteSubscription(int id) {
-        deleteSubscription(id);
+    public void deleteSubscription(int id) throws IOException {
+        subscriptionManager.deleteSubscription(id);
     }
 
     public IUser getUserArraylist() {

@@ -1,5 +1,7 @@
 package dk.dtu.group22.beeware.business.interfaces;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -44,10 +46,10 @@ public interface ILogic {
         public HivesToSubscribeNoFound(String msg) {super(msg);}
     }
 
-    void saveSubscription(int id);
+    void saveSubscription(int id) throws IOException;
 
     ArrayList<Integer> getSubscriptions() throws IOException;
 
-    void deleteSubscription(int id);
+    void deleteSubscription(int id) throws IOException;
 
 }

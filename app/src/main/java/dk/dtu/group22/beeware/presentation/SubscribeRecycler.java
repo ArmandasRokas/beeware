@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
@@ -37,7 +38,7 @@ public class SubscribeRecycler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        logic = new Logic();
+        logic = new Logic(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe);
         setupToolbar();
@@ -85,7 +86,7 @@ public class SubscribeRecycler extends AppCompatActivity {
                 if (errorMsg != null){
                     errorTv.setText(errorMsg);
                 } else{
-                    mAdapter = new SubscribeAdapter(hives);
+                    mAdapter = new SubscribeAdapter(logic, hives);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
@@ -134,7 +135,7 @@ public class SubscribeRecycler extends AppCompatActivity {
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
     private List<Hive> mDataset;
-    private ILogic logic = new Logic();
+    private ILogic logic;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -154,7 +155,8 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SubscribeAdapter(List<Hive> myDataset) {
+    public SubscribeAdapter(ILogic logic, List<Hive> myDataset) {
+        this.logic = logic;
         mDataset = myDataset;
     }
 
@@ -181,15 +183,35 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         // TODO: Ændre dette så det passer med at være en switch (indlæs subbed hives og tick dem on, samt fjern hives når ticket off)
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
-                    // TODO hardcoded user
-                    User user = new User();
-                    user.setId(1);
-                    Hive hive = new Hive();
-                    hive.setId(mDataset.get(position).getId());
-                    hive.setName(mDataset.get(position).getName());
-                    logic.subscribeHive(user, hive );
+                    System.out.println("The switch is set to " + holder.subHiveSwitch.isChecked());
+                    if (holder.subHiveSwitch.isChecked()) {
+                        // Calls the DAL to save the id in a file
+                        try {
+                            logic.saveSubscription(mDataset.get(position).getId());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // TODO hardcoded user
+                        User user = new User();
+                        user.setId(1);
+                        Hive hive = new Hive();
+                        hive.setId(mDataset.get(position).getId());
+                        hive.setName(mDataset.get(position).getName());
+                        logic.subscribeHive(user, hive);
+                    } else {
+                        // Deletes the hive id from the file of saved subs in DAL
+                        try {
+                            logic.deleteSubscription(mDataset.get(position).getId());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
         );
+
+
+
     }
 
 
