@@ -28,9 +28,6 @@ public class HiveHivetool implements IHive {
 
         String[] lines = getDataLines(sinceTime,untilTime,hive.getId());
 
-        for(Measurement mes : extractDataFromCSVLines(lines)){
-            System.out.println(mes);
-        }
 
         hive.setMeasurements(extractDataFromCSVLines(lines));
 
