@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SubscriptionManager {
+import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
+
+public class SubscriptionManager implements ISubscriptionManager {
 
     File file = new File("subscriptions.txt");
 
@@ -59,7 +61,7 @@ public class SubscriptionManager {
         return subscriptions;
     }
 
-    public void deleteSubscription(int id) {
+    public void deleteSubscription(int id) throws IOException {
 
     }
 

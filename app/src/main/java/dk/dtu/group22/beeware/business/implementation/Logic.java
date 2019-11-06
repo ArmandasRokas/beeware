@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.business.implementation;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,8 +9,10 @@ import java.util.List;
 import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.User;
+import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.IUser;
 import dk.dtu.group22.beeware.dal.dto.implementation.HiveHivetool;
 import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionHivetool;
@@ -20,11 +23,13 @@ public class Logic implements ILogic {
     private IHive hiveHivetool;
     private IUser userArraylist;
     private ISubscription subscriptionHivetool;
+    private ISubscriptionManager subscriptionManager;
 
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
         this.userArraylist = new UserArraylist();
         this.subscriptionHivetool = new SubscriptionHivetool();
+        this.subscriptionManager = new SubscriptionManager();
     }
 
     @Override
@@ -141,6 +146,21 @@ public class Logic implements ILogic {
         } catch (Exception e) {
             throw new HivesToSubscribeNoFound(e.getMessage());
         }
+    }
+
+    @Override
+    public void saveSubscription(int id) {
+        saveSubscription(id);
+    }
+
+    @Override
+    public ArrayList<Integer> getSubscriptions() throws IOException {
+        return subscriptionManager.getSubscriptions();
+    }
+
+    @Override
+    public void deleteSubscription(int id) {
+        deleteSubscription(id);
     }
 
     public IUser getUserArraylist() {

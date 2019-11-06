@@ -1,6 +1,8 @@
 package dk.dtu.group22.beeware.business.interfaces;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.dal.dao.Hive;
@@ -41,4 +43,11 @@ public interface ILogic {
     class HivesToSubscribeNoFound extends RuntimeException {
         public HivesToSubscribeNoFound(String msg) {super(msg);}
     }
+
+    void saveSubscription(int id);
+
+    ArrayList<Integer> getSubscriptions() throws IOException;
+
+    void deleteSubscription(int id);
+
 }
