@@ -69,7 +69,9 @@ public class ImageAdapter extends BaseAdapter {
             }
         });
         title.setText(hives.get(position).getName());
-        weight.setText(hives.get(position).getCurrWeight() + " +3"); // TODO hardcoded +3
+        char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
+        String formattedWeightDisplay = String.format("%.2f %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
+        weight.setText(formattedWeightDisplay);
 
         return gridView;
     }
