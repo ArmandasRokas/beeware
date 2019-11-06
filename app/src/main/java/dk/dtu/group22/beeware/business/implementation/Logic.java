@@ -44,7 +44,6 @@ public class Logic implements ILogic {
 
     @Override
     public List<Hive> getHives(User user, int daysDelta) {
-        // TODO implement daysDelta. Armandas. Days delta is how many days back needs to fetched from today
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
         List<Hive> subscribedHives = userArraylist.getSubscribedHives(user);
@@ -69,18 +68,15 @@ public class Logic implements ILogic {
 
     private Hive calculateCurrValuesAndStatus(Hive hive) {
         hive.setCurrWeight(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getWeight());
-        System.out.println(hive.getMeasurements().get(0).getTimestamp().toString().substring(8, 10));
 
-        Calendar currentDate = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
 
         long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
         Calendar yesterday = Calendar.getInstance();
-        yesterday.setTimeInMillis(currentDate.getTimeInMillis() - twentyFourHoursInMillis);
+        yesterday.setTimeInMillis(today.getTimeInMillis() - twentyFourHoursInMillis);
 
-        System.out.println(currentDate.getTime());
-        System.out.println(yesterday.getTime());
-        int prevMidnightIndex = getClosestMidnightValIndex(hive, currentDate, 0);
-        int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, prevMidnightIndex);
+        int prevMidnightIndex = getClosestMidnightValIndex(hive, today, 0);
+        int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, hive.getMeasurements().size() - prevMidnightIndex-1);
 
         double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
         double prevprevMidnightWeight = hive.getMeasurements().get(prevprevMidnightIndex).getWeight();
@@ -91,17 +87,15 @@ public class Logic implements ILogic {
 
     /**
      * @param hive
-     * @param day        The day we want to find the (most recently occurring) midnight for. More specifically if you had day x at clock 22:10 it will find the index corrosponding to the closest
+     * @param day        The day we want to find the (most recently occurring) midnight for. More specifically if you had day x at clock 22:10 it will find the index corresponding to day x at 00:00
      * @param startIndex Where to start to search in the data, from the end of the Hive.measurements list. Distance from end of list. 0 is equivalent to end of list.
      * @return index in the hive.measurments list, where the timestamp is the closest to the most recently occuring midnight, before the day variable.
      */
     private int getClosestMidnightValIndex(Hive hive, Calendar day, int startIndex) {
         Calendar idealPrevMidnight = getMidnightInstanceOfDay(day);
-        System.out.println("Day: " + day.getTime());
-        System.out.println("Idealmidnight: "+idealPrevMidnight.getTime());
-        Timestamp closest_midnight_value = hive.getMeasurements().get(hive.getMeasurements().size() - 1 - startIndex).getTimestamp();
+        int res = hive.getMeasurements().size() - 1 - startIndex;
+        Timestamp closest_midnight_value = hive.getMeasurements().get(res).getTimestamp();
         Long smallestDeltaFromMidnight = Math.abs(idealPrevMidnight.getTimeInMillis() - closest_midnight_value.getTime());
-        int res = startIndex;
         for (int i = startIndex; i < hive.getMeasurements().size(); ++i) {
             int currentIndex = hive.getMeasurements().size() - 1 - i;
             Timestamp midnight_candidate = hive.getMeasurements().get(currentIndex).getTimestamp();
@@ -113,7 +107,6 @@ public class Logic implements ILogic {
                 break;
             }
         }
-        System.out.println("Found midnight: "+ hive.getMeasurements().get(res).getTimestamp());
         return res;
     }
 
