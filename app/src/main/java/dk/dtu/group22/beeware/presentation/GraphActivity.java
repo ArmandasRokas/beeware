@@ -57,6 +57,7 @@ public class GraphActivity extends AppCompatActivity {
     private int hiveId;
     private String hiveName;
     private double currentWeight, weightDelta, currentTemp, currentLigth, currentHumidity;
+    private int orientation;
 
     private final String TAG = "GraphActivity";
 
@@ -83,13 +84,16 @@ public class GraphActivity extends AppCompatActivity {
         // Weight is checked by default
         weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
 
+        orientation = this.getResources().getConfiguration().orientation;
+
         // Show / hide activity bar and big switches on rotation
-        int orientation = this.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setupToolbar();
             setPortraitMode();
+            graphViewModel.setZoom(10);
         } else {
             setLandscapeMode();
+            graphViewModel.setZoom(100);
         }
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
@@ -152,8 +156,6 @@ public class GraphActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new DateFormatter());
         /*
         xAxis.setValueFormatter(new IndexAxisValueFormatter(){
-
-
             @Override
             public String getFormattedValue(float value) {
                 Date date = new Date((long)value);
@@ -384,13 +386,20 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
     }
 
+    private String previousDay;
+
     // Format dates for graph X axis
     private class DateFormatter extends ValueFormatter {
 
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
-            return new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH)
-                    .format(new Date((long) value));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH);
+            String date = simpleDateFormat.format(new Date((long) value));
+
+            if (orientation == Configuration.ORIENTATION_PORTRAIT){
+                return date.substring(0,5);
+            }
+            return date;
         }
     }
 

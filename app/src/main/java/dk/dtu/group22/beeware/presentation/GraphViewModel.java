@@ -8,6 +8,7 @@ import com.github.mikephil.charting.data.Entry;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import dk.dtu.group22.beeware.business.implementation.Logic;
@@ -18,18 +19,16 @@ import dk.dtu.group22.beeware.dal.dao.Measurement;
 public class GraphViewModel extends ViewModel {
     private final String TAG = "GraphViewModel";
     private ILogic logic = new Logic();
-
     private Hive hive;
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false;
 
-    // TODO: Update zoom settings with real data:
     // Center at last value in array to show current time.
-    // Default Zoom is (all data points) / (how many data points you want to see).
-    // (e.g. Year / Week)
-    private float xCenter = 0, defaultZoom = 1;
+    //Getting the current date
+    Date date = new Date();
+    private float xCenter = date.getTime(), pointsVisible;
 
     public float getxCenter() {
         return xCenter;
@@ -40,11 +39,16 @@ public class GraphViewModel extends ViewModel {
     }
 
     public float getZoom() {
-        return defaultZoom;
+        // The number "zoom" is total / how many you want to see
+        return hive.getMeasurements().size() / pointsVisible;
     }
 
-    public void setZoom(float defaultZoom) {
-        this.defaultZoom = defaultZoom;
+    public void setZoom(float pointsVisible) {
+        this.pointsVisible = pointsVisible;
+    }
+
+    public Hive getHive(){
+        return hive;
     }
 
     public boolean isWeightLineVisible() {
@@ -84,7 +88,7 @@ public class GraphViewModel extends ViewModel {
         // TODO: Pass the selected hive! And make sensible settings for timestamp
         if (hive == null || hive.getMeasurements() == null) {
             // One week!
-            hive = logic.getHive(tempHive, new Timestamp(System.currentTimeMillis() - (1000 * 3600 * 24 * 7)), new Timestamp(System.currentTimeMillis()));
+            hive = logic.getHive(tempHive, new Timestamp(System.currentTimeMillis() - ((long)1000 * 3600 * 24 * 7 * 4)), new Timestamp(System.currentTimeMillis()));
             Log.d(TAG, "downloadHiveData: Downloading hive data.");
         }
     }
