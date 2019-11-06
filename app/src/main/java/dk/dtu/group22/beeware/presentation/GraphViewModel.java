@@ -19,6 +19,7 @@ import dk.dtu.group22.beeware.dal.dao.Measurement;
 public class GraphViewModel extends ViewModel {
     private final String TAG = "GraphViewModel";
     private ILogic logic = new Logic();
+    private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
 
     // State
@@ -101,6 +102,7 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             float weight = (float) measure.getWeight();
             res.add(new Entry(time, weight));
+            //Log.d(TAG, "extractWeight: TEST: "  + weight);
         }
         return res;
     }
@@ -120,7 +122,7 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
-            res.add(new Entry(time, illum));
+            res.add(new Entry(time, illum / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
         }
         return res;
     }
@@ -130,7 +132,8 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, humid));
+            res.add(new Entry(time, humid / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
+            Log.d(TAG, "extractHumidity: humid = " + humid);
         }
         return res;
     }
@@ -154,5 +157,37 @@ public class GraphViewModel extends ViewModel {
             }
         }
         return res;
+    }
+
+    public float getLeftAxisMin() {
+        return leftAxisMin;
+    }
+
+    public void setLeftAxisMin(float leftAxisMin) {
+        this.leftAxisMin = leftAxisMin;
+    }
+
+    public float getLeftAxismax() {
+        return leftAxismax;
+    }
+
+    public void setLeftAxismax(float leftAxismax) {
+        this.leftAxismax = leftAxismax;
+    }
+
+    public float getRightAxisMin() {
+        return rightAxisMin;
+    }
+
+    public void setRightAxisMin(float rightAxisMin) {
+        this.rightAxisMin = rightAxisMin;
+    }
+
+    public float getRightAxisMax() {
+        return rightAxisMax;
+    }
+
+    public void setRightAxisMax(float rightAxisMax) {
+        this.rightAxisMax = rightAxisMax;
     }
 }

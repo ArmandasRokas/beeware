@@ -56,7 +56,7 @@ public class GraphActivity extends AppCompatActivity {
             lineDataSetSunlight, lineDataSetHumidity;
     private int hiveId;
     private String hiveName;
-    private double currentWeight, weightDelta, currentTemp, currentLigth, currentHumidity;
+    private float currentWeight, weightDelta, currentTemp, currentLigth, currentHumidity;
     private int orientation;
 
     private final String TAG = "GraphActivity";
@@ -71,11 +71,15 @@ public class GraphActivity extends AppCompatActivity {
         Intent intent = getIntent();
         hiveId = intent.getIntExtra("hiveid", -1);
         hiveName = intent.getStringExtra("hivename");
-        currentWeight = 100.00; // TODO: get data same way as above
-        weightDelta = -1.000;
+        currentWeight = intent.getFloatExtra("currentweight", 0);
+        weightDelta = Math.abs(intent.getFloatExtra("weightdelta", 0));
+        Log.d(TAG, "onCreate: currentWeigth:" + currentWeight);
+
+        if (hiveId == -1) {
+            // TODO: Go home, try again message
+        }
 
         progressBar = findViewById(R.id.progressBar);
-
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
@@ -85,6 +89,13 @@ public class GraphActivity extends AppCompatActivity {
         weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
 
         orientation = this.getResources().getConfiguration().orientation;
+
+        // TODO: set these from user defined critical values (with fallback)
+        graphViewModel.setLeftAxismax(currentWeight + 15);
+        graphViewModel.setLeftAxisMin(currentWeight - 15);
+        graphViewModel.setRightAxisMax(40);
+        graphViewModel.setRightAxisMin(20);
+
 
         // Show / hide activity bar and big switches on rotation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -174,6 +185,15 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetSunlight.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSetHumidity.setAxisDependency(YAxis.AxisDependency.LEFT);
 
+        // Scale axises
+        YAxis leftAxis = lineChart.getAxisLeft();
+        YAxis rightAxis = lineChart.getAxisRight();
+        leftAxis.setAxisMaximum(graphViewModel.getLeftAxismax());
+        leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
+        rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
+        rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
+
+
         // Set colors and line width
         lineDataSetWeight.setColors(new int[]{R.color.BEE_graphWeight}, this);
         lineDataSetTemperature.setColors(new int[]{R.color.BEE_graphTemperature}, this);
@@ -186,7 +206,7 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setLineWidth(1);
 
         // Set text size
-        lineChart.getXAxis().setTextSize(10);
+        lineChart.getXAxis().setTextSize(9);
         lineDataSetWeight.setValueTextSize(10);
         lineDataSetTemperature.setValueTextSize(10);
 
@@ -195,6 +215,14 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSetSunlight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSetHumidity.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+        // Removing values and circle points from weight and temp graphs in landscape
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            lineDataSetWeight.setDrawValues(false);
+            lineDataSetWeight.setDrawCircles(false);
+            lineDataSetTemperature.setDrawValues(false);
+            lineDataSetTemperature.setDrawCircles(false);
+        }
 
         // Removing values and circle points from light and humidity graphs
         lineDataSetSunlight.setDrawValues(false);
@@ -393,7 +421,7 @@ public class GraphActivity extends AppCompatActivity {
 
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
             String date = simpleDateFormat.format(new Date((long) value));
 
             if (orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -402,7 +430,6 @@ public class GraphActivity extends AppCompatActivity {
             return date;
         }
     }
-
 
     // This task downloads data and initalizes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {

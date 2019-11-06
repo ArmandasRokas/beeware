@@ -63,8 +63,11 @@ public class ImageAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 Intent ID = new Intent(ctx, GraphActivity.class);
-                ID.putExtra("hiveid", hives.get(position).getId());
-                ID.putExtra("hivename", hives.get(position).getName());
+                Hive clickedHiveHive = hives.get(position);
+                ID.putExtra("hiveid", clickedHiveHive.getId());
+                ID.putExtra("hivename", clickedHiveHive.getName());
+                ID.putExtra("currentweight", (float) clickedHiveHive.getCurrWeight());
+                ID.putExtra("weightdelta", (float) clickedHiveHive.getWeightDelta());
                 ctx.startActivity(ID);
             }
         });
