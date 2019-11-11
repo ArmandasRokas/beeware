@@ -15,6 +15,8 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 
+import static java.lang.Double.NaN;
+
 public class ImageAdapter extends BaseAdapter {
 
     Context ctx;
@@ -73,7 +75,13 @@ public class ImageAdapter extends BaseAdapter {
         });
         title.setText(hives.get(position).getName());
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
-        String formattedWeightDisplay = String.format("%.2f %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
+        String formattedWeightDisplay = "";
+        if(Double.isNaN(hives.get(position).getWeightDelta())){
+            formattedWeightDisplay = String.format("%.1fkg %s", hives.get(position).getCurrWeight(), "Delta N/A");
+        } else{
+            formattedWeightDisplay = String.format("%.1fkg %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
+        }
+
         weight.setText(formattedWeightDisplay);
 
         return gridView;
