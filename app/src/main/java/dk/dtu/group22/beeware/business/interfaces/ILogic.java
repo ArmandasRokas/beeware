@@ -38,6 +38,8 @@ public interface ILogic {
 
     List<Hive> getHivesToSubscribe();
 
+    void unsubUAHive(User user, Hive hive);
+
     class HiveNotFound extends RuntimeException {
         public HiveNotFound(String msg) {super(msg);}
     }
@@ -48,7 +50,7 @@ public interface ILogic {
 
     void saveSubscription(int id);
 
-    List<Integer> getSubscriptions();
+    ArrayList<Integer> getSubscriptions();
 
     void deleteSubscription(int id);
 

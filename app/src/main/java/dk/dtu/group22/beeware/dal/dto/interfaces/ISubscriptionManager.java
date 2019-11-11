@@ -1,12 +1,12 @@
 package dk.dtu.group22.beeware.dal.dto.interfaces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface ISubscriptionManager {
 
     void saveSubscription(int id);
 
-    List<Integer> getSubscriptions();
+    ArrayList<Integer> getSubscriptions();
 
     void deleteSubscription(int id);
 

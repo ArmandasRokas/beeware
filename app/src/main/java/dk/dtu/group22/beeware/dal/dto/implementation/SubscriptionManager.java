@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
@@ -25,16 +24,19 @@ public class SubscriptionManager implements ISubscriptionManager {
         } else {
             subscriptions += id + ",";
         }
+        System.out.println("");
         sharedPreferences.edit().putString("ids", subscriptions).apply();
     }
 
-    public List<Integer> getSubscriptions() {
+    public ArrayList<Integer> getSubscriptions() {
 
-        List<Integer> subscriptions_list = new ArrayList<>();
+        ArrayList<Integer> subscriptions_list = new ArrayList<>();
         String[] subscriptions_string = sharedPreferences.getString("ids", "").split(",");
 
         for (String id : subscriptions_string) {
-            subscriptions_list.add(Integer.valueOf(id));
+            if (!id.equals("")) {
+                subscriptions_list.add(Integer.valueOf(id));
+            }
         }
 
         return subscriptions_list;

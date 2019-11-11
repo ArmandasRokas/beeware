@@ -2,7 +2,6 @@ package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.Context;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -160,12 +159,18 @@ public class Logic implements ILogic {
     }
 
     @Override
+    public void unsubUAHive(User user, Hive hive) {
+        userArraylist.unsubscribeHive(user, hive);
+    }
+
+
+    @Override
     public void saveSubscription(int id) {
         subscriptionManager.saveSubscription(id);
     }
 
     @Override
-    public List<Integer> getSubscriptions() {
+    public ArrayList<Integer> getSubscriptions() {
         return subscriptionManager.getSubscriptions();
     }
 

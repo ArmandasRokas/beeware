@@ -18,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
@@ -136,6 +137,7 @@ public class SubscribeRecycler extends AppCompatActivity {
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
     private List<Hive> mDataset;
     private ILogic logic;
+    private ArrayList<Integer> subbedIds;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -158,6 +160,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     public SubscribeAdapter(ILogic logic, List<Hive> myDataset) {
         this.logic = logic;
         mDataset = myDataset;
+        subbedIds = logic.getSubscriptions();
     }
 
     // Create new views (invoked by the layout manager)
@@ -180,33 +183,38 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         //holder.textView.setText(mDataset.get(position).getName());
         holder.subHiveName.setText(mDataset.get(position).getName());
 
-        // TODO: Ændre dette så det passer med at være en switch (indlæs subbed hives og tick dem on, samt fjern hives når ticket off)
+        // Checks if the current list position element is in list of subbed ids
+        for (int id : subbedIds) {
+            if (id == mDataset.get(position).getId()) {
+                holder.subHiveSwitch.setChecked(true);
+                break;
+            } else {
+                holder.subHiveSwitch.setChecked(false);
+            }
+        }
+
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
+                    // TODO hardcoded user
+                    User user = new User();
+                    user.setId(1);
+                    Hive hive = new Hive();
+                    hive.setId(mDataset.get(position).getId());
+                    hive.setName(mDataset.get(position).getName());
+
                     System.out.println("The switch is set to " + holder.subHiveSwitch.isChecked());
                     if (holder.subHiveSwitch.isChecked()) {
                         // Calls the DAL to save the id in a file
-                        try {
-                            logic.saveSubscription(mDataset.get(position).getId());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        logic.saveSubscription(mDataset.get(position).getId());
 
-                        // TODO hardcoded user
-                        User user = new User();
-                        user.setId(1);
-                        Hive hive = new Hive();
-                        hive.setId(mDataset.get(position).getId());
-                        hive.setName(mDataset.get(position).getName());
                         logic.subscribeHive(user, hive);
                     } else {
                         // Deletes the hive id from the file of saved subs in DAL
-                        try {
-                            logic.deleteSubscription(mDataset.get(position).getId());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        logic.deleteSubscription(mDataset.get(position).getId());
+
+                        logic.unsubUAHive(user, hive);
                     }
+                    subbedIds = logic.getSubscriptions();
                 }
         );
 
