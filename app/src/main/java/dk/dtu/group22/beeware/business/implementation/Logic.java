@@ -53,7 +53,8 @@ public class Logic implements ILogic {
             if (h == null) {
                 throw new HiveNotFound("Hive with id " + hive.getId() + " does not exits.");
             } else {
-                h = calculateCurrValuesAndStatus(h);
+                h = calculateStatus(h);
+                setCurrValues(h);
                 hivesWithMeasurements.add(h);
             }
 
@@ -66,9 +67,7 @@ public class Logic implements ILogic {
         return hiveHivetool.getHive(hive, sinceTime, untilTime);
     }
 
-    private Hive calculateCurrValuesAndStatus(Hive hive) {
-        hive.setCurrWeight(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getWeight());
-
+    private Hive calculateStatus(Hive hive) {
         Calendar today = Calendar.getInstance();
 
         long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
@@ -83,6 +82,13 @@ public class Logic implements ILogic {
         double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
         hive.setWeightDelta(deltaWeight);
         return hive;
+    }
+
+    private void setCurrValues(Hive hive) {
+        hive.setCurrWeight(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getWeight());
+        hive.setCurrTemp(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTempIn());
+        hive.setCurrIlluminance(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getIlluminance());
+        hive.setCurrHum(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getHumidity());
     }
 
     /**

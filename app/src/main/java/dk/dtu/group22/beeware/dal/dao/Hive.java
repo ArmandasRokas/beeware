@@ -8,6 +8,9 @@ public class Hive {
     private List<Measurement> measurements;
     private double weightDelta;
     private double currWeight;
+    private double currTemp;
+    private double currIlluminance;
+    private double currHum;
     private int weightStatus;
     private int tempStatus;
     private int humidStatus;
@@ -98,5 +101,29 @@ public class Hive {
 
     public void setMeasurements(List<Measurement> measurements) {
         this.measurements = measurements;
+    }
+
+    public double getCurrTemp() {
+        return currTemp;
+    }
+
+    public void setCurrTemp(double currTemp) {
+        this.currTemp = currTemp;
+    }
+
+    public double getCurrIlluminance() {
+        return currIlluminance;
+    }
+
+    public void setCurrIlluminance(double currIlluminance) {
+        this.currIlluminance = currIlluminance;
+    }
+
+    public double getCurrHum() {
+        return currHum;
+    }
+
+    public void setCurrHum(double currHum) {
+        this.currHum = currHum;
     }
 }
