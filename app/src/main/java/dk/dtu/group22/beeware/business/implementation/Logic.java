@@ -58,7 +58,6 @@ public class Logic implements ILogic {
                 hivesWithMeasurements.add(h);
             }
 
-
         }
         return hivesWithMeasurements;
     }
@@ -76,11 +75,17 @@ public class Logic implements ILogic {
 
         int prevMidnightIndex = getClosestMidnightValIndex(hive, today, 0);
         int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, hive.getMeasurements().size() - prevMidnightIndex-1);
+        Timestamp prevTime = hive.getMeasurements().get(prevMidnightIndex).getTimestamp();
+        Timestamp prevprevTime = hive.getMeasurements().get(prevprevMidnightIndex).getTimestamp();
 
-        double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
-        double prevprevMidnightWeight = hive.getMeasurements().get(prevprevMidnightIndex).getWeight();
-        double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
-        hive.setWeightDelta(deltaWeight);
+        if(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday)){
+           hive.setWeightDelta(Double.NaN);
+        }else {
+            double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
+            double prevprevMidnightWeight = hive.getMeasurements().get(prevprevMidnightIndex).getWeight();
+            double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
+            hive.setWeightDelta(deltaWeight);
+        }
         return hive;
     }
 
@@ -89,6 +94,17 @@ public class Logic implements ILogic {
         hive.setCurrTemp(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTempIn());
         hive.setCurrIlluminance(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getIlluminance());
         hive.setCurrHum(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getHumidity());
+    }
+
+    private boolean isAroundMidnight(Timestamp time, Calendar day){
+        Calendar idealMidnight = getMidnightInstanceOfDay(day);
+        int hourInMillis =  60*60*1000;
+        long beforeMidnight = idealMidnight.getTimeInMillis() - hourInMillis;
+        long afterMidnight = idealMidnight.getTimeInMillis() + hourInMillis;
+        if(beforeMidnight <= time.getTime() && time.getTime() <= afterMidnight){
+            return true;
+        }
+        return false;
     }
 
     /**
