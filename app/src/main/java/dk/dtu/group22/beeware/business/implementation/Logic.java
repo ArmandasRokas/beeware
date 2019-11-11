@@ -63,7 +63,7 @@ public class Logic implements ILogic {
         Timestamp prevTime = hive.getMeasurements().get(prevMidnightIndex).getTimestamp();
         Timestamp prevprevTime = hive.getMeasurements().get(prevprevMidnightIndex).getTimestamp();
 
-        if(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday)){
+        if(!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))){
            hive.setWeightDelta(Double.NaN);
         }else {
             double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
