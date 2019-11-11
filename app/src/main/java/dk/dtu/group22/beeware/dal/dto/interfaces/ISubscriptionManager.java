@@ -1,14 +1,13 @@
 package dk.dtu.group22.beeware.dal.dto.interfaces;
 
-import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 public interface ISubscriptionManager {
 
-    void saveSubscription(int id) throws IOException;
+    void saveSubscription(int id);
 
-    Map<String, ?> getSubscriptions() throws IOException;
+    List<Integer> getSubscriptions();
 
-    void deleteSubscription(int id) throws IOException;
+    void deleteSubscription(int id);
 
 }

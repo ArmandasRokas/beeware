@@ -3,102 +3,62 @@ package dk.dtu.group22.beeware.dal.dto.implementation;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
 
 public class SubscriptionManager implements ISubscriptionManager {
 
-    private File file;
-    private Context ctx;
     private SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
 
     public SubscriptionManager(Context ctx) {
-        this.ctx = ctx;
-        //sharedPreferences = ctx.getSharedPreferences(, Context.MODE_PRIVATE);
-        sharedPreferences = ctx.getSharedPreferences(String.valueOf(R.string.subscription_ids), Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        /*
-        try {
-            file = new File(ctx.getFilesDir(), "subscriptions.txt");
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+        sharedPreferences = ctx.getSharedPreferences(String.valueOf(R.string.subscriptions), Context.MODE_PRIVATE);
     }
 
-    public void saveSubscription(int id) throws IOException {
-        editor.putInt("hive" + id, id);
-        editor.commit();
-        Map<String, ?> allEntries = sharedPreferences.getAll();
+    public void saveSubscription(int id) {
 
-        for(Map.Entry<String, ?> entry : allEntries.entrySet()){
-            System.out.println("map values "+  entry.getKey() + ": " + entry.getValue().toString());
+        String subscriptions = sharedPreferences.getString("ids", "");
+        if (subscriptions.equals("")) {
+            subscriptions = id + ",";
+        } else {
+            subscriptions += id + ",";
         }
-
-        /*
-        FileWriter fileWriter = null;
-        BufferedWriter bufferedWriter = null;
-        try {
-            fileWriter = new FileWriter(file, true);
-            bufferedWriter = new BufferedWriter(fileWriter);
-
-            bufferedWriter.write(id);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fileWriter != null) {
-                fileWriter.close();
-            }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
-            }
-        }
-        */
+        sharedPreferences.edit().putString("ids", subscriptions).apply();
     }
 
-    public Map<String, ?> getSubscriptions() throws IOException {
+    public List<Integer> getSubscriptions() {
 
-        //return Map<String, ?> subMap = sharedPreferences.getAll();
+        List<Integer> subscriptions_list = new ArrayList<>();
+        String[] subscriptions_string = sharedPreferences.getString("ids", "").split(",");
 
-        /*
-        FileReader fileReader = null;
-        BufferedReader bufferedReader = null;
-        ArrayList<Integer> subscriptions = new ArrayList<>();
-        try {
-            fileReader = new FileReader(file);
-            bufferedReader = new BufferedReader(fileReader);
-
-            String line = bufferedReader.readLine();
-            while(line != null){
-                subscriptions.add(Integer.parseInt(line));
-                line = bufferedReader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fileReader != null) {
-                fileReader.close();
-            }
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
+        for (String id : subscriptions_string) {
+            subscriptions_list.add(Integer.valueOf(id));
         }
-        return subscriptions;
-        */
-        return null;
+
+        return subscriptions_list;
     }
 
-    public void deleteSubscription(int id) throws IOException {
-    editor.remove("hive" + id);
+    public void deleteSubscription(int id) {
+
+        String[] subscriptions_before = sharedPreferences.getString("ids", "").split(",");
+        for (int i = 0; i < subscriptions_before.length; i++) {
+            int sub = Integer.valueOf(subscriptions_before[i]);
+            if (sub == id) {
+                subscriptions_before[i] = null;
+            }
+        }
+
+        StringBuilder subscriptions_after = new StringBuilder();
+        for (String s : subscriptions_before) {
+            if (s != null) {
+                subscriptions_after.append(s);
+                subscriptions_after.append(",");
+            }
+        }
+
+        sharedPreferences.edit().putString("ids", subscriptions_after.toString()).apply();
     }
 
 }

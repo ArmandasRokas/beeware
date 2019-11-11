@@ -160,19 +160,17 @@ public class Logic implements ILogic {
     }
 
     @Override
-    public void saveSubscription(int id) throws IOException {
+    public void saveSubscription(int id) {
         subscriptionManager.saveSubscription(id);
     }
 
     @Override
-    public ArrayList<Integer> getSubscriptions() throws IOException {
-        subscriptionManager.getSubscriptions();
-        //TODO lav map til arrayList
-        return null;
+    public List<Integer> getSubscriptions() {
+        return subscriptionManager.getSubscriptions();
     }
 
     @Override
-    public void deleteSubscription(int id) throws IOException {
+    public void deleteSubscription(int id) {
         subscriptionManager.deleteSubscription(id);
     }
 

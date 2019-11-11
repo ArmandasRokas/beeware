@@ -46,10 +46,10 @@ public interface ILogic {
         public HivesToSubscribeNoFound(String msg) {super(msg);}
     }
 
-    void saveSubscription(int id) throws IOException;
+    void saveSubscription(int id);
 
-    ArrayList<Integer> getSubscriptions() throws IOException;
+    List<Integer> getSubscriptions();
 
-    void deleteSubscription(int id) throws IOException;
+    void deleteSubscription(int id);
 
 }

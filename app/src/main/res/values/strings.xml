@@ -8,5 +8,7 @@
     <string name="hive">Hive</string>
     <string name="leftAxisLegend">Kg</string>
     <string name="rightAxisLegend">C°</string>
-    <string name="subscription_ids">asd</string>
+
+    <!-- Preferences -->
+    <string name="subscriptions">subscriptions</string>
 </resources>
