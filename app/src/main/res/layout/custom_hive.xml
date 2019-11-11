@@ -22,18 +22,20 @@
         app:layout_constraintVertical_bias="00" />
 
     <TextView
-        android:id="@+id/album_weight"
+        android:id="@+id/album_title"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:gravity="bottom|center_horizontal"
-        android:text="66kg +6"
+        android:text="@string/bistade"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/album"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toBottomOf="@+id/album"
         app:layout_constraintVertical_bias="0.0" />
-
+<!--
     <TextView
         android:id="@+id/album_title"
         android:layout_width="0dp"
@@ -48,7 +50,7 @@
         app:layout_constraintStart_toStartOf="@+id/album_weight"
         app:layout_constraintTop_toBottomOf="@+id/album_weight"
         app:layout_constraintVertical_bias="0.0" />
-
+-->
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="30dp"
@@ -60,7 +62,7 @@
         app:srcCompat="@drawable/roundbutton" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/album_weight"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"

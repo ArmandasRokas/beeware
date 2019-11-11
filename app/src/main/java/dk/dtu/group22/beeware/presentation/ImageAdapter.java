@@ -76,7 +76,7 @@ public class ImageAdapter extends BaseAdapter {
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
         String formattedWeightDisplay = "";
         if(Double.isNaN(hives.get(position).getWeightDelta())){
-            formattedWeightDisplay = String.format("%.1fkg %s", hives.get(position).getCurrWeight(), "Delta N/A");
+            formattedWeightDisplay = String.format("%.1fkg", hives.get(position).getCurrWeight());
         } else{
             formattedWeightDisplay = String.format("%.1fkg %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
         }
