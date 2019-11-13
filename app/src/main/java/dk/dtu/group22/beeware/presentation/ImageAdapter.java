@@ -15,8 +15,6 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 
-import static java.lang.Double.NaN;
-
 public class ImageAdapter extends BaseAdapter {
 
     Context ctx;
@@ -57,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView img = gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
-        TextView weight = gridView.findViewById(R.id.album_weight);
+        TextView weight = gridView.findViewById(R.id.hive_currWeightTV);
 
         img.setImageResource(R.drawable.beehive2);
         img.setOnClickListener(new View.OnClickListener() {
