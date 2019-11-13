@@ -62,7 +62,7 @@
         app:srcCompat="@drawable/roundbutton" />
 
     <TextView
-        android:id="@+id/album_weight"
+        android:id="@+id/hive_currWeightTV"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -84,7 +84,7 @@
         app:srcCompat="@drawable/roundbutton" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/hive_currTempTV"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -107,7 +107,7 @@
         app:srcCompat="@drawable/roundbutton" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/hive_currHumTV"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
