@@ -1,11 +1,5 @@
 package dk.dtu.group22.beeware.presentation;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -19,27 +13,33 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
+import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscribeRecycler extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ILogic logic;
+    private Logic logic;
     private TextView errorTv;
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        logic = new Logic(this);
+        logic = Logic.getSingleton();
+        logic.setContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe);
         setupToolbar();
@@ -63,16 +63,18 @@ public class SubscribeRecycler extends AppCompatActivity {
 
 
         new AsyncTask() {
-            List<Hive> hives;
+            List<NameIdPair> hivesToSub;
             String errorMsg = null;
+
             @Override
             protected void onPreExecute() {
                 progressBar.setVisibility(View.VISIBLE);
             }
+
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hives = logic.getHivesToSubscribe();
+                    hivesToSub = logic.getHivesToSubscribe();
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();
@@ -84,10 +86,10 @@ public class SubscribeRecycler extends AppCompatActivity {
             @Override
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
-                if (errorMsg != null){
+                if (errorMsg != null) {
                     errorTv.setText(errorMsg);
-                } else{
-                    mAdapter = new SubscribeAdapter(logic, hives);
+                } else {
+                    mAdapter = new SubscribeAdapter(hivesToSub);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
@@ -107,7 +109,7 @@ public class SubscribeRecycler extends AppCompatActivity {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         params.setMarginEnd(actionBarHeight + 25);
         toolbar_title.setLayoutParams(params);
@@ -135,9 +137,9 @@ public class SubscribeRecycler extends AppCompatActivity {
 }
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
-    private List<Hive> mDataset;
-    private ILogic logic;
     private ArrayList<Integer> subbedIds;
+    private List<NameIdPair> mDataset;
+    private Logic logic = Logic.getSingleton();
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -147,6 +149,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         //public TextView textView;
         public TextView subHiveName;
         public Switch subHiveSwitch;
+
         public MyViewHolder(View v) {
             super(v);
             //textView = v.findViewById(R.id.hiveNameTv);
@@ -157,8 +160,8 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SubscribeAdapter(ILogic logic, List<Hive> myDataset) {
-        this.logic = logic;
+
+    public SubscribeAdapter(List<NameIdPair> myDataset) {
         mDataset = myDataset;
         subbedIds = logic.getSubscriptions();
     }
@@ -185,7 +188,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
         // Checks if the current list position element is in list of subbed ids
         for (int id : subbedIds) {
-            if (id == mDataset.get(position).getId()) {
+            if (id == mDataset.get(position).getID()) {
                 holder.subHiveSwitch.setChecked(true);
                 break;
             } else {
@@ -196,32 +199,20 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
                     // TODO hardcoded user
-                    User user = new User();
-                    user.setId(1);
-                    Hive hive = new Hive();
-                    hive.setId(mDataset.get(position).getId());
-                    hive.setName(mDataset.get(position).getName());
-
                     System.out.println("The switch is set to " + holder.subHiveSwitch.isChecked());
                     if (holder.subHiveSwitch.isChecked()) {
                         // Calls the DAL to save the id in a file
-                        logic.saveSubscription(mDataset.get(position).getId());
-
-                        logic.subscribeHive(user, hive);
+                        logic.subscribeHive(mDataset.get(position).getID());
                     } else {
                         // Deletes the hive id from the file of saved subs in DAL
-                        logic.deleteSubscription(mDataset.get(position).getId());
-
-                        logic.unsubUAHive(user, hive);
+                        logic.unsubscribeHive(mDataset.get(position).getID());
                     }
                     subbedIds = logic.getSubscriptions();
                 }
         );
 
 
-
     }
-
 
 
     // Return the size of your dataset (invoked by the layout manager)

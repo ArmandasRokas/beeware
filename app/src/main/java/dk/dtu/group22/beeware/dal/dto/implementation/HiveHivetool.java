@@ -1,9 +1,12 @@
 package dk.dtu.group22.beeware.dal.dto.implementation;
 
+import androidx.core.util.Pair;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -12,26 +15,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
-import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
 
-public class HiveHivetool implements IHive {
-    @Override
-    public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
+public class HiveHivetool {
+
+    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) {
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
          * not for a whole year. Buttons. This month, last month or something similar.
          * It solves the problem when the graph is zoomed out.
          */
+        Pair<String[], String> tmp = getDataLines(sinceTime, untilTime, id);
+        String[] lines = tmp.first;
+        String name = tmp.second;
 
-        String[] lines = getDataLines(sinceTime,untilTime,hive.getId());
 
-
-        hive.setMeasurements(extractDataFromCSVLines(lines));
-
-        return hive;
+        return new Pair<List<Measurement>, String>(extractDataFromCSVLines(lines), name);
     }
 
     /**
@@ -84,9 +84,9 @@ public class HiveHivetool implements IHive {
      * @param sinceTime
      * @param untilTime
      * @param hiveID
-     * @return A string array, where each indice is a CSV line
+     * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
-    private String[] getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID){
+    private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) {
         // Calculates number of days
         long milliseconds = untilTime.getTime() - sinceTime.getTime();
         int numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
@@ -102,13 +102,17 @@ public class HiveHivetool implements IHive {
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100*1000).get();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }
+
+        Elements nameElement = doc.getElementsByTag("title");
+        String name = nameElement.get(0).wholeText().split(": ")[1];
 
         Elements elements = doc.getElementsByTag("div");
         Element e = elements.get(2);
         String[] lines = e.wholeText().split("\n");
-        return lines;
+
+        return new Pair<String[], String>(lines, name);
     }
 
 

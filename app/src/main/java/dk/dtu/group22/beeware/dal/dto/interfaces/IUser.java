@@ -2,20 +2,16 @@ package dk.dtu.group22.beeware.dal.dto.interfaces;
 
 import java.util.List;
 
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
-
 public interface IUser {
-    void subscribeHive(User user, Hive hive) throws UserNoIdException, HiveNoIdException;
+    void subscribeHive(int id) throws UserNoIdException, HiveNoIdException;
 
     /**
-     * @param user The user must have id
-     * @return
+     * @return A list of subscribed hives ids.
      * @throws UserNoIdException
      */
-    List<Hive> getSubscribedHives(User user) throws UserNoIdException;
+    List<Integer> getSubscribedIds() throws UserNoIdException;
 
-    void unsubscribeHive(User user, Hive hive);
+    void unsubscribeHive(int id);
 
     class UserNoIdException extends RuntimeException {
         public UserNoIdException(String msg) {super(msg);}

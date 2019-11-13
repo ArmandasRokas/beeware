@@ -18,9 +18,10 @@ import dk.dtu.group22.beeware.dal.dao.Measurement;
 
 public class GraphViewModel extends ViewModel {
     private final String TAG = "GraphViewModel";
-    private ILogic logic = new Logic();
+    private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
+    //TODO: This is 8 weeks, not 26?? What is intended?
     private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // 26 weeks
 
     // State
@@ -49,7 +50,7 @@ public class GraphViewModel extends ViewModel {
         this.pointsVisible = pointsVisible;
     }
 
-    public Hive getHive(){
+    public Hive getHive() {
         return hive;
     }
 
@@ -86,13 +87,10 @@ public class GraphViewModel extends ViewModel {
     }
 
     // Data handling for graph
-    public void downloadHiveData(Hive tempHive) {
+    public void downloadHiveData(int id) {
         // TODO: Pass the selected hive! And make sensible settings for timestamp
-        if (hive == null || hive.getMeasurements() == null) {
-            // One week!
-            hive = logic.getHive(tempHive, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
-            Log.d(TAG, "downloadHiveData: Downloading hive data.");
-        }
+        hive = logic.getHive(id, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
+        Log.d(TAG, "downloadHiveData: Downloading hive data.");
     }
 
     // TODO: Set max values and scale illuminance and humidity

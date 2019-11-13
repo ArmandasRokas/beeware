@@ -21,7 +21,6 @@ public class ImageAdapter extends BaseAdapter {
 
     Context ctx;
     List<Hive> hives;
-    ILogic logic;
 
     ImageAdapter(Context ctx, List<Hive> hives){
         this.ctx = ctx;

@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.Context;
+import androidx.core.util.Pair;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -15,58 +16,76 @@ import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.IUser;
+import dk.dtu.group22.beeware.dal.dao.Measurement;
 import dk.dtu.group22.beeware.dal.dto.implementation.HiveHivetool;
 import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionHivetool;
-import dk.dtu.group22.beeware.dal.dto.implementation.UserArraylist;
+import dk.dtu.group22.beeware.dal.dto.implementation.UserHiveIds;
+import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dto.interfaces.IUser;
+import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
-public class Logic implements ILogic {
+public class Logic {
 
-    private IHive hiveHivetool;
-    private IUser userArraylist;
+    private HiveHivetool hiveHivetool;
     private ISubscription subscriptionHivetool;
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
+    private final static Logic logic = new Logic();
 
+
+    public static Logic getSingleton(){
+        return logic;
+    }
 
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
-        this.userArraylist = new UserArraylist();
         this.subscriptionHivetool = new SubscriptionHivetool();
     }
 
-    public Logic(Context ctx) {
-        this.ctx = ctx;
-        this.hiveHivetool = new HiveHivetool();
-        this.userArraylist = new UserArraylist();
-        this.subscriptionHivetool = new SubscriptionHivetool();
-        this.subscriptionManager = new SubscriptionManager(ctx);
+    public void setContext(Context context){
+        this.ctx = context;
+        this.subscriptionManager = new SubscriptionManager(context);
     }
 
-    @Override
-    public List<Hive> getHives(User user, int daysDelta) {
+
+
+    public List<Hive> getHives(int daysDelta) {
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
-        List<Hive> subscribedHives = userArraylist.getSubscribedHives(user);
+        List<Integer> subscribedHives = this.getSubscriptions();
         List<Hive> hivesWithMeasurements = new ArrayList<>();
-        for (Hive hive : subscribedHives) {
-            Hive h = hiveHivetool.getHive(hive, new Timestamp(since), new Timestamp(now));
-            if (h == null) {
-                throw new HiveNotFound("Hive with id " + hive.getId() + " does not exits.");
-            } else {
-                h = calculateStatus(h);
-                setCurrValues(h);
-                hivesWithMeasurements.add(h);
-            }
-
+        for (int id : subscribedHives) {
+            hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
         }
         return hivesWithMeasurements;
     }
 
-    public Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
-        return hiveHivetool.getHive(hive, sinceTime, untilTime);
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+        // TODO:
+        // 0. Check if the hive is cached
+        // 1. If cached return hive
+        // 2. otherwise create hive
+
+        return createHive(id, sinceTime, untilTime);
     }
 
-    private Hive calculateStatus(Hive hive) {
+    public Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+        Hive hive = new Hive();
+        hive.setId(id);
+
+        Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
+
+        hive.setMeasurements(measurementsAndName.first);
+        hive.setName(measurementsAndName.second);
+
+        calculateHiveStatus(hive);
+        setCurrValues(hive);
+
+        return hive;
+    }
+
+
+    private void calculateHiveStatus(Hive hive) {
         Calendar today = Calendar.getInstance();
 
         long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
@@ -86,7 +105,6 @@ public class Logic implements ILogic {
             double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
             hive.setWeightDelta(deltaWeight);
         }
-        return hive;
     }
 
     private void setCurrValues(Hive hive) {
@@ -149,52 +167,38 @@ public class Logic implements ILogic {
     }
 
 
-    @Override
-    public void subscribeHive(User user, Hive hive) {
+    public List<NameIdPair> getHivesToSubscribe() {
         try {
-            userArraylist.subscribeHive(user, hive);
-        } catch (Exception e) {
-            // TODO add exception handling
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public List<Hive> getHivesToSubscribe() {
-        try {
-            List<Hive> hives = subscriptionHivetool.getHivesToSubscribe();
-            if (hives == null || hives.isEmpty()) {
+            List<NameIdPair> hivesIdName = subscriptionHivetool.getHivesToSubscribe();
+            if (hivesIdName == null || hivesIdName.isEmpty()) {
                 throw new HivesToSubscribeNoFound("Business error. Unable to fetch data");
             } else {
-                return hives;
+                return hivesIdName;
             }
         } catch (Exception e) {
             throw new HivesToSubscribeNoFound(e.getMessage());
         }
     }
 
-    @Override
-    public void unsubUAHive(User user, Hive hive) {
-        userArraylist.unsubscribeHive(user, hive);
-    }
-
-
-    @Override
-    public void saveSubscription(int id) {
+    public void subscribeHive(int id) {
         subscriptionManager.saveSubscription(id);
     }
 
-    @Override
     public ArrayList<Integer> getSubscriptions() {
         return subscriptionManager.getSubscriptions();
     }
 
-    @Override
-    public void deleteSubscription(int id) {
+    public void unsubscribeHive(int id) {
         subscriptionManager.deleteSubscription(id);
     }
 
-    public IUser getUserArraylist() {
-        return this.userArraylist;
+
+    class HiveNotFound extends RuntimeException {
+        public HiveNotFound(String msg) {super(msg);}
     }
+
+    class HivesToSubscribeNoFound extends RuntimeException {
+        public HivesToSubscribeNoFound(String msg) {super(msg);}
+    }
+
 }

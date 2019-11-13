@@ -1,9 +1,9 @@
 package dk.dtu.group22.beeware.presentation;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -17,7 +17,7 @@ import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 
 public class TestingHiveTool extends AppCompatActivity {
-    private ILogic logic = new Logic();
+    private Logic logic = Logic.getSingleton();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +39,8 @@ public class TestingHiveTool extends AppCompatActivity {
 
 
         new AsyncTask() {
-            Hive hive = new Hive();
             String errorMsg = null;
+            Hive hive;
             @Override
             protected void onPreExecute() {
                 //progressBar.setVisibility(View.VISIBLE);
@@ -48,8 +48,7 @@ public class TestingHiveTool extends AppCompatActivity {
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hive.setId(240);
-                    hive = logic.getHive(hive, since, until);
+                    hive = logic.getHive(240, since, until);
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();
