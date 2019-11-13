@@ -1,14 +1,14 @@
 package dk.dtu.group22.beeware.presentation.unused;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,23 +43,18 @@ public class SubscribeHiveActivity extends AppCompatActivity {
                         user.setId(1);
                         Hive hive = new Hive();
                         String hiveId = idET.getText().toString();
-                        if (!(hiveId.equals(""))) {
-                            hive.setId(Integer.valueOf(hiveId));
-                            hiveBusiness.subscribeHive(user, hive);
-                            updateSubscribedHives();
-                        }
+                        int id = Integer.parseInt(hiveId);
+                        hiveBusiness.subscribeHive(id);
+                        updateSubscribedHives();
                     }
                 }
         );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void updateSubscribedHives(){
+    private void updateSubscribedHives() {
         TextView subscribedHivesTV = findViewById(R.id.subscribedHivesArrayTV);
-        User user = new User();
-        user.setId(1);
-        List<Hive> hives = hiveBusiness.getHives(user, 2);
-        System.out.println(hives.toString());
+        List<Hive> hives = hiveBusiness.getHives(2);
         subscribedHivesTV.setText(hives.stream().map(x -> x.getId()).collect(Collectors.toList()).toString());
     }
 }

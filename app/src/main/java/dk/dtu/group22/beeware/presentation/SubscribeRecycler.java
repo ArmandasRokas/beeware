@@ -1,11 +1,5 @@
 package dk.dtu.group22.beeware.presentation;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -17,13 +11,18 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.business.interfaces.ILogic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
+import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscribeRecycler extends AppCompatActivity {
 
@@ -61,7 +60,7 @@ public class SubscribeRecycler extends AppCompatActivity {
 
 
         new AsyncTask() {
-            List<Hive> hives;
+            List<NameIdPair> hivesToSub;
             String errorMsg = null;
             @Override
             protected void onPreExecute() {
@@ -70,7 +69,7 @@ public class SubscribeRecycler extends AppCompatActivity {
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hives = logic.getHivesToSubscribe();
+                    hivesToSub = logic.getHivesToSubscribe();
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();
@@ -85,7 +84,7 @@ public class SubscribeRecycler extends AppCompatActivity {
                 if (errorMsg != null){
                     errorTv.setText(errorMsg);
                 } else{
-                    mAdapter = new SubscribeAdapter(hives);
+                    mAdapter = new SubscribeAdapter(hivesToSub);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
@@ -133,7 +132,7 @@ public class SubscribeRecycler extends AppCompatActivity {
 }
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
-    private List<Hive> mDataset;
+    private List<NameIdPair> mDataset;
     private ILogic logic = new Logic();
 
     // Provide a reference to the views for each data item
@@ -154,7 +153,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SubscribeAdapter(List<Hive> myDataset) {
+    public SubscribeAdapter(List<NameIdPair> myDataset) {
         mDataset = myDataset;
     }
 
@@ -182,12 +181,8 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
                     // TODO hardcoded user
-                    User user = new User();
-                    user.setId(1);
-                    Hive hive = new Hive();
-                    hive.setId(mDataset.get(position).getId());
-                    hive.setName(mDataset.get(position).getName());
-                    logic.subscribeHive(user, hive );
+                    int id = mDataset.get(position).getID();
+                    logic.subscribeHive(id);
                 }
         );
     }
