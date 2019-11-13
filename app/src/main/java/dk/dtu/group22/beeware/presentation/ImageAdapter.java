@@ -55,6 +55,8 @@ public class ImageAdapter extends BaseAdapter {
         ImageView img = gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
         TextView weight = gridView.findViewById(R.id.hive_currWeightTV);
+        TextView temp = gridView.findViewById(R.id.hive_currTempTV);
+        TextView illum = gridView.findViewById(R.id.hive_currIllumTV);
 
         img.setImageResource(R.drawable.beehive2);
         img.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +82,8 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         weight.setText(formattedWeightDisplay);
+        temp.setText(String.format("%.1f\u2103(inside)",hives.get(position).getCurrTemp()));
+        illum.setText(String.format("%.0flx", hives.get(position).getCurrIlluminance()));
 
         return gridView;
     }
