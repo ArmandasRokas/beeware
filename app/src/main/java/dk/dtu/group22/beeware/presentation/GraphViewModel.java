@@ -21,6 +21,7 @@ public class GraphViewModel extends ViewModel {
     private ILogic logic = new Logic();
     private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
+    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // 26 weeks
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
@@ -89,7 +90,7 @@ public class GraphViewModel extends ViewModel {
         // TODO: Pass the selected hive! And make sensible settings for timestamp
         if (hive == null || hive.getMeasurements() == null) {
             // One week!
-            hive = logic.getHive(tempHive, new Timestamp(System.currentTimeMillis() - ((long)1000 * 3600 * 24 * 7 * 4)), new Timestamp(System.currentTimeMillis()));
+            hive = logic.getHive(tempHive, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
             Log.d(TAG, "downloadHiveData: Downloading hive data.");
         }
     }
