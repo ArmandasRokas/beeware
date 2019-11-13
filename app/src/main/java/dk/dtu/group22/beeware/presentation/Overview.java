@@ -22,7 +22,6 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
 import dk.dtu.group22.beeware.presentation.unused.PersonalSettings;
 
 public class Overview extends AppCompatActivity implements View.OnClickListener {
@@ -32,7 +31,6 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private ILogic logic;
-    private User user;
     private ImageButton subHiveButton;
     private ImageAdapter imageAdapter;
     private List<Hive> hives;
@@ -44,8 +42,6 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         ctx = this;
         logic = new Logic();
-        user = new User();
-        user.setId(1);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_overview);
@@ -91,7 +87,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hives = logic.getHives(user, 1);
+                    hives = logic.getHives(1);
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();

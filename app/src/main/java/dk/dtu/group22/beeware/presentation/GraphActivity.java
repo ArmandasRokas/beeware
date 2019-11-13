@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.dal.dao.Hive;
 
 //import java.time.Instant;
 
@@ -443,9 +442,7 @@ public class GraphActivity extends AppCompatActivity {
         protected String doInBackground(Integer... id) {
             // Todo: pass the real hive
             try {
-                Hive tempHive = new Hive();
-                tempHive.setId(hiveId);
-                graphViewModel.downloadHiveData(tempHive);
+                graphViewModel.downloadHiveData(hiveId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
