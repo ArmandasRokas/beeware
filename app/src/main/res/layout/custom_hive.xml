@@ -77,13 +77,14 @@
         app:layout_constraintTop_toTopOf="@+id/weightIcon" />
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/tempIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
+        android:background="@drawable/roundbutton"
         app:layout_constraintStart_toStartOf="@+id/weightIcon"
         app:layout_constraintTop_toBottomOf="@+id/weightIcon"
-        app:srcCompat="@drawable/roundbutton" />
+        app:srcCompat="@drawable/temperature" />
 
     <TextView
         android:id="@+id/hive_currTempTV"
@@ -94,19 +95,22 @@
         android:text="Temperature"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-        app:layout_constraintStart_toEndOf="@+id/imageView6"
-        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        app:layout_constraintBottom_toBottomOf="@+id/tempIcon"
+        app:layout_constraintStart_toEndOf="@+id/tempIcon"
+        app:layout_constraintTop_toTopOf="@+id/tempIcon"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/illumIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6"
-        app:srcCompat="@drawable/roundbutton" />
+        android:background="@drawable/roundbutton"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        app:layout_constraintStart_toStartOf="@+id/tempIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tempIcon"
+        app:srcCompat="@drawable/sunshine2" />
 
     <TextView
         android:id="@+id/hive_currIllumTV"
@@ -117,8 +121,8 @@
         android:text="Illum"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toTopOf="@+id/imageView7" />
+        app:layout_constraintBottom_toBottomOf="@+id/illumIcon"
+        app:layout_constraintStart_toEndOf="@+id/illumIcon"
+        app:layout_constraintTop_toTopOf="@+id/illumIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
