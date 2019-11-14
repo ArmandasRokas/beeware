@@ -89,6 +89,18 @@
         app:srcCompat="@drawable/temperature" />
 
     <TextView
+        android:id="@+id/tempInTV"
+        android:layout_width="13dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="15dp"
+        android:alpha="1"
+        android:text="IN"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tempIcon"
+        app:layout_constraintStart_toStartOf="@+id/tempIcon" />
+
+    <TextView
         android:id="@+id/hive_currTempTV"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

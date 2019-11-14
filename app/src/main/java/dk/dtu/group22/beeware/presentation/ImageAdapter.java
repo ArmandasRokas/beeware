@@ -83,7 +83,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         weight.setText(formattedWeightDisplay);
-        temp.setText(String.format("%.1f\u2103(inside)",hives.get(position).getCurrTemp()));
+        temp.setText(String.format("%.1f\u2103",hives.get(position).getCurrTemp()));
         illum.setText(String.format("%.0flx", hives.get(position).getCurrIlluminance()));
 
         return gridView;
