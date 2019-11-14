@@ -16,10 +16,10 @@
         android:src="@drawable/beehive2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="00" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/album_title"
@@ -52,14 +52,16 @@
         app:layout_constraintVertical_bias="0.0" />
 -->
     <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp"
+        android:id="@+id/weightIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/roundbutton"
+        android:paddingBottom="6dp"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toTopOf="@+id/album"
-        app:srcCompat="@drawable/roundbutton" />
+        app:srcCompat="@drawable/weight" />
 
     <TextView
         android:id="@+id/hive_currWeightTV"
@@ -70,17 +72,17 @@
         android:text="Weight"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+        app:layout_constraintBottom_toBottomOf="@+id/weightIcon"
+        app:layout_constraintStart_toEndOf="@+id/weightIcon"
+        app:layout_constraintTop_toTopOf="@+id/weightIcon" />
 
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView5"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="@+id/weightIcon"
+        app:layout_constraintTop_toBottomOf="@+id/weightIcon"
         app:srcCompat="@drawable/roundbutton" />
 
     <TextView
@@ -99,9 +101,9 @@
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="@+id/imageView6"
         app:layout_constraintTop_toBottomOf="@+id/imageView6"
         app:srcCompat="@drawable/roundbutton" />
