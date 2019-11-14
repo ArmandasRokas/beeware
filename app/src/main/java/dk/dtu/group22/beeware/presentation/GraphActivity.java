@@ -92,12 +92,9 @@ public class GraphActivity extends AppCompatActivity {
 
         // Show / hide activity bar and big switches on rotation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setupToolbar();
             setPortraitMode();
-            graphViewModel.setZoom(10);
         } else {
             setLandscapeMode();
-            graphViewModel.setZoom(100);
         }
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
@@ -120,15 +117,9 @@ public class GraphActivity extends AppCompatActivity {
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setPinchZoom(false);
+        lineChart.setScaleEnabled(graphViewModel.isZoomEnabled());
+        lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
 
-        // Import LineDataSets
-        //int numOfDays = 365;
-        //lineDataSetWeight = new LineDataSet(randomEntries(numOfDays, 0, 90), "Weight");
-        //lineDataSetTemperature = new LineDataSet(randomEntries(numOfDays, -24, 42), "Temperature");
-        //lineDataSetSunlight = new LineDataSet(randomEntries(numOfDays, 0, 40), "Sunlight");
-        //lineDataSetHumidity = new LineDataSet(randomEntries(numOfDays, 0, 40), "Humidity");
         try {
             lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(), "Weight");
             lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(), "Temperature");
@@ -144,19 +135,6 @@ public class GraphActivity extends AppCompatActivity {
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(new DateFormatter());
-        /*
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(){
-            @Override
-            public String getFormattedValue(float value) {
-                Date date = new Date((long)value);
-                SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM hh:mm", Locale.ENGLISH);
-                System.out.println(simpleDateFormatter.format(date));
-                return simpleDateFormatter.format(date);
-            }
-        });
-        */
-
-        //      yAxis.setValueFormatter(new MyValueFormatter());
 
         //Set Y Axis dependency
         lineDataSetWeight.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -171,7 +149,6 @@ public class GraphActivity extends AppCompatActivity {
         leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
         rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
         rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
-
 
         // Set colors and line width
         lineDataSetWeight.setColors(new int[]{R.color.BEE_graphWeight}, this);
@@ -258,84 +235,30 @@ public class GraphActivity extends AppCompatActivity {
         // Sets the custom_toolbar for the activity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         // Calculate ActionBar's height
         TextView toolbar_title = findViewById(R.id.toolbar_title);
         toolbar_title.setText(hiveName);
-        //Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
-        //int actionBarHeight = 0;
-        //TypedValue tv = new TypedValue();
-        //if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-        //    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        //}
-        //params.setMarginEnd(actionBarHeight + 10);
-        //params.setMarginStart(actionBarHeight);
-        //toolbar_title.setLayoutParams(params);
-
-        // account logo button left side on custom_toolbar
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
         // Parent Activity defined in AndroidManifest.xml
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
     }
-/*
-    // Makes the three dotted dropdown in the action bar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.graph_more_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    // Handles the three dotted dropdown choice
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R.id.annotation:
-                intent = new Intent(this, Annotation.class);
-                startActivity(intent);
-                break;
-            case R.id.hiddenInterval:
-                intent = new Intent(this, HiddenInterval.class);
-                startActivity(intent);
-                break;
-            case R.id.listofadditions:
-                intent = new Intent(this, Additions.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
-
-    // -----------------------------------------------------------------------------
-    // Old test method for generating random data
-    //protected List<Entry> randomEntries(int n, int minY, int maxY) {
-    //    List<Entry> res = new ArrayList<>();
-    //    for (int i = 0; i <= n; ++i) {
-    //        float randY = (float) Math.random() * (maxY - minY + 1) + minY;
-    //        res.add(new Entry((float) i, randY));
-    //    }
-    //    return res;
-    // }
-    //------------------------------------------------------------------------------
 
 
     // Handles layout xml for screen orientation
     private void setPortraitMode() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        graphViewModel.setZoom(14);
+        graphViewModel.setZoomEnabled(false);
+        setupToolbar();
     }
 
     private void setLandscapeMode() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        graphViewModel.setZoom(101);
+        graphViewModel.setZoomEnabled(true);
     }
+
 
     // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
@@ -464,8 +387,6 @@ public class GraphActivity extends AppCompatActivity {
             humidSwitch.setOnClickListener(v -> {
                 toggleHumidity(lineDataSetHumidity.isVisible());
             });
-
-            // Weight is checked by default
             weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
             tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
             lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());

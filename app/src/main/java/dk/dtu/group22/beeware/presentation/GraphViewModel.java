@@ -26,71 +26,17 @@ public class GraphViewModel extends ViewModel {
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
-            sunlightLineVisible = false, humidityLineVisible = false;
+            sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
     // Center at last value in array to show current time.
     //Getting the current date
     Date date = new Date();
     private float xCenter = date.getTime(), pointsVisible;
 
-    public float getxCenter() {
-        return xCenter;
-    }
-
-    public void setxCenter(float xCenter) {
-        this.xCenter = xCenter;
-    }
-
-    public float getZoom() {
-        // The number "zoom" is total / how many you want to see
-        return hive.getMeasurements().size() / pointsVisible;
-    }
-
-    public void setZoom(float pointsVisible) {
-        this.pointsVisible = pointsVisible;
-    }
-
-    public Hive getHive() {
-        return hive;
-    }
-
-    public boolean isWeightLineVisible() {
-        return weightLineVisible;
-    }
-
-    public void setWeightLineVisible(boolean weightLineVisible) {
-        this.weightLineVisible = weightLineVisible;
-    }
-
-    public boolean isTemperatureLineVisible() {
-        return temperatureLineVisible;
-    }
-
-    public void setTemperatureLineVisible(boolean temperatureLineVisible) {
-        this.temperatureLineVisible = temperatureLineVisible;
-    }
-
-    public boolean isSunlightLineVisible() {
-        return sunlightLineVisible;
-    }
-
-    public void setSunlightLineVisible(boolean sunlightLineVisible) {
-        this.sunlightLineVisible = sunlightLineVisible;
-    }
-
-    public boolean isHumidityLineVisible() {
-        return humidityLineVisible;
-    }
-
-    public void setHumidityLineVisible(boolean humidityLineVisible) {
-        this.humidityLineVisible = humidityLineVisible;
-    }
-
     // Data handling for graph
     public void downloadHiveData(int id) {
-        // TODO: Pass the selected hive! And make sensible settings for timestamp
         hive = logic.getHive(id, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
-        Log.d(TAG, "downloadHiveData: Downloading hive data.");
+        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " + id + ".");
     }
 
     // TODO: Set max values and scale illuminance and humidity
@@ -188,5 +134,66 @@ public class GraphViewModel extends ViewModel {
 
     public void setRightAxisMax(float rightAxisMax) {
         this.rightAxisMax = rightAxisMax;
+    }
+
+    public boolean isZoomEnabled() {
+        return zoomEnabled;
+    }
+
+    public void setZoomEnabled(boolean zoomEnabled) {
+        this.zoomEnabled = zoomEnabled;
+    }
+
+    public float getxCenter() {
+        return xCenter;
+    }
+
+    public void setxCenter(float xCenter) {
+        this.xCenter = xCenter;
+    }
+
+    public float getZoom() {
+        // The number "zoom" is total / how many you want to see
+        return hive.getMeasurements().size() / pointsVisible;
+    }
+
+    public void setZoom(float pointsVisible) {
+        this.pointsVisible = pointsVisible;
+    }
+
+    public Hive getHive() {
+        return hive;
+    }
+
+    public boolean isWeightLineVisible() {
+        return weightLineVisible;
+    }
+
+    public void setWeightLineVisible(boolean weightLineVisible) {
+        this.weightLineVisible = weightLineVisible;
+    }
+
+    public boolean isTemperatureLineVisible() {
+        return temperatureLineVisible;
+    }
+
+    public void setTemperatureLineVisible(boolean temperatureLineVisible) {
+        this.temperatureLineVisible = temperatureLineVisible;
+    }
+
+    public boolean isSunlightLineVisible() {
+        return sunlightLineVisible;
+    }
+
+    public void setSunlightLineVisible(boolean sunlightLineVisible) {
+        this.sunlightLineVisible = sunlightLineVisible;
+    }
+
+    public boolean isHumidityLineVisible() {
+        return humidityLineVisible;
+    }
+
+    public void setHumidityLineVisible(boolean humidityLineVisible) {
+        this.humidityLineVisible = humidityLineVisible;
     }
 }
