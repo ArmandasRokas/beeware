@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/album_title"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom|center_horizontal"
         android:text="@string/bistade"
         android:textColor="#000000"
