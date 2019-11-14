@@ -6,9 +6,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -281,30 +278,32 @@ public class GraphActivity extends AppCompatActivity {
 
         // Calculate ActionBar's height
         TextView toolbar_title = findViewById(R.id.toolbar_title);
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        params.setMarginEnd(actionBarHeight + 10);
-        params.setMarginStart(actionBarHeight);
-        toolbar_title.setLayoutParams(params);
+        toolbar_title.setText(hiveName);
+        //Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
+        //int actionBarHeight = 0;
+        //TypedValue tv = new TypedValue();
+        //if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+        //    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        //}
+        //params.setMarginEnd(actionBarHeight + 10);
+        //params.setMarginStart(actionBarHeight);
+        //toolbar_title.setLayoutParams(params);
 
         // account logo button left side on custom_toolbar
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar_title.setText(hiveName);
-    }
 
+    }
+/*
     // Makes the three dotted dropdown in the action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.graph_more_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     // Handles the three dotted dropdown choice
     @Override
@@ -329,6 +328,8 @@ public class GraphActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    */
+
 
     // -----------------------------------------------------------------------------
     // Old test method for generating random data
