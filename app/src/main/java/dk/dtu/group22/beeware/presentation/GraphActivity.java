@@ -81,9 +81,6 @@ public class GraphActivity extends AppCompatActivity {
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
 
-        // Weight is checked by default
-        weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
-
         orientation = this.getResources().getConfiguration().orientation;
 
         // TODO: set these from user defined critical values (with fallback)
@@ -111,20 +108,6 @@ public class GraphActivity extends AppCompatActivity {
 
     // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
     public void renderGraph() {
-
-        // Set listener for small switches.
-        weightSwitch.setOnClickListener(v -> {
-            toggleWeight(lineDataSetWeight.isVisible());
-        });
-        tempSwitch.setOnClickListener(v -> {
-            toggleTemperature(lineDataSetTemperature.isVisible());
-        });
-        lightSwitch.setOnClickListener(v -> {
-            toggleSunlight(lineDataSetSunlight.isVisible());
-        });
-        humidSwitch.setOnClickListener(v -> {
-            toggleHumidity(lineDataSetHumidity.isVisible());
-        });
 
         // Update values in summary TODO: Calculate in Viewodel
         currentTemp = 0;
@@ -291,8 +274,9 @@ public class GraphActivity extends AppCompatActivity {
 
         // account logo button left side on custom_toolbar
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+        // Parent Activity defined in AndroidManifest.xml
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
     }
@@ -443,7 +427,10 @@ public class GraphActivity extends AppCompatActivity {
         protected String doInBackground(Integer... id) {
             // Todo: pass the real hive
             try {
-                graphViewModel.downloadHiveData(hiveId);
+                // Download data once
+                if (graphViewModel.getHive() == null) {
+                    graphViewModel.downloadHiveData(hiveId);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -454,12 +441,35 @@ public class GraphActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             try {
+                setSwitchListeners();
                 renderGraph();
                 progressBar.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
             }
+        }
+
+        private void setSwitchListeners() {
+            // Set listener for small switches after download of Hive.
+            weightSwitch.setOnClickListener(v -> {
+                toggleWeight(lineDataSetWeight.isVisible());
+            });
+            tempSwitch.setOnClickListener(v -> {
+                toggleTemperature(lineDataSetTemperature.isVisible());
+            });
+            lightSwitch.setOnClickListener(v -> {
+                toggleSunlight(lineDataSetSunlight.isVisible());
+            });
+            humidSwitch.setOnClickListener(v -> {
+                toggleHumidity(lineDataSetHumidity.isVisible());
+            });
+
+            // Weight is checked by default
+            weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
+            tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
+            lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
+            humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
         }
     }
 }
