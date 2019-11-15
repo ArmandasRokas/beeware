@@ -31,7 +31,7 @@ public class Logic {
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
     private final static Logic logic = new Logic();
-
+    private List<Hive> cachedHives;
 
     public static Logic getSingleton(){
         return logic;
@@ -40,6 +40,7 @@ public class Logic {
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
         this.subscriptionHivetool = new SubscriptionHivetool();
+        cachedHives = new ArrayList<>();
     }
 
     public void setContext(Context context){
@@ -65,22 +66,40 @@ public class Logic {
         // 0. Check if the hive is cached
         // 1. If cached return hive
         // 2. otherwise create hive
-
-        return createHive(id, sinceTime, untilTime);
-    }
-
-    public Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
-        Hive hive = new Hive();
-        hive.setId(id);
-
-        Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
-
-        hive.setMeasurements(measurementsAndName.first);
-        hive.setName(measurementsAndName.second);
+        // TODO:
+        // How should additional measurements be added to the hive, now that the old ones are being deleted? How does it affect the graphs?
+        Hive hive = findCachedHive(id);
+        if (hive != null) {
+            boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().compareTo(sinceTime) >= 0;
+            boolean isWithinUntil = hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp().compareTo(sinceTime) <= 0;
+            if (!(isWithinSince && isWithinUntil)) {
+                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime).first;
+                hive.setMeasurements(list);
+            }
+        } else {
+            hive = createHive(id, sinceTime, untilTime);
+        }
 
         calculateHiveStatus(hive);
         setCurrValues(hive);
 
+        return hive;
+    }
+
+    private Hive findCachedHive(int id) {
+        for (Hive hive : cachedHives) {
+            if (hive.getId() == id) {
+                return hive;
+            }
+        }
+        return null;
+    }
+
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+        Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
+        Hive hive = new Hive(id, measurementsAndName.second);
+        hive.setMeasurements(measurementsAndName.first);
+        cachedHives.add(hive);
         return hive;
     }
 
@@ -93,13 +112,13 @@ public class Logic {
         yesterday.setTimeInMillis(today.getTimeInMillis() - twentyFourHoursInMillis);
 
         int prevMidnightIndex = getClosestMidnightValIndex(hive, today, 0);
-        int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, hive.getMeasurements().size() - prevMidnightIndex-1);
+        int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, hive.getMeasurements().size() - prevMidnightIndex - 1);
         Timestamp prevTime = hive.getMeasurements().get(prevMidnightIndex).getTimestamp();
         Timestamp prevprevTime = hive.getMeasurements().get(prevprevMidnightIndex).getTimestamp();
 
-        if(!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))){
-           hive.setWeightDelta(Double.NaN);
-        }else {
+        if (!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))) {
+            hive.setWeightDelta(Double.NaN);
+        } else {
             double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
             double prevprevMidnightWeight = hive.getMeasurements().get(prevprevMidnightIndex).getWeight();
             double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
@@ -114,12 +133,12 @@ public class Logic {
         hive.setCurrHum(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getHumidity());
     }
 
-    private boolean isAroundMidnight(Timestamp time, Calendar day){
+    private boolean isAroundMidnight(Timestamp time, Calendar day) {
         Calendar idealMidnight = getMidnightInstanceOfDay(day);
-        int hourInMillis =  60*60*1000;
+        int hourInMillis = 60 * 60 * 1000;
         long beforeMidnight = idealMidnight.getTimeInMillis() - hourInMillis;
         long afterMidnight = idealMidnight.getTimeInMillis() + hourInMillis;
-        if(beforeMidnight <= time.getTime() && time.getTime() <= afterMidnight){
+        if (beforeMidnight <= time.getTime() && time.getTime() <= afterMidnight) {
             return true;
         }
         return false;

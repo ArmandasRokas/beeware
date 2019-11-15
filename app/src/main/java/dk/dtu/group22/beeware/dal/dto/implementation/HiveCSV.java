@@ -81,7 +81,7 @@ public class HiveCSV implements IHive {
 
             data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
         }
-        Hive hive = new Hive();
+        Hive hive = new Hive(42, "dummy");
         hive.setMeasurements(data_measure);
         return hive;
     }

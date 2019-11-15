@@ -41,7 +41,7 @@ public class SubscribeHiveActivity extends AppCompatActivity {
                         // TODO: Fix Hardcoded user. Armandas
                         User user = new User();
                         user.setId(1);
-                        Hive hive = new Hive();
+                        Hive hive = new Hive(42, "dummy");
                         String hiveId = idET.getText().toString();
                         int id = Integer.parseInt(hiveId);
                         hiveBusiness.subscribeHive(id);

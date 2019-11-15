@@ -16,6 +16,11 @@ public class Hive {
     private int humidStatus;
     private int illumStatus;
 
+    public Hive(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Hive{" +
@@ -33,10 +38,6 @@ public class Hive {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getCurrWeight() {
@@ -89,10 +90,6 @@ public class Hive {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public List<Measurement> getMeasurements() {
