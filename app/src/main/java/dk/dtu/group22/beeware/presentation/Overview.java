@@ -20,7 +20,6 @@ import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.presentation.unused.PersonalSettings;
 

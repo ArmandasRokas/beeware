@@ -1,13 +1,13 @@
 package dk.dtu.group22.beeware.presentation.unused;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import dk.dtu.group22.beeware.R;
 

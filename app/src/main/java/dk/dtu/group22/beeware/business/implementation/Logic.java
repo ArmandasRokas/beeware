@@ -9,20 +9,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
-import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionManager;
-import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
-import dk.dtu.group22.beeware.dal.dto.interfaces.IUser;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
 import dk.dtu.group22.beeware.dal.dto.implementation.HiveHivetool;
 import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionHivetool;
-import dk.dtu.group22.beeware.dal.dto.implementation.UserHiveIds;
+import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
-import dk.dtu.group22.beeware.dal.dto.interfaces.IUser;
+import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class Logic {
@@ -47,6 +40,18 @@ public class Logic {
     public void setContext(Context context) {
         this.ctx = context;
         this.subscriptionManager = new SubscriptionManager(context);
+    }
+
+    public void subscribeHive(int id) {
+        subscriptionManager.saveSubscription(id);
+    }
+
+    public ArrayList<Integer> getSubscriptionIDs() {
+        return subscriptionManager.getSubscriptions();
+    }
+
+    public void unsubscribeHive(int id) {
+        subscriptionManager.deleteSubscription(id);
     }
 
     public List<Hive> getSubscribedHives(int daysDelta) {
@@ -85,6 +90,20 @@ public class Logic {
         return hive;
     }
 
+
+    public List<NameIdPair> getNamesAndIDs() {
+        try {
+            List<NameIdPair> hivesIdName = subscriptionHivetool.getHivesToSubscribe();
+            if (hivesIdName == null || hivesIdName.isEmpty()) {
+                throw new HivesToSubscribeNoFound("Business error. Unable to fetch data");
+            } else {
+                return hivesIdName;
+            }
+        } catch (Exception e) {
+            throw new HivesToSubscribeNoFound(e.getMessage());
+        }
+    }
+
     private Hive findCachedHive(int id) {
         for (Hive hive : cachedHives) {
             if (hive.getId() == id) {
@@ -93,18 +112,6 @@ public class Logic {
         }
         return null;
     }
-
-    public List<Hive> getHives(int daysDelta) {
-        long now = System.currentTimeMillis();
-        long since = now - (86400000 * daysDelta);
-        List<Integer> subscribedHives = this.getSubscriptionIDs();
-        List<Hive> hivesWithMeasurements = new ArrayList<>();
-        for (int id : subscribedHives) {
-            hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
-        }
-        return null;
-    }
-
 
     private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
 
@@ -200,32 +207,6 @@ public class Logic {
         Calendar midnight = Calendar.getInstance();
         midnight.set(year, month, day, midnight_hour, midnight_minutes);
         return midnight;
-    }
-
-
-    public List<NameIdPair> getNamesAndIDs() {
-        try {
-            List<NameIdPair> hivesIdName = subscriptionHivetool.getHivesToSubscribe();
-            if (hivesIdName == null || hivesIdName.isEmpty()) {
-                throw new HivesToSubscribeNoFound("Business error. Unable to fetch data");
-            } else {
-                return hivesIdName;
-            }
-        } catch (Exception e) {
-            throw new HivesToSubscribeNoFound(e.getMessage());
-        }
-    }
-
-    public void subscribeHive(int id) {
-        subscriptionManager.saveSubscription(id);
-    }
-
-    public ArrayList<Integer> getSubscriptionIDs() {
-        return subscriptionManager.getSubscriptions();
-    }
-
-    public void unsubscribeHive(int id) {
-        subscriptionManager.deleteSubscription(id);
     }
 
 

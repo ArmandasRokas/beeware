@@ -11,19 +11,17 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscribeRecycler extends AppCompatActivity {
@@ -197,13 +195,12 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
-                    // TODO hardcoded user
                     System.out.println("The switch is set to " + holder.subHiveSwitch.isChecked());
                     if (holder.subHiveSwitch.isChecked()) {
-                        // Calls the DAL to save the id in a file
+                        // Calls the DAL to save the id in preferenceManager
                         logic.subscribeHive(mDataset.get(position).getID());
                     } else {
-                        // Deletes the hive id from the file of saved subs in DAL
+                        // Deletes the hive id from the preferenceManager of saved subs in DAL
                         logic.unsubscribeHive(mDataset.get(position).getID());
                     }
                     subbedIds = logic.getSubscriptionIDs();
@@ -212,7 +209,6 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
 
     }
-
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

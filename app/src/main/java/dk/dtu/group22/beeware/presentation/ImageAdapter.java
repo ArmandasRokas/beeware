@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 
 public class ImageAdapter extends BaseAdapter {

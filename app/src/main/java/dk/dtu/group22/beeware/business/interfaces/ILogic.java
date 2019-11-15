@@ -1,8 +1,5 @@
 package dk.dtu.group22.beeware.business.interfaces;
 
-import android.content.Context;
-
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
