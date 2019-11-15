@@ -51,7 +51,7 @@ public class Logic {
     public List<Hive> getSubscribedHives(int daysDelta) {
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
-        List<Integer> subscribedHives = this.getSubscriptions();
+        List<Integer> subscribedHives = this.getSubscriptionIDs();
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         for (int id : subscribedHives) {
             hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
@@ -201,7 +201,7 @@ public class Logic {
         subscriptionManager.saveSubscription(id);
     }
 
-    public ArrayList<Integer> getSubscriptions() {
+    public ArrayList<Integer> getSubscriptionIDs() {
         return subscriptionManager.getSubscriptions();
     }
 

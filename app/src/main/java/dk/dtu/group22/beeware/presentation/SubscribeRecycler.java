@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -163,7 +162,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
     public SubscribeAdapter(List<NameIdPair> myDataset) {
         mDataset = myDataset;
-        subbedIds = logic.getSubscriptions();
+        subbedIds = logic.getSubscriptionIDs();
     }
 
     // Create new views (invoked by the layout manager)
@@ -207,7 +206,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
                         // Deletes the hive id from the file of saved subs in DAL
                         logic.unsubscribeHive(mDataset.get(position).getID());
                     }
-                    subbedIds = logic.getSubscriptions();
+                    subbedIds = logic.getSubscriptionIDs();
                 }
         );
 

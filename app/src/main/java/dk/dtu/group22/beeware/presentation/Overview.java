@@ -42,6 +42,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         ctx = this;
         logic = Logic.getSingleton();
+        logic.setContext(ctx);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_overview);
