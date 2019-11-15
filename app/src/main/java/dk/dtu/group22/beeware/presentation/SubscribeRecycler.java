@@ -23,6 +23,7 @@ import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.business.interfaces.ILogic;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscribeRecycler extends AppCompatActivity {
@@ -87,7 +88,7 @@ public class SubscribeRecycler extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null) {
                     errorTv.setText(errorMsg);
-                } else {
+                } else{
                     mAdapter = new SubscribeAdapter(hivesToSub);
                     recyclerView.setAdapter(mAdapter);
                 }
@@ -159,7 +160,6 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-
     public SubscribeAdapter(List<NameIdPair> myDataset) {
         mDataset = myDataset;
         subbedIds = logic.getSubscriptionIDs();

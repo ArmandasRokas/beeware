@@ -31,10 +31,14 @@ public interface ILogic {
      */
     Hive getHive(int id, Timestamp fromTime, Timestamp untilTime);
 
-    void subscribeHive(int id);
+    //void subscribeHive(int id);
 
     List<NameIdPair> getHivesToSubscribe();
 
+
+    //void subscribeHive(int id);
+
+    //List<NameIdPair> getHivesToSubscribe();
 
     class HiveNotFound extends RuntimeException {
         public HiveNotFound(String msg) {super(msg);}

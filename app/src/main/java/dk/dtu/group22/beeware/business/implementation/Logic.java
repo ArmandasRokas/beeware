@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.Context;
+
 import androidx.core.util.Pair;
 
 import java.sql.Timestamp;
@@ -33,9 +34,10 @@ public class Logic {
     private final static Logic logic = new Logic();
     private List<Hive> cachedHives;
 
-    public static Logic getSingleton(){
+    public static Logic getSingleton() {
         return logic;
     }
+
 
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
@@ -43,7 +45,7 @@ public class Logic {
         cachedHives = new ArrayList<>();
     }
 
-    public void setContext(Context context){
+    public void setContext(Context context) {
         this.ctx = context;
         this.subscriptionManager = new SubscriptionManager(context);
     }
@@ -93,11 +95,28 @@ public class Logic {
         return null;
     }
 
-    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+    public List<Hive> getHives(int daysDelta) {
+        long now = System.currentTimeMillis();
+        long since = now - (86400000 * daysDelta);
+        List<Integer> subscribedHives = this.getSubscriptionIDs();
+        List<Hive> hivesWithMeasurements = new ArrayList<>();
+        for (int id : subscribedHives) {
+            hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
+        }
+        return null;
+    }
+
+
+    public Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+
         Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
+
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
-        cachedHives.add(hive);
+
+        calculateHiveStatus(hive);
+        setCurrValues(hive);
+
         return hive;
     }
 
@@ -130,6 +149,7 @@ public class Logic {
         hive.setCurrIlluminance(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getIlluminance());
         hive.setCurrHum(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getHumidity());
     }
+
 
     private boolean isAroundMidnight(Timestamp time, Calendar day) {
         Calendar idealMidnight = getMidnightInstanceOfDay(day);
@@ -211,11 +231,15 @@ public class Logic {
 
 
     class HiveNotFound extends RuntimeException {
-        public HiveNotFound(String msg) {super(msg);}
+        public HiveNotFound(String msg) {
+            super(msg);
+        }
     }
 
     class HivesToSubscribeNoFound extends RuntimeException {
-        public HivesToSubscribeNoFound(String msg) {super(msg);}
+        public HivesToSubscribeNoFound(String msg) {
+            super(msg);
+        }
     }
 
 }
