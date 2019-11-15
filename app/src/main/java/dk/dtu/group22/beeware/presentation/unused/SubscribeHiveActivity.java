@@ -54,7 +54,7 @@ public class SubscribeHiveActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void updateSubscribedHives() {
         TextView subscribedHivesTV = findViewById(R.id.subscribedHivesArrayTV);
-        List<Hive> hives = hiveBusiness.getHives(2);
+        List<Hive> hives = hiveBusiness.getSubscribedHives(2);
         subscribedHivesTV.setText(hives.stream().map(x -> x.getId()).collect(Collectors.toList()).toString());
     }
 }

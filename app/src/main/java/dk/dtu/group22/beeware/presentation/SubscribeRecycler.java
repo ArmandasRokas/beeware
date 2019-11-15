@@ -74,7 +74,7 @@ public class SubscribeRecycler extends AppCompatActivity {
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hivesToSub = logic.getHivesToSubscribe();
+                    hivesToSub = logic.getNamesAndIDs();
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();

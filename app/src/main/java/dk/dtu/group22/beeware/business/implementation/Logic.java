@@ -48,9 +48,7 @@ public class Logic {
         this.subscriptionManager = new SubscriptionManager(context);
     }
 
-
-
-    public List<Hive> getHives(int daysDelta) {
+    public List<Hive> getSubscribedHives(int daysDelta) {
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
         List<Integer> subscribedHives = this.getSubscriptions();
@@ -186,7 +184,7 @@ public class Logic {
     }
 
 
-    public List<NameIdPair> getHivesToSubscribe() {
+    public List<NameIdPair> getNamesAndIDs() {
         try {
             List<NameIdPair> hivesIdName = subscriptionHivetool.getHivesToSubscribe();
             if (hivesIdName == null || hivesIdName.isEmpty()) {
