@@ -11,10 +11,10 @@ public class Hive {
     private double currTemp;
     private double currIlluminance;
     private double currHum;
-    private int weightStatus;
-    private int tempStatus;
-    private int humidStatus;
-    private int illumStatus;
+    private Status weightStatus;
+    private Status tempStatus;
+    private Status humidStatus;
+    private Status illumStatus;
 
     public Hive(int id, String name){
         this.id = id;
@@ -48,35 +48,35 @@ public class Hive {
         this.currWeight = currWeight;
     }
 
-    public int getWeightStatus() {
+    public Status getWeightStatus() {
         return weightStatus;
     }
 
-    public void setWeightStatus(int weightStatus) {
+    public void setWeightStatus(Status weightStatus) {
         this.weightStatus = weightStatus;
     }
 
-    public int getTempStatus() {
+    public Status getTempStatus() {
         return tempStatus;
     }
 
-    public void setTempStatus(int tempStatus) {
+    public void setTempStatus(Status tempStatus) {
         this.tempStatus = tempStatus;
     }
 
-    public int getHumidStatus() {
+    public Status getHumidStatus() {
         return humidStatus;
     }
 
-    public void setHumidStatus(int humidStatus) {
+    public void setHumidStatus(Status humidStatus) {
         this.humidStatus = humidStatus;
     }
 
-    public int getIllumStatus() {
+    public Status getIllumStatus() {
         return illumStatus;
     }
 
-    public void setIllumStatus(int illumStatus) {
+    public void setIllumStatus(Status illumStatus) {
         this.illumStatus = illumStatus;
     }
 
@@ -123,4 +123,12 @@ public class Hive {
     public void setCurrHum(double currHum) {
         this.currHum = currHum;
     }
+
+    enum Status {
+        UNDEFINED,
+        DANGER,
+        WARNING,
+        OK
+    }
+
 }
