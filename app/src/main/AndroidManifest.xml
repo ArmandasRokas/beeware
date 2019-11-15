@@ -24,7 +24,8 @@
         <activity android:name=".presentation.TestingHiveTool" />
         <activity
             android:name=".presentation.GraphActivity"
-            android:parentActivityName=".presentation.Overview" />
+            android:parentActivityName=".presentation.Overview"
+            android:screenOrientation="landscape" />
         <activity android:name=".presentation.GraphViewModel" />
         <activity android:name=".presentation.unused.SubscribeHiveActivity" />
         <activity android:name=".presentation.SubscribeRecycler" />
