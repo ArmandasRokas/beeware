@@ -38,7 +38,6 @@ public class Logic {
         return logic;
     }
 
-
     public Logic() {
         this.hiveHivetool = new HiveHivetool();
         this.subscriptionHivetool = new SubscriptionHivetool();
@@ -107,7 +106,7 @@ public class Logic {
     }
 
 
-    public Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
 
         Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
 
