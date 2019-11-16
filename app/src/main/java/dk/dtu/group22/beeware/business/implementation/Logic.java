@@ -84,8 +84,8 @@ public class Logic {
             hive = createHive(id, sinceTime, untilTime);
         }
 
-        calculateHiveStatus(hive);
         setCurrValues(hive);
+        calculateHiveStatus(hive);
 
         return hive;
     }
@@ -119,14 +119,18 @@ public class Logic {
 
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
-
-        calculateHiveStatus(hive);
-        setCurrValues(hive);
+        cachedHives.add(hive);
 
         return hive;
     }
 
-
+    /**
+     * Calculates status for the hive, and stores all the reasons in the hives statusIntrospection.
+     * It sets the status of each variable to the worst it could find according to the different use-cases.
+     * One lambda is one use-case, which affect the status in some way.
+     *
+     * @param hive The hive to calculate statuses for
+     */
     private void calculateHiveStatus(Hive hive) {
         // Calculate various enum statuses
         List<StatusCalculator> calculators = new ArrayList<>();
@@ -159,12 +163,13 @@ public class Logic {
         calculators.add(calculateDelta);
 
 
-        // TODO: Make a manager of preferences, so that the configured value is not hardcoded
+        // TODO: Make a manager for preferences, so that the configured value is not hardcoded
 
         // Use case: User has set a critical threshold for weight, which the hive must not fall below
         StatusCalculator weightFallsBelowConfiguredValue = (Hive inputHive) -> {
             double configuredWeightThreshold = 15.0;
-            if (hive.getCurrWeight() < configuredWeightThreshold) {
+            System.out.println("Hive:" + inputHive.getName() + " Curr weight:" + inputHive.getCurrWeight());
+            if (inputHive.getCurrWeight() < configuredWeightThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, "Weight has fallen below a critical threshold.");
             }
             return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, "Weight is not below critical threshold");
@@ -175,7 +180,7 @@ public class Logic {
         // Use case: User has set a critical threshold for temp, which the hive must not fall below
         StatusCalculator tempFallsBelowConfiguredValue = (Hive inputHive) -> {
             double configuredTempThreshold = 30.0;
-            if (hive.getCurrTemp() < configuredTempThreshold) {
+            if (inputHive.getCurrTemp() < configuredTempThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING,
                         "Temperature below configured value. Worst case: The queen is perhaps dead. " +
                                 "Normal case: The brood has simply moved away from the censor");
@@ -270,20 +275,16 @@ public class Logic {
             if (tmp.getVariable() == Hive.Variables.HUMIDITY) {
                 Hive.Status worst = worst(tmp.getStatus(), hive.getHumidStatus());
                 hive.setHumidStatus(worst);
-            }
-            if (tmp.getVariable() == Hive.Variables.ILLUMINANCE) {
+            } else if (tmp.getVariable() == Hive.Variables.ILLUMINANCE) {
                 Hive.Status worst = worst(tmp.getStatus(), hive.getIllumStatus());
                 hive.setIllumStatus(worst);
-            }
-            if (tmp.getVariable() == Hive.Variables.WEIGHT) {
+            } else if (tmp.getVariable() == Hive.Variables.WEIGHT) {
                 Hive.Status worst = worst(tmp.getStatus(), hive.getWeightStatus());
                 hive.setWeightStatus(worst);
-            }
-            if (tmp.getVariable() == Hive.Variables.TEMPERATURE) {
+            } else if (tmp.getVariable() == Hive.Variables.TEMPERATURE) {
                 Hive.Status worst = worst(tmp.getStatus(), hive.getTempStatus());
                 hive.setTempStatus(worst);
-            }
-            if (tmp.getVariable() == Hive.Variables.OTHER) {
+            } else if (tmp.getVariable() == Hive.Variables.OTHER) {
                 // Do nothing
             }
         }
