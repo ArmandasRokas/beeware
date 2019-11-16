@@ -1,10 +1,16 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -34,7 +40,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private List<NameIdPair> allHives;
     private List<NameIdPair> subscribable = new ArrayList<>();
     private List<NameIdPair> subscriptions = new ArrayList<>();
-    private List<NameIdPair> searchResults = new ArrayList<>();
+    private EditText searchField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,17 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Removes the keyboard when the recyclerview is touched (scrolling is going on)
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                return false;
+            }
+        });
+
+        // Own back arrow
         backArrow = findViewById(R.id.subscribe_back_arrow);
         backArrow.setOnClickListener(this);
 
@@ -64,12 +81,15 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         underlineOne = findViewById(R.id.subscribe_underline1);
         underlineTwo = findViewById(R.id.subscribe_underline2);
 
-        addListElements();
+        searchField = findViewById(R.id.subscribe_search_field);
+        searchField.addTextChangedListener(textWatcher);
+
+        loadListElements();
     }
 
     // Gets the names and ids that is possible to subscribe to,
     // and adds them to the list via the 'SubscribeAdapter' class
-    private void addListElements() {
+    private void loadListElements() {
         new AsyncTask() {
             String errorMsg = null;
 
@@ -78,6 +98,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 progressBar.setVisibility(View.VISIBLE);
                 availableTextbutton.setEnabled(false);
                 subscriptionsTextbutton.setEnabled(false);
+                searchField.setEnabled(false);
             }
 
             @Override
@@ -108,10 +129,14 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private void splitSubscriptions() {
         ArrayList<Integer> subbedIds = logic.getSubscriptionIDs();
 
+        // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
+            // Adding the hive to the subscribable list no matter what
             subscribable.add(allHives.get(i));
             for (int id : subbedIds) {
                 if (allHives.get(i).getID() == id) {
+                    // The hive is in the list of subbed ids, so it adds it to
+                    // the list of subscribed hives and removes it from the subscribable
                     subscriptions.add(allHives.get(i));
                     subscribable.remove(subscribable.size() - 1);
                 }
@@ -119,7 +144,9 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         }
         availableTextbutton.setEnabled(true);
         subscriptionsTextbutton.setEnabled(true);
+        searchField.setEnabled(true);
 
+        // Setting the list (recyclerview) to the subscribable hives
         recyclerView.setAdapter(new SubscribeAdapter(subscribable));
     }
 
@@ -128,21 +155,58 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         if (view == backArrow) {
             finish();
         } else if (view == availableTextbutton) {
+            // If the user wants to see the available (subscribable) hives
             errorTv.setVisibility(View.INVISIBLE);
             errorTv.setText("");
+            searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(subscribable));
         } else if(view == subscriptionsTextbutton) {
+            // If the user wants to see the subscribed hives
             if (subscriptions.size() == 0) {
                 errorTv.setVisibility(View.VISIBLE);
                 errorTv.setText("You have no subscriptions.");
             }
+            searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
             underlineTwo.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
         }
     }
+
+    // A textwather to see if anything is being written in the edittext that applies it
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.toString().equals("")) {
+                // If the user has deleted the letters to search through hives for
+                underlineOne.setVisibility(View.VISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
+                recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+            } else {
+                // if the user has written something in the search field
+                underlineOne.setVisibility(View.INVISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
+                List<NameIdPair> searchResults = new ArrayList<>();
+                for (int j = 0; j < allHives.size(); j++) {
+                    if (allHives.get(j).getName().toLowerCase()
+                            .startsWith(charSequence.toString().toLowerCase())) {
+                        // The given hive started with the searched term, so add it to a list
+                        searchResults.add(allHives.get(j));
+                    }
+                }
+                recyclerView.setAdapter(new SubscribeAdapter(searchResults));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {}
+    };
+
 }
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
