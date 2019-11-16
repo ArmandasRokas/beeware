@@ -14,12 +14,13 @@
         android:layout_marginTop="30dp"
         android:contentDescription="@string/bistade"
         android:src="@drawable/beehive2"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"/>
 
     <TextView
         android:id="@+id/album_title"
@@ -57,7 +58,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/roundbutton"
+        android:background="@drawable/round_button"
         android:paddingBottom="6dp"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toTopOf="@+id/album"
@@ -83,7 +84,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/roundbutton"
+        android:background="@drawable/round_button"
         app:layout_constraintStart_toStartOf="@+id/weightIcon"
         app:layout_constraintTop_toBottomOf="@+id/weightIcon"
         app:srcCompat="@drawable/temperature" />
@@ -121,7 +122,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/roundbutton"
+        android:background="@drawable/round_button"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         app:layout_constraintStart_toStartOf="@+id/tempIcon"
