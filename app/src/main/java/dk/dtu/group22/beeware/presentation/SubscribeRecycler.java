@@ -3,11 +3,9 @@ package dk.dtu.group22.beeware.presentation;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,21 +21,20 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
-public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Logic logic;
     private TextView errorTv;
     private ProgressBar progressBar;
-    private ImageView backArrow, moreMenu;
-    private PopupMenu menuPopup;
-    private boolean showingSubscriptions = false;
-    List<NameIdPair> allHives;
-    List<NameIdPair> subscribable;
-    List<NameIdPair> subscriptions = new ArrayList<>();
-    List<NameIdPair> searchResults = new ArrayList<>();
+    private ImageView backArrow;
+    private TextView availableTextbutton, subscriptionsTextbutton;
+    private View underlineOne, underlineTwo;
+    private List<NameIdPair> allHives;
+    private List<NameIdPair> subscribable = new ArrayList<>();
+    private List<NameIdPair> subscriptions = new ArrayList<>();
+    private List<NameIdPair> searchResults = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +56,13 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
         backArrow = findViewById(R.id.subscribe_back_arrow);
         backArrow.setOnClickListener(this);
-        moreMenu = findViewById(R.id.subscribe_more_menu);
-        moreMenu.setOnClickListener(this);
 
-        // The vertical more menu is set to show the sub_mode_more_menu xml in menus
-        menuPopup = new PopupMenu(this, moreMenu);
-        menuPopup.getMenuInflater().inflate(R.menu.sub_mode_more_menu, menuPopup.getMenu());
-        menuPopup.setOnMenuItemClickListener(this);
+        availableTextbutton = findViewById(R.id.subscribe_available_textbutton);
+        availableTextbutton.setOnClickListener(this);
+        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
+        subscriptionsTextbutton.setOnClickListener(this);
+        underlineOne = findViewById(R.id.subscribe_underline1);
+        underlineTwo = findViewById(R.id.subscribe_underline2);
 
         addListElements();
     }
@@ -79,7 +76,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             @Override
             protected void onPreExecute() {
                 progressBar.setVisibility(View.VISIBLE);
-                moreMenu.setEnabled(false);
+                availableTextbutton.setEnabled(false);
+                subscriptionsTextbutton.setEnabled(false);
             }
 
             @Override
@@ -108,52 +106,42 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
     // Splits all the hives into the ones that has been subscribed and the ones that has not
     private void splitSubscriptions() {
-        subscribable = allHives;
         ArrayList<Integer> subbedIds = logic.getSubscriptionIDs();
 
-        for (int i = 0; i < subscribable.size(); i++) {
+        for (int i = 0; i < allHives.size(); i++) {
+            subscribable.add(allHives.get(i));
             for (int id : subbedIds) {
-                if (subscribable.get(i).getID() == id) {
-                    subscriptions.add(subscribable.get(i));
-                    subscribable.remove(subscribable.get(i));
+                if (allHives.get(i).getID() == id) {
+                    subscriptions.add(allHives.get(i));
+                    subscribable.remove(subscribable.size() - 1);
                 }
             }
         }
-        mAdapter = new SubscribeAdapter(subscribable);
-        recyclerView.setAdapter(mAdapter);
-        moreMenu.setEnabled(true);
+        availableTextbutton.setEnabled(true);
+        subscriptionsTextbutton.setEnabled(true);
+
+        recyclerView.setAdapter(new SubscribeAdapter(subscribable));
     }
 
     @Override
     public void onClick(View view) {
         if (view == backArrow) {
             finish();
-        } else if (view == moreMenu) {
-            menuPopup.show();
-        }
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        // If user is viewing subscriptions else if user is viewing subscribable
-        if (showingSubscriptions == false) {
-            showingSubscriptions = true;
-            menuItem.setTitle("Show non-subscribed only");
+        } else if (view == availableTextbutton) {
+            errorTv.setVisibility(View.INVISIBLE);
+            errorTv.setText("");
+            underlineOne.setVisibility(View.VISIBLE);
+            underlineTwo.setVisibility(View.INVISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+        } else if(view == subscriptionsTextbutton) {
             if (subscriptions.size() == 0) {
                 errorTv.setVisibility(View.VISIBLE);
                 errorTv.setText("You have no subscriptions.");
             }
-            mAdapter = new SubscribeAdapter(subscriptions);
-            recyclerView.setAdapter(mAdapter);
-        } else {
-            showingSubscriptions = false;
-            menuItem.setTitle("Show subscribed only");
-            errorTv.setVisibility(View.INVISIBLE);
-            errorTv.setText("");
-            mAdapter = new SubscribeAdapter(subscribable);
-            recyclerView.setAdapter(mAdapter);
+            underlineOne.setVisibility(View.INVISIBLE);
+            underlineTwo.setVisibility(View.VISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
         }
-        return true;
     }
 }
 
