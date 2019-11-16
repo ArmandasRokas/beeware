@@ -102,13 +102,12 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                 if (errorMsg != null){
                   //  errorTv.setText(errorMsg);
                 } else{
+                    imageAdapter = new ImageAdapter(ctx, hives);
+                    gridView.setAdapter(imageAdapter);
                     if (hives.size() == 0){
                         listEmptyTv.setVisibility(View.VISIBLE);
                     } else {
                         listEmptyTv.setVisibility(View.INVISIBLE);
-                        imageAdapter = new ImageAdapter(ctx, hives);
-                        gridView.setAdapter(imageAdapter);
-
                     }
                 }
             }
