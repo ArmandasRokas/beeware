@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
 
     <TextView
         android:id="@+id/subscribe_name"
@@ -37,7 +38,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/listline"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
