@@ -75,4 +75,14 @@
         app:layout_constraintTop_toTopOf="@+id/subscribe_search_field"
         app:srcCompat="@drawable/ic_back_arrow" />
 
+    <ImageView
+        android:id="@+id/subscribe_more_menu"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/subscribe_search_field"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/subscribe_search_field"
+        app:layout_constraintTop_toTopOf="@+id/subscribe_search_field"
+        app:srcCompat="@drawable/ic_more_vertical" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

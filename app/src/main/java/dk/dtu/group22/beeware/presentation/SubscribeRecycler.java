@@ -3,9 +3,11 @@ package dk.dtu.group22.beeware.presentation;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,7 +23,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
-public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener {
+public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -29,7 +31,11 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private Logic logic;
     private TextView errorTv;
     private ProgressBar progressBar;
-    private ImageView backArrow;
+    private ImageView backArrow, moreMenu;
+    private PopupMenu menuPopup;
+    private boolean showingSubscriptions = false;
+    List<NameIdPair> subscribable;
+    List<NameIdPair> subscriptions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,33 +50,41 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         progressBar = findViewById(R.id.indeterminateBar);
         recyclerView = findViewById(R.id.hivesToSubRV);
 
-        recyclerView.setHasFixedSize(true);
+        //recyclerView.setHasFixedSize(true);
         // Linear layout manager for the recycler view
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        addListElements();
-
         backArrow = findViewById(R.id.subscribe_back_arrow);
         backArrow.setOnClickListener(this);
+        moreMenu = findViewById(R.id.subscribe_more_menu);
+        moreMenu.setOnClickListener(this);
+
+        // The vertical more menu is set to show the sub_mode_more_menu xml in menus
+        menuPopup = new PopupMenu(this, moreMenu);
+        menuPopup.getMenuInflater().inflate(R.menu.sub_mode_more_menu, menuPopup.getMenu());
+        menuPopup.setOnMenuItemClickListener(this);
+
+        addListElements();
     }
 
     // Gets the names and ids that is possible to subscribe to,
     // and adds them to the list via the 'SubscribeAdapter' class
     private void addListElements() {
         new AsyncTask() {
-            List<NameIdPair> hivesToSub;
+            List<NameIdPair> allHives;
             String errorMsg = null;
 
             @Override
             protected void onPreExecute() {
                 progressBar.setVisibility(View.VISIBLE);
+                moreMenu.setEnabled(false);
             }
 
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hivesToSub = logic.getNamesAndIDs();
+                    allHives = logic.getNamesAndIDs();
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();
@@ -85,18 +99,60 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 if (errorMsg != null) {
                     errorTv.setText(errorMsg);
                 } else{
-                    mAdapter = new SubscribeAdapter(hivesToSub);
-                    recyclerView.setAdapter(mAdapter);
+                    splitSubscriptions(allHives);
                 }
             }
         }.execute();
+    }
+
+    // Splits all the hives into the ones that has been subscribed and the ones that has not
+    private void splitSubscriptions(List<NameIdPair> allHives) {
+        subscribable = allHives;
+        ArrayList<Integer> subbedIds = logic.getSubscriptionIDs();
+
+        for (int i = 0; i < subscribable.size(); i++) {
+            for (int id : subbedIds) {
+                if (subscribable.get(i).getID() == id) {
+                    subscriptions.add(subscribable.get(i));
+                    subscribable.remove(subscribable.get(i));
+                }
+            }
+        }
+        mAdapter = new SubscribeAdapter(subscribable);
+        recyclerView.setAdapter(mAdapter);
+        moreMenu.setEnabled(true);
     }
 
     @Override
     public void onClick(View view) {
         if (view == backArrow) {
             finish();
+        } else if (view == moreMenu) {
+            menuPopup.show();
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        // If user is viewing subscriptions else if user is viewing subscribable
+        if (showingSubscriptions == false) {
+            showingSubscriptions = true;
+            menuItem.setTitle("Show non-subscribed only");
+            if (subscriptions.size() == 0) {
+                errorTv.setVisibility(View.VISIBLE);
+                errorTv.setText("You have no subscriptions.");
+            }
+            mAdapter = new SubscribeAdapter(subscriptions);
+            recyclerView.setAdapter(mAdapter);
+        } else {
+            showingSubscriptions = false;
+            menuItem.setTitle("Show subscribed only");
+            errorTv.setVisibility(View.INVISIBLE);
+            errorTv.setText("");
+            mAdapter = new SubscribeAdapter(subscribable);
+            recyclerView.setAdapter(mAdapter);
+        }
+        return true;
     }
 }
 
