@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -91,11 +92,9 @@ public class GraphActivity extends AppCompatActivity {
 
 
         // Show / hide activity bar and big switches on rotation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setPortraitMode();
-        } else {
-            setLandscapeMode();
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        graphViewModel.setZoom(101);
+        graphViewModel.setZoomEnabled(true);
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
@@ -117,8 +116,9 @@ public class GraphActivity extends AppCompatActivity {
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(graphViewModel.isZoomEnabled());
-        lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
+        lineChart.setScaleYEnabled(false);
+        lineChart.setScaleXEnabled(true);
+        //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
 
         try {
             lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(), "Weight");
@@ -173,12 +173,10 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 
         // Removing values and circle points from weight and temp graphs in landscape
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            lineDataSetWeight.setDrawValues(false);
-            lineDataSetWeight.setDrawCircles(false);
-            lineDataSetTemperature.setDrawValues(false);
-            lineDataSetTemperature.setDrawCircles(false);
-        }
+        lineDataSetWeight.setDrawValues(false);
+        lineDataSetWeight.setDrawCircles(false);
+        lineDataSetTemperature.setDrawValues(false);
+        lineDataSetTemperature.setDrawCircles(false);
 
         // Removing values and circle points from light and humidity graphs
         lineDataSetSunlight.setDrawValues(false);
@@ -253,13 +251,6 @@ public class GraphActivity extends AppCompatActivity {
         setupToolbar();
     }
 
-    private void setLandscapeMode() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        graphViewModel.setZoom(101);
-        graphViewModel.setZoomEnabled(true);
-    }
-
-
     // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
         lineDataSetWeight.setVisible(!shown);
@@ -331,8 +322,8 @@ public class GraphActivity extends AppCompatActivity {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
             String date = simpleDateFormat.format(new Date((long) value));
 
-            if (orientation == Configuration.ORIENTATION_PORTRAIT){
-                return date.substring(0,5);
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                return date.substring(0, 5);
             }
             return date;
         }
@@ -365,7 +356,12 @@ public class GraphActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 setSwitchListeners();
-                renderGraph();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        renderGraph();
+                    }
+                });
                 progressBar.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();

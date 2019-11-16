@@ -20,15 +20,13 @@ public class GraphViewModel extends ViewModel {
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
-    //TODO: This is 8 weeks, not 26?? What is intended?
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // 26 weeks
+    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 9;
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
     // Center at last value in array to show current time.
-    //Getting the current date
     Date date = new Date();
     private float xCenter = date.getTime(), pointsVisible;
 
@@ -66,7 +64,8 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
-            res.add(new Entry(time, illum / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
+            res.add(new Entry(time, illum / 606 + leftAxisMin));
+            Log.d(TAG, "extractIlluminance: " + illum);
         }
         return res;
     }
@@ -76,8 +75,8 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, humid / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
-            Log.d(TAG, "extractHumidity: humid = " + humid);
+            res.add(new Entry(time, humid / 202 * (leftAxismax - leftAxisMin) + leftAxisMin));
+            //Log.d(TAG, "extractHumidity: humid = " + humid);
         }
         return res;
     }
