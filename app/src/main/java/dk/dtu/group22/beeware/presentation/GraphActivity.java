@@ -1,21 +1,18 @@
 package dk.dtu.group22.beeware.presentation;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -52,7 +49,7 @@ public class GraphActivity extends AppCompatActivity {
             lineDataSetSunlight, lineDataSetHumidity;
     private int hiveId;
     private String hiveName;
-    private float currentWeight, weightDelta, currentTemp, currentLigth, currentHumidity;
+    private float currentWeight;
     private int orientation;
 
     private final String TAG = "GraphActivity";
@@ -68,7 +65,6 @@ public class GraphActivity extends AppCompatActivity {
         hiveId = intent.getIntExtra("hiveid", -1);
         hiveName = intent.getStringExtra("hivename");
         currentWeight = intent.getFloatExtra("currentweight", 0);
-        weightDelta = Math.abs(intent.getFloatExtra("weightdelta", 0));
         Log.d(TAG, "onCreate: currentWeigth:" + currentWeight);
 
         if (hiveId == -1) {
@@ -86,39 +82,31 @@ public class GraphActivity extends AppCompatActivity {
         // TODO: set these from user defined critical values (with fallback)
         graphViewModel.setLeftAxismax(currentWeight + 15);
         graphViewModel.setLeftAxisMin(currentWeight - 15);
-        graphViewModel.setRightAxisMax(40);
-        graphViewModel.setRightAxisMin(20);
+        graphViewModel.setRightAxisMax(60);
+        graphViewModel.setRightAxisMin(0);
 
 
         // Show / hide activity bar and big switches on rotation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setPortraitMode();
-        } else {
-            setLandscapeMode();
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        graphViewModel.setZoom(101);
+        graphViewModel.setZoomEnabled(true);
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
         asyncTask.execute(hiveId);
     }
 
-
     // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
     public void renderGraph() {
-
-        // Update values in summary TODO: Calculate in Viewodel
-        currentTemp = 0;
-        currentLigth = 0;
-        currentHumidity = 0;
-
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
 
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(graphViewModel.isZoomEnabled());
-        lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
+        lineChart.setScaleYEnabled(false);
+        lineChart.setScaleXEnabled(true);
+        //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
 
         try {
             lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(), "Weight");
@@ -128,7 +116,7 @@ public class GraphActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
         } catch (Exception e) {
             e.printStackTrace();
-            showEmptyDatasets();
+            showEmptyDataSets();
         }
 
         // Format X- Axis to time string
@@ -173,12 +161,10 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 
         // Removing values and circle points from weight and temp graphs in landscape
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            lineDataSetWeight.setDrawValues(false);
-            lineDataSetWeight.setDrawCircles(false);
-            lineDataSetTemperature.setDrawValues(false);
-            lineDataSetTemperature.setDrawCircles(false);
-        }
+        lineDataSetWeight.setDrawValues(false);
+        lineDataSetWeight.setDrawCircles(false);
+        lineDataSetTemperature.setDrawValues(false);
+        lineDataSetTemperature.setDrawCircles(false);
 
         // Removing values and circle points from light and humidity graphs
         lineDataSetSunlight.setDrawValues(false);
@@ -216,7 +202,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setData(lineData);
         lineChart.setDescription(description);
 
-        // Default zoom to one week or 'deafultZoomInDays'
+        // You can set default zoom in GraphViewModel
         lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
         lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
@@ -228,37 +214,6 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
 
     }
-
-
-    // Replaces action bar with custom_toolbar and sets the title of the activity right
-    public void setupToolbar() {
-        // Sets the custom_toolbar for the activity
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Calculate ActionBar's height
-        TextView toolbar_title = findViewById(R.id.toolbar_title);
-        toolbar_title.setText(hiveName);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
-        // Parent Activity defined in AndroidManifest.xml
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
-
-    // Handles layout xml for screen orientation
-    private void setPortraitMode() {
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        graphViewModel.setZoom(14);
-        graphViewModel.setZoomEnabled(false);
-        setupToolbar();
-    }
-
-    private void setLandscapeMode() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        graphViewModel.setZoom(101);
-        graphViewModel.setZoomEnabled(true);
-    }
-
 
     // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
@@ -285,32 +240,8 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    // Saving state of chart on screen rotation
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        try {
-            float xCenter = lineChart.getLowestVisibleX() + lineChart.getVisibleXRange() / 2;
-            graphViewModel.setxCenter(xCenter);
-        } catch (Exception e) {
-            Log.d(TAG, "onSaveInstanceState: Could not store zoom.");
-        }
-    }
-
-    // Restore scrolled point when rotating screen
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // Get the saved x center and show
-        try {
-            lineChart.centerViewTo(graphViewModel.getxCenter(), 0, lineDataSetWeight.getAxisDependency());
-        } catch (Exception e) {
-            Log.d(TAG, "onRestoreInstanceState: Could not find zoom.");
-        }
-    }
-
     // Showing empty graph if downloading fails
-    void showEmptyDatasets() {
+    void showEmptyDataSets() {
         Log.d(TAG, "onCreate: Could not load hive data.");
         Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
         List<Entry> nullEntries = new ArrayList<>();
@@ -321,24 +252,17 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
     }
 
-    private String previousDay;
-
     // Format dates for graph X axis
     private class DateFormatter extends ValueFormatter {
-
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
             String date = simpleDateFormat.format(new Date((long) value));
-
-            if (orientation == Configuration.ORIENTATION_PORTRAIT){
-                return date.substring(0,5);
-            }
-            return date;
+            return date.substring(0, 5);
         }
     }
 
-    // This task downloads data and initalizes drawing of graphs.
+    // This task downloads data and initializes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
         protected void onPreExecute() {
@@ -365,7 +289,7 @@ public class GraphActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 setSwitchListeners();
-                renderGraph();
+                new Handler().post(() -> renderGraph());
                 progressBar.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();

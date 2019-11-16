@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.dal.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Hive {
@@ -11,12 +12,13 @@ public class Hive {
     private double currTemp;
     private double currIlluminance;
     private double currHum;
-    private Status weightStatus;
-    private Status tempStatus;
-    private Status humidStatus;
-    private Status illumStatus;
+    private Status weightStatus = Status.UNDEFINED;
+    private Status tempStatus = Status.UNDEFINED;
+    private Status humidStatus = Status.UNDEFINED;
+    private Status illumStatus = Status.UNDEFINED;
+    private List<StatusIntrospection> statusIntrospection;
 
-    public Hive(int id, String name){
+    public Hive(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -124,11 +126,53 @@ public class Hive {
         this.currHum = currHum;
     }
 
-    enum Status {
+    public List<StatusIntrospection> getStatusIntrospection() {
+        return new ArrayList<StatusIntrospection>(this.statusIntrospection);
+    }
+
+    public void setStatusIntrospection(List<StatusIntrospection> statusIntrospection) {
+        this.statusIntrospection = statusIntrospection;
+    }
+
+    public enum Status {
         UNDEFINED,
         DANGER,
         WARNING,
         OK
+    }
+
+    public enum Variables {
+        WEIGHT,
+        ILLUMINANCE,
+        HUMIDITY,
+        TEMPERATURE,
+        OTHER
+    }
+
+    // This class is used to inspect the reasoning behind different variables status state and why
+    // they are set the values that they are.
+    public static class StatusIntrospection {
+        private Variables variable;
+        private Status status;
+        private String reasoning;
+
+        public StatusIntrospection(Variables variable, Status status, String reasoning) {
+            this.variable = variable;
+            this.status = status;
+            this.reasoning = reasoning;
+        }
+
+        public Variables getVariable() {
+            return variable;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public String getReasoning() {
+            return reasoning;
+        }
     }
 
 }

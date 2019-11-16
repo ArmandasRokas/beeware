@@ -20,15 +20,13 @@ public class GraphViewModel extends ViewModel {
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
-    //TODO: This is 8 weeks, not 26?? What is intended?
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // 26 weeks
+    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 9;
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
     // Center at last value in array to show current time.
-    //Getting the current date
     Date date = new Date();
     private float xCenter = date.getTime(), pointsVisible;
 
@@ -66,7 +64,8 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
-            res.add(new Entry(time, illum / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
+            res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, illum)));
+            //Log.d(TAG, "extractIlluminance: " + illum);
         }
         return res;
     }
@@ -76,10 +75,17 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, humid / 200 * (leftAxismax - leftAxisMin) + leftAxisMin));
-            Log.d(TAG, "extractHumidity: humid = " + humid);
+            res.add(new Entry(time, leftAxisMin + (humid / 7)));
+            //Log.d(TAG, "extractHumidity: humid = " + humid);
         }
         return res;
+    }
+
+    private float scaleNumToLeftAxis(float min, float in) {
+        if (in <= 0) {
+            return in;
+        }
+        return 2 * (float) Math.log(in) + min;
     }
 
     /**
@@ -133,10 +139,6 @@ public class GraphViewModel extends ViewModel {
 
     public void setRightAxisMax(float rightAxisMax) {
         this.rightAxisMax = rightAxisMax;
-    }
-
-    public boolean isZoomEnabled() {
-        return zoomEnabled;
     }
 
     public void setZoomEnabled(boolean zoomEnabled) {

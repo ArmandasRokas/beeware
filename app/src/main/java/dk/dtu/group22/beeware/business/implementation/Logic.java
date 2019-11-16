@@ -84,8 +84,8 @@ public class Logic {
             hive = createHive(id, sinceTime, untilTime);
         }
 
-        calculateHiveStatus(hive);
         setCurrValues(hive);
+        calculateHiveStatus(hive);
 
         return hive;
     }
@@ -119,34 +119,195 @@ public class Logic {
 
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
-
-        calculateHiveStatus(hive);
-        setCurrValues(hive);
+        cachedHives.add(hive);
 
         return hive;
     }
 
-
+    /**
+     * Calculates status for the hive, and stores all the reasons in the hives statusIntrospection.
+     * It sets the status of each variable to the worst it could find according to the different use-cases.
+     * One lambda is one use-case, which affect the status in some way.
+     *
+     * @param hive The hive to calculate statuses for
+     */
     private void calculateHiveStatus(Hive hive) {
-        Calendar today = Calendar.getInstance();
+        // Calculate various enum statuses
+        List<StatusCalculator> calculators = new ArrayList<>();
 
-        long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
-        Calendar yesterday = Calendar.getInstance();
-        yesterday.setTimeInMillis(today.getTimeInMillis() - twentyFourHoursInMillis);
+        // Use case: Calculate specific delta to be displayed by a hive.
+        StatusCalculator calculateDelta = (Hive inputHive) -> {
+            // Calculate Hive delta
+            Calendar today = Calendar.getInstance();
 
-        int prevMidnightIndex = getClosestMidnightValIndex(hive, today, 0);
-        int prevprevMidnightIndex = getClosestMidnightValIndex(hive, yesterday, hive.getMeasurements().size() - prevMidnightIndex - 1);
-        Timestamp prevTime = hive.getMeasurements().get(prevMidnightIndex).getTimestamp();
-        Timestamp prevprevTime = hive.getMeasurements().get(prevprevMidnightIndex).getTimestamp();
+            long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+            Calendar yesterday = Calendar.getInstance();
+            yesterday.setTimeInMillis(today.getTimeInMillis() - twentyFourHoursInMillis);
 
-        if (!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))) {
-            hive.setWeightDelta(Double.NaN);
-        } else {
-            double prevMidnightWeight = hive.getMeasurements().get(prevMidnightIndex).getWeight();
-            double prevprevMidnightWeight = hive.getMeasurements().get(prevprevMidnightIndex).getWeight();
-            double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
-            hive.setWeightDelta(deltaWeight);
+            int prevMidnightIndex = getClosestMidnightValIndex(inputHive, today, 0);
+            int prevprevMidnightIndex = getClosestMidnightValIndex(inputHive, yesterday, inputHive.getMeasurements().size() - prevMidnightIndex - 1);
+            Timestamp prevTime = inputHive.getMeasurements().get(prevMidnightIndex).getTimestamp();
+            Timestamp prevprevTime = inputHive.getMeasurements().get(prevprevMidnightIndex).getTimestamp();
+
+            if (!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))) {
+                inputHive.setWeightDelta(Double.NaN);
+                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.UNDEFINED, "Unable to get data for delta");
+            } else {
+                double prevMidnightWeight = inputHive.getMeasurements().get(prevMidnightIndex).getWeight();
+                double prevprevMidnightWeight = inputHive.getMeasurements().get(prevprevMidnightIndex).getWeight();
+                double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
+                inputHive.setWeightDelta(deltaWeight);
+                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.OK, "Able to get data for delta");
+            }
+        };
+        calculators.add(calculateDelta);
+
+
+        // TODO: Make a manager for preferences, so that the configured value is not hardcoded
+
+        // Use case: User has set a critical threshold for weight, which the hive must not fall below
+        StatusCalculator weightFallsBelowConfiguredValue = (Hive inputHive) -> {
+            double configuredWeightThreshold = 15.0;
+            System.out.println("Hive:" + inputHive.getName() + " Curr weight:" + inputHive.getCurrWeight());
+            if (inputHive.getCurrWeight() < configuredWeightThreshold) {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, "Weight has fallen below a critical threshold.");
+            }
+            return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, "Weight is not below critical threshold");
+        };
+        calculators.add(weightFallsBelowConfiguredValue);
+
+
+        // Use case: User has set a critical threshold for temp, which the hive must not fall below
+        StatusCalculator tempFallsBelowConfiguredValue = (Hive inputHive) -> {
+            double configuredTempThreshold = 30.0;
+            if (inputHive.getCurrTemp() < configuredTempThreshold) {
+                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING,
+                        "Temperature below configured value. Worst case: The queen is perhaps dead. " +
+                                "Normal case: The brood has simply moved away from the censor");
+            }
+            return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, "Temperature is not below configured value");
+        };
+        calculators.add(tempFallsBelowConfiguredValue);
+
+
+        // Use case: User has set a maximum rate of change (negative slope) for the weight, which the hive must not exceed.
+        StatusCalculator suddenChangeInWeight = (Hive inputHive) -> {
+
+            // 2 kg
+            double configuredWeightDelta = -2.0;
+            // 10 minutes. In millis
+            double configuredTimeDelta = 10.0 * 60 * 1000;
+
+            // Hardcoded rate of change: -2kg / 10 minutes
+            double configuredRateOfChange = configuredWeightDelta / configuredTimeDelta;
+
+            // Check for 1 week. In millis
+            double configuredTimeInterval = 60 * 60 * 24 * 7 * 1000;
+
+            final int n = inputHive.getMeasurements().size();
+
+            final List<Measurement> data = inputHive.getMeasurements();
+
+            int startIndex = -1;
+            int endIndex = -1;
+            long currentEndTime = data.get(n - 1).getTimestamp().getTime();
+            for (int i = 0; data.get(n - 1).getTimestamp().getTime() - configuredTimeDelta > currentEndTime; ) {
+                currentEndTime = data.get(n - i - 1).getTimestamp().getTime();
+                int currentEndIndex = n - i - 1;
+                int currentStartIndex = n - i - 1;
+                long currentStartTime = currentEndTime;
+                while (currentStartTime + configuredTimeDelta > currentEndTime) {
+                    currentStartTime = data.get(n - i - 1).getTimestamp().getTime();
+                    i++;
+                }
+                currentStartIndex = n - i - 1;
+
+                // Check if it is around ten minutes.
+                long fiveMinutes = 5 * 60 * 60 * 1000;
+                // Is fine if the time intervals is around
+                boolean isAroundTenMinutes = configuredTimeDelta <= currentEndTime - currentStartTime && currentEndTime - currentStartTime <= configuredTimeDelta + fiveMinutes;
+                if (!isAroundTenMinutes) {
+                    continue;
+                }
+                double deltaWeight = data.get(currentEndIndex).getWeight() - data.get(currentStartIndex).getWeight();
+                double deltaTime = data.get(currentEndIndex).getTimestamp().getTime() - data.get(currentStartIndex).getTimestamp().getTime();
+                double currentRateOfChange = deltaWeight / deltaTime;
+                if (currentRateOfChange <= configuredRateOfChange) {
+                    startIndex = currentStartIndex;
+                    endIndex = currentEndIndex;
+                    break;
+                }
+            }
+
+            if (startIndex == -1 || endIndex == -1) {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, "No sudden rate of change in weight the previous week");
+            }
+            // Check if it is between may and august
+            Calendar today = Calendar.getInstance();
+            int day = 1;
+            int may_month = Calendar.MAY;
+            int august_month = Calendar.AUGUST;
+            int year = today.get(Calendar.YEAR);
+            int midnight_hour = 0;
+            int midnight_minutes = 0;
+            Calendar firstOfMay = Calendar.getInstance();
+            firstOfMay.set(year, may_month, day, midnight_hour, midnight_minutes);
+            Calendar firstOfAugust = Calendar.getInstance();
+            firstOfAugust.set(year, august_month, day, midnight_hour, midnight_minutes);
+            long timeFound = data.get(startIndex).getTimestamp().getTime();
+            if (firstOfMay.getTimeInMillis() <= timeFound && timeFound <= firstOfAugust.getTimeInMillis()) {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, "Sudden change in hive weight: Due to it being summer it is probably swarming. Best case: Swarming. Worst case: Robbery");
+            } else {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, "Sudden change in hive weight: Due to it not being summer it is probably a robbery. Best case: Swarming. Worst case: Robbery");
+            }
+
+        };
+        calculators.add(suddenChangeInWeight);
+
+        List<Hive.StatusIntrospection> statusReasonings = new ArrayList<>();
+        for (StatusCalculator calculator : calculators) {
+            Hive.StatusIntrospection tmp = calculator.calculate(hive);
+            if (tmp == null) {
+                continue;
+            }
+            statusReasonings.add(tmp);
+
+            if (tmp.getVariable() == Hive.Variables.HUMIDITY) {
+                Hive.Status worst = worst(tmp.getStatus(), hive.getHumidStatus());
+                hive.setHumidStatus(worst);
+            } else if (tmp.getVariable() == Hive.Variables.ILLUMINANCE) {
+                Hive.Status worst = worst(tmp.getStatus(), hive.getIllumStatus());
+                hive.setIllumStatus(worst);
+            } else if (tmp.getVariable() == Hive.Variables.WEIGHT) {
+                Hive.Status worst = worst(tmp.getStatus(), hive.getWeightStatus());
+                hive.setWeightStatus(worst);
+            } else if (tmp.getVariable() == Hive.Variables.TEMPERATURE) {
+                Hive.Status worst = worst(tmp.getStatus(), hive.getTempStatus());
+                hive.setTempStatus(worst);
+            } else if (tmp.getVariable() == Hive.Variables.OTHER) {
+                // Do nothing
+            }
         }
+        hive.setStatusIntrospection(statusReasonings);
+    }
+
+    private Hive.Status worst(Hive.Status a, Hive.Status b) {
+        if (a == Hive.Status.UNDEFINED) {
+            return b;
+        }
+        if (b == Hive.Status.UNDEFINED) {
+            return a;
+        }
+
+        if (a == Hive.Status.DANGER || b == Hive.Status.DANGER) {
+            return Hive.Status.DANGER;
+        }
+
+        if (b == Hive.Status.WARNING || a == Hive.Status.WARNING) {
+            return Hive.Status.WARNING;
+        }
+
+        return Hive.Status.OK;
     }
 
     private void setCurrValues(Hive hive) {
@@ -220,6 +381,10 @@ public class Logic {
         public HivesToSubscribeNoFound(String msg) {
             super(msg);
         }
+    }
+
+    interface StatusCalculator {
+        Hive.StatusIntrospection calculate(Hive hive);
     }
 
 }
