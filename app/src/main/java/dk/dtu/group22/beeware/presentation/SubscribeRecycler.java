@@ -34,8 +34,10 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private ImageView backArrow, moreMenu;
     private PopupMenu menuPopup;
     private boolean showingSubscriptions = false;
+    List<NameIdPair> allHives;
     List<NameIdPair> subscribable;
     List<NameIdPair> subscriptions = new ArrayList<>();
+    List<NameIdPair> searchResults = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,6 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     // and adds them to the list via the 'SubscribeAdapter' class
     private void addListElements() {
         new AsyncTask() {
-            List<NameIdPair> allHives;
             String errorMsg = null;
 
             @Override
@@ -99,14 +100,14 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 if (errorMsg != null) {
                     errorTv.setText(errorMsg);
                 } else{
-                    splitSubscriptions(allHives);
+                    splitSubscriptions();
                 }
             }
         }.execute();
     }
 
     // Splits all the hives into the ones that has been subscribed and the ones that has not
-    private void splitSubscriptions(List<NameIdPair> allHives) {
+    private void splitSubscriptions() {
         subscribable = allHives;
         ArrayList<Integer> subbedIds = logic.getSubscriptionIDs();
 
