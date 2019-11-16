@@ -267,10 +267,21 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             }
         }
 
+        // If a whole item on the recyclerview is pressed, then toggle the subscription switch
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.subHiveSwitch.isChecked()) {
+                    holder.subHiveSwitch.setChecked(false);
+                } else {
+                    holder.subHiveSwitch.setChecked(true);
+                }
+            }
+        });
+
         // Runs when the subscribe switch is being switched on/off
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
-                    System.out.println("The switch is set to " + holder.subHiveSwitch.isChecked());
                     if (holder.subHiveSwitch.isChecked()) {
                         // Calls the DAL to save the id in preferenceManager
                         logic.subscribeHive(mDataset.get(position).getID());

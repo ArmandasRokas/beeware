@@ -39,6 +39,7 @@
         android:text="Available"
         android:textColor="#0099B3"
         android:textSize="16sp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.7"
@@ -66,6 +67,7 @@
         android:text="Subscriptions"
         android:textColor="#0099B3"
         android:textSize="16sp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
@@ -130,8 +132,10 @@
 
     <ImageView
         android:id="@+id/subscribe_back_arrow"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="@+id/subscribe_search_field"
         app:layout_constraintEnd_toStartOf="@+id/subscribe_search_field"
         app:layout_constraintStart_toStartOf="parent"
