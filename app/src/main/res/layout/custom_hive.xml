@@ -5,54 +5,40 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00FFFFFF">
+    android:background="#00FFFFFF"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/album"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:contentDescription="@string/bistade"
         android:src="@drawable/beehive2"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"/>
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/album_title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:gravity="bottom|center_horizontal"
+        android:gravity="center_horizontal"
         android:text="@string/bistade"
         android:textColor="#000000"
         android:textSize="18sp"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/album"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toBottomOf="@+id/album"
         app:layout_constraintVertical_bias="0.0" />
-<!--
-    <TextView
-        android:id="@+id/album_title"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:text="@string/stade1"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/album_weight"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/album_weight"
-        app:layout_constraintTop_toBottomOf="@+id/album_weight"
-        app:layout_constraintVertical_bias="0.0" />
--->
+
     <ImageView
         android:id="@+id/weightIcon"
         android:layout_width="40dp"

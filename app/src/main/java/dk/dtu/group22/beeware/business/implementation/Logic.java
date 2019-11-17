@@ -46,7 +46,7 @@ public class Logic {
         subscriptionManager.saveSubscription(id);
     }
 
-    public ArrayList<Integer> getSubscriptionIDs() {
+    public List<Integer> getSubscriptionIDs() {
         return subscriptionManager.getSubscriptions();
     }
 

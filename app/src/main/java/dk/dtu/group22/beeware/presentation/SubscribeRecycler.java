@@ -127,7 +127,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
     // Splits all the hives into the ones that has been subscribed and the ones that has not
     private void splitSubscriptions() {
-        ArrayList<Integer> subbedIds = logic.getSubscriptionIDs();
+        List<Integer> subbedIds = logic.getSubscriptionIDs();
 
         // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
@@ -211,7 +211,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
 
-    private ArrayList<Integer> subbedIds;
+    private List<Integer> subbedIds;
     private List<NameIdPair> mDataset;
     private Logic logic;
 
