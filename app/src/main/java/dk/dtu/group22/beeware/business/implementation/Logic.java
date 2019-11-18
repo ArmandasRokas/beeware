@@ -151,13 +151,13 @@ public class Logic {
 
             if (!(isAroundMidnight(prevTime, today) && isAroundMidnight(prevprevTime, yesterday))) {
                 inputHive.setWeightDelta(Double.NaN);
-                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.UNDEFINED, "Unable to get data for delta");
+                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.UNDEFINED, Hive.DataAnalysis.CASE_DELTA_CALCULATIONS);
             } else {
                 double prevMidnightWeight = inputHive.getMeasurements().get(prevMidnightIndex).getWeight();
                 double prevprevMidnightWeight = inputHive.getMeasurements().get(prevprevMidnightIndex).getWeight();
                 double deltaWeight = prevMidnightWeight - prevprevMidnightWeight;
                 inputHive.setWeightDelta(deltaWeight);
-                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.OK, "Able to get data for delta");
+                return new Hive.StatusIntrospection(Hive.Variables.OTHER, Hive.Status.OK, Hive.DataAnalysis.CASE_DELTA_CALCULATIONS);
             }
         };
         calculators.add(calculateDelta);
@@ -168,11 +168,11 @@ public class Logic {
         // Use case: User has set a critical threshold for weight, which the hive must not fall below
         StatusCalculator weightFallsBelowConfiguredValue = (Hive inputHive) -> {
             double configuredWeightThreshold = 15.0;
-            System.out.println("Hive:" + inputHive.getName() + " Curr weight:" + inputHive.getCurrWeight());
+            //System.out.println("Hive:" + inputHive.getName() + " Curr weight:" + inputHive.getCurrWeight());
             if (inputHive.getCurrWeight() < configuredWeightThreshold) {
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, "Weight has fallen below a critical threshold.");
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
-            return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, "Weight is not below critical threshold");
+            return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
         };
         calculators.add(weightFallsBelowConfiguredValue);
 
@@ -182,10 +182,9 @@ public class Logic {
             double configuredTempThreshold = 30.0;
             if (inputHive.getCurrTemp() < configuredTempThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING,
-                        "Temperature below configured value. Worst case: The queen is perhaps dead. " +
-                                "Normal case: The brood has simply moved away from the censor");
+                        Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
-            return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, "Temperature is not below configured value");
+            return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
         };
         calculators.add(tempFallsBelowConfiguredValue);
 
@@ -240,7 +239,7 @@ public class Logic {
             }
 
             if (startIndex == -1 || endIndex == -1) {
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, "No sudden rate of change in weight the previous week");
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_SUDDEN_CHANGE);
             }
             // Check if it is between may and august
             Calendar today = Calendar.getInstance();
@@ -256,9 +255,9 @@ public class Logic {
             firstOfAugust.set(year, august_month, day, midnight_hour, midnight_minutes);
             long timeFound = data.get(startIndex).getTimestamp().getTime();
             if (firstOfMay.getTimeInMillis() <= timeFound && timeFound <= firstOfAugust.getTimeInMillis()) {
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, "Sudden change in hive weight: Due to it being summer it is probably swarming. Best case: Swarming. Worst case: Robbery");
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_SUDDEN_CHANGE);
             } else {
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, "Sudden change in hive weight: Due to it not being summer it is probably a robbery. Best case: Swarming. Worst case: Robbery");
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, Hive.DataAnalysis.CASE_SUDDEN_CHANGE);
             }
 
         };
@@ -267,9 +266,9 @@ public class Logic {
         List<Hive.StatusIntrospection> statusReasonings = new ArrayList<>();
         for (StatusCalculator calculator : calculators) {
             Hive.StatusIntrospection tmp = calculator.calculate(hive);
-            if (tmp == null) {
-                continue;
-            }
+            //if (tmp == null) {
+            //    continue;
+            //}
             statusReasonings.add(tmp);
 
             if (tmp.getVariable() == Hive.Variables.HUMIDITY) {
