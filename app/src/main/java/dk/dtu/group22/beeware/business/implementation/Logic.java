@@ -35,6 +35,7 @@ public class Logic {
 
     public Logic() {
        // this.hiveHivetool = new HiveHivetool();
+        this.hiveCached = HiveCached.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
     }
 

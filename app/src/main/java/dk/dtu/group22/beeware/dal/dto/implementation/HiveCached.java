@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
 
@@ -13,10 +14,15 @@ public class HiveCached {
 
     private List<Hive> cachedHives;
     private HiveHivetool hiveHivetool;
+    private final static HiveCached hiveCached = new HiveCached();
 
     public HiveCached(){
         cachedHives = new ArrayList<>();
         hiveHivetool = new HiveHivetool();
+    }
+
+    public static HiveCached getSingleton() {
+        return hiveCached;
     }
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime){
@@ -26,6 +32,10 @@ public class HiveCached {
         // 2. otherwise create hive
         // TODO:
         // How should additional measurements be added to the hive, now that the old ones are being deleted? How does it affect the graphs?
+
+        for(Hive hive: cachedHives){
+            System.out.println(hive.getId());
+        }
 
         Hive hive = findCachedHive(id);
         if (hive != null) {
