@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.dal.dto.implementation;
 
 import androidx.core.util.Pair;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,24 +33,35 @@ public class HiveCached {
         // 2. otherwise create hive
         // TODO:
         // How should additional measurements be added to the hive, now that the old ones are being deleted? How does it affect the graphs?
-
+        System.out.println("Start printing chached");
         for(Hive hive: cachedHives){
             System.out.println(hive.getId());
         }
+        System.out.println("End printing cached");
 
         Hive hive = findCachedHive(id);
         if (hive != null) {
-            boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().compareTo(sinceTime) >= 0;
-            boolean isWithinUntil = hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp().compareTo(sinceTime) <= 0;
+            //boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().compareTo(sinceTime) >= 0;
+            //boolean isWithinUntil = hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp().compareTo(sinceTime) <= 0;
+            Timestamp sinceTimeDelta= new Timestamp(sinceTime.getTime());
+            Timestamp untilTimeDelta= new Timestamp(untilTime.getTime() + 300000);
+            boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().after(sinceTimeDelta);
+            boolean isWithinUntil = hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp().before(untilTimeDelta);
+            System.out.println("isWithinSince: " + isWithinSince + " isWihtinUntil: " + isWithinUntil);
             if(!isWithinSince){
+                cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, hive.getMeasurements().get(0).getTimestamp()).first;
                 hive.appendMeasurements(list);
+                cachedHives.add(hive);
 
             }
 
+
             if(!isWithinUntil){
+                cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
                 hive.appendMeasurements(list);
+                cachedHives.add(hive);
 
             }
           /*  if (!(isWithinSince && isWithinUntil)) {

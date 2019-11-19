@@ -201,6 +201,7 @@ public class Hive {
 
     public void appendMeasurements(List<Measurement> ms){
         this.measurements.addAll(ms);
+        measurements.sort((e1, e2) -> e1.getTimestamp().compareTo(e2.getTimestamp()));
     }
 
 }
