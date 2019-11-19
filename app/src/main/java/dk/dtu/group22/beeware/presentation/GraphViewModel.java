@@ -65,7 +65,7 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
             res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, illum)));
-            //Log.d(TAG, "extractIlluminance: " + illum);
+            Log.d(TAG, "extractIlluminance: " + illum);
         }
         return res;
     }
