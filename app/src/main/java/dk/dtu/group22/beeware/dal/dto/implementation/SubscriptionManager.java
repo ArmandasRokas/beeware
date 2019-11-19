@@ -20,6 +20,11 @@ public class SubscriptionManager implements ISubscriptionManager {
     public void saveSubscription(int id) {
 
         String subscriptions = sharedPreferences.getString("ids", "");
+
+        if (subscriptions.contains(String.valueOf(id))) {
+            return;
+        }
+
         if (subscriptions.equals("")) {
             subscriptions = id + ",";
         } else {
@@ -31,9 +36,9 @@ public class SubscriptionManager implements ISubscriptionManager {
     public List<Integer> getSubscriptions() {
 
         List<Integer> subscriptions_list = new ArrayList<>();
-        String[] subscriptions_string = sharedPreferences.getString("ids", "").split(",");
+        String[] subscriptions_array = sharedPreferences.getString("ids", "").split(",");
 
-        for (String id : subscriptions_string) {
+        for (String id : subscriptions_array) {
             if (!id.equals("")) {
                 subscriptions_list.add(Integer.valueOf(id));
             }
