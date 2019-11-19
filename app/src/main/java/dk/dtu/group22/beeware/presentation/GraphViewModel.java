@@ -20,7 +20,7 @@ public class GraphViewModel extends ViewModel {
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
     private Hive hive;
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 9;
+    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // How many millis ago
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,

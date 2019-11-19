@@ -258,7 +258,7 @@ public class GraphActivity extends AppCompatActivity {
         public String getAxisLabel(float value, AxisBase axis) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
             String date = simpleDateFormat.format(new Date((long) value));
-            return date.substring(0, 5);
+            return date; //.substring(0, 5);
         }
     }
 
