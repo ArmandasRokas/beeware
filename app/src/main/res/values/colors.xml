@@ -14,4 +14,8 @@
     <color name="BEE_graphSunlight">#FFD700</color>
     <color name="BEE_graphHumidity">#00BFFF</color>
 
+    <!-- colors for textfields and list lines -->
+    <color name="textfield">#26000000</color>
+    <color name="listline">#0D000000</color>
+
 </resources>

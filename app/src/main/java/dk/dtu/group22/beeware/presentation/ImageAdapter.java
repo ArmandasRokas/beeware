@@ -81,12 +81,10 @@ public class ImageAdapter extends BaseAdapter {
             }
         }
 
-
-        img.setImageResource(R.drawable.beehive2);
-        img.setOnClickListener(new View.OnClickListener() {
+        // A listener on the whole grid-element (each full 'hive square')
+        gridView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
                 Intent ID = new Intent(ctx, GraphActivity.class);
                 Hive clickedHiveHive = hives.get(position);
                 ID.putExtra("hiveid", clickedHiveHive.getId());
@@ -96,6 +94,7 @@ public class ImageAdapter extends BaseAdapter {
                 ctx.startActivity(ID);
             }
         });
+
         title.setText(hives.get(position).getName());
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
         String formattedWeightDisplay = "";

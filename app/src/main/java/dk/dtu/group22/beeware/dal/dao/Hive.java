@@ -154,9 +154,9 @@ public class Hive {
     public static class StatusIntrospection {
         private Variables variable;
         private Status status;
-        private String reasoning;
+        private DataAnalysis reasoning;
 
-        public StatusIntrospection(Variables variable, Status status, String reasoning) {
+        public StatusIntrospection(Variables variable, Status status, DataAnalysis reasoning) {
             this.variable = variable;
             this.status = status;
             this.reasoning = reasoning;
@@ -170,9 +170,33 @@ public class Hive {
             return status;
         }
 
-        public String getReasoning() {
+        public DataAnalysis getReasoning() {
             return reasoning;
         }
+    }
+
+    public enum DataAnalysis {
+        // The case where logic attempts to set 24 hours WEIGHT Delta
+        CASE_DELTA_CALCULATIONS,
+        // If UNDEFINED, then the logic was unable to get data to perform the correct calculations. Hive Delta is set to NaN
+        // If OK, then the logic was able to calculate it and set it without any issue.
+
+        // The case where a specific Variable falls below a specific threshold
+        CASE_CRITICAL_THRESHOLD,
+        // If the variable is WEIGHT
+        //// If Danger, then the hive Variable fell below that threshold. Risk of starvation
+        //// If OK, then the hive Variable
+
+        // If the variable is TEMPERATURE
+        //// If Warning, Temperature below configured value. Worst case: The queen is perhaps dead Normal case: The brood has simply moved away from the censor.
+        //// If OK, no problem with the temperature.
+
+        // The case where a variable as a function of time changes suddenly
+        CASE_SUDDEN_CHANGE;
+        // If the variable is WEIGHT
+        //// If Danger, Sudden change in hive weight: Due to it being summer it is probably swarming. Best case: Swarming. Worst case: Robbery from other bees
+        //// If OK, then the weight change is nothing unexpected.
+        //// If Warning, Sudden change in hive weight: Due to it not being summer it is probably a robbery. Best case: Swarming. Worst case: Robbery
     }
 
 }
