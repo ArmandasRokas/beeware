@@ -48,8 +48,11 @@ public class HiveCached {
             //System.out.println("isWithinSince: " + isWithinSince + " isWihtinUntil: " + isWithinUntil);
             if(!isWithinSince){
                 cachedHives.remove(hive);
-                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, hive.getMeasurements().get(0).getTimestamp()).first;
-                hive.appendMeasurements(list);
+                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()- 300000)).first;
+               // hive.appendMeasurements(list);
+                if (list != null) {
+                    hive.getMeasurements().addAll(0,list);
+                }
                 cachedHives.add(hive);
             }
 
@@ -57,7 +60,10 @@ public class HiveCached {
             if(!isWithinUntil){
                 cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
-                hive.appendMeasurements(list);
+                //hive.appendMeasurements(list);
+                if (list != null) {
+                    hive.getMeasurements().addAll(list);
+                }
                 cachedHives.add(hive);
 
             }

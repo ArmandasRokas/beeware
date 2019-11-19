@@ -199,9 +199,9 @@ public class Hive {
         //// If Warning, Sudden change in hive weight: Due to it not being summer it is probably a robbery. Best case: Swarming. Worst case: Robbery
     }
 
-    public void appendMeasurements(List<Measurement> ms){
+ /*   public void appendMeasurements(List<Measurement> ms){
         this.measurements.addAll(ms);
         measurements.sort((e1, e2) -> e1.getTimestamp().compareTo(e2.getTimestamp()));
-    }
+    }*/
 
 }

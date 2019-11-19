@@ -102,6 +102,7 @@ public class HiveHivetool {
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100*1000).get();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }
 
