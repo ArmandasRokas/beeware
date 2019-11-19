@@ -272,10 +272,13 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             @Override
             public void onClick(View view) {
                 if (holder.subHiveSwitch.isChecked()) {
+                    logic.unsubscribeHive(mDataset.get(position).getID());
                     holder.subHiveSwitch.setChecked(false);
                 } else {
+                    logic.subscribeHive(mDataset.get(position).getID());
                     holder.subHiveSwitch.setChecked(true);
                 }
+                subbedIds = logic.getSubscriptionIDs();
             }
         });
 
@@ -292,6 +295,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
                     subbedIds = logic.getSubscriptionIDs();
                 }
         );
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
