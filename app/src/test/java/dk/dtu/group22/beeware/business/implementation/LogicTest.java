@@ -43,4 +43,29 @@ public class LogicTest {
         }
         assertTrue(isSorted);
     }
+
+    @Test
+    public void GivenGetHiveThreeTimes_ReturnNoDeltaGT10MinTrue(){
+        Logic logic = Logic.getSingleton();
+        long now = 1574237548640L;
+        long since = now - (86400000 * 3);
+        long beforeSince = since - (86400000 * 3);
+        long beforeBeforeSince = beforeSince - (86400000 * 3);
+        Hive hive = logic.getHive(240, new Timestamp(beforeSince), new Timestamp(since));
+        Hive hive2 = logic.getHive(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
+        Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
+        Hive hive4 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
+
+        long tenMinInMillis = 10*60*1000;
+        boolean noDeltaGT10Min = true;
+        for(int i = 0; i < hive4.getMeasurements().size() - 2; i++){
+            long t1 = hive4.getMeasurements().get(i).getTimestamp().getTime();
+            long t2 = hive4.getMeasurements().get(i+1).getTimestamp().getTime();
+            if(Math.abs(t1-t2)>tenMinInMillis){
+                noDeltaGT10Min = false;
+                break;
+            }
+        }
+        assertTrue(noDeltaGT10Min);
+    }
 }
