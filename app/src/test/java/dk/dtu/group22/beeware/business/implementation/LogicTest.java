@@ -40,9 +40,9 @@ public class LogicTest {
                 System.out.println(hive4.getMeasurements().get(i).getTimestamp() + " " +hive4.getMeasurements().get(i+1).getTimestamp() );
             }
         }
-        for(Measurement m: hive4.getMeasurements()){
+      /*  for(Measurement m: hive4.getMeasurements()){
             System.out.println(m.getTimestamp());
-        }
+        }*/
 
         assertTrue(isSorted);
         // Test if the gaps between timestamps is maximum of length 10 min
@@ -88,9 +88,9 @@ public class LogicTest {
                 System.out.println(hive4.getMeasurements().get(i).getTimestamp() + " " +hive4.getMeasurements().get(i+1).getTimestamp() );
             }
         }
-        for(Measurement m: hive4.getMeasurements()){
+        /*for(Measurement m: hive4.getMeasurements()){
             System.out.println(m.getTimestamp());
-        }
+        }*/
 
         assertTrue(isSorted);
         // Test if the gaps between timestamps is maximum of length 10 min
@@ -129,9 +129,9 @@ public class LogicTest {
                 System.out.println(hive.getMeasurements().get(i).getTimestamp() + " " +hive.getMeasurements().get(i+1).getTimestamp() );
             }
         }
-        for(Measurement m: hive.getMeasurements()){
+    /*    for(Measurement m: hive.getMeasurements()){
             System.out.println(m.getTimestamp());
-        }
+        }*/
 
         assertTrue(isSorted);
         // Test if the gaps between timestamps is maximum of length 10 min

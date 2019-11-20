@@ -88,11 +88,9 @@ public class HiveHivetool {
      */
     private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) {
         // Calculates number of days
-        System.out.println(sinceTime + " " + untilTime);
         double milliseconds = (untilTime.getTime() - sinceTime.getTime()) / 1000;
         //double numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
         double numOfDays = (milliseconds * 1000 / (1000*60*60*24));
-        System.out.println(numOfDays);
         String sinceStr = sinceTime.toString().split(" ")[0];
         String untilStr = untilTime.toString().split(" ")[0];
         String untilHours = untilTime.toString().split(" ")[1].split(":")[0];
@@ -109,7 +107,6 @@ public class HiveHivetool {
             e.printStackTrace();
             throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }
-        //System.out.println(doc);
         Elements nameElement = doc.getElementsByTag("title");
         String name = nameElement.get(0).wholeText().split(": ")[1];
 
