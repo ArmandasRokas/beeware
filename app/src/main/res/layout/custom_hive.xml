@@ -5,28 +5,33 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00FFFFFF">
+    android:background="#00FFFFFF"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/album"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:contentDescription="@string/bistade"
         android:src="@drawable/beehive2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="00" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/album_weight"
+        android:id="@+id/album_title"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="66kg +6"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/bistade"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/album"
         app:layout_constraintHorizontal_bias="0.0"
@@ -34,87 +39,103 @@
         app:layout_constraintTop_toBottomOf="@+id/album"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/album_title"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:text="@string/stade1"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/album_weight"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/album_weight"
-        app:layout_constraintTop_toBottomOf="@+id/album_weight"
-        app:layout_constraintVertical_bias="0.0" />
-
     <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp"
+        android:id="@+id/weightIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="21dp"
+        android:background="@drawable/round_button"
+        android:paddingBottom="6dp"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toTopOf="@+id/album"
-        app:srcCompat="@drawable/roundbutton" />
+        app:srcCompat="@drawable/weight" />
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+        android:id="@+id/hive_currWeightTV"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
+        android:fontFamily="serif"
         android:gravity="center_vertical"
-        android:text="Weight"
+        android:text="34,1kg -1,78"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+        android:textStyle="bold"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/weightIcon"
+        app:layout_constraintEnd_toEndOf="@+id/album"
+        app:layout_constraintStart_toEndOf="@+id/weightIcon"
+        app:layout_constraintTop_toTopOf="@+id/weightIcon" />
 
     <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView5"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:srcCompat="@drawable/roundbutton" />
+        android:id="@+id/tempIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/round_button"
+        app:layout_constraintStart_toStartOf="@+id/weightIcon"
+        app:layout_constraintTop_toBottomOf="@+id/weightIcon"
+        app:srcCompat="@drawable/temperature" />
 
     <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
+        android:id="@+id/tempInTV"
+        android:layout_width="0dp"
+        android:layout_height="23dp"
+        android:gravity="center"
+        android:text="IN"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tempIcon"
+        app:layout_constraintEnd_toEndOf="@+id/tempIcon"
+        app:layout_constraintStart_toStartOf="@+id/tempIcon" />
+
+    <TextView
+        android:id="@+id/hive_currTempTV"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
+        android:fontFamily="serif"
         android:gravity="center_vertical"
-        android:text="Temperature"
+        android:text="-35,5*C"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-        app:layout_constraintStart_toEndOf="@+id/imageView6"
-        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        android:textStyle="bold"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/tempIcon"
+        app:layout_constraintEnd_toEndOf="@+id/album"
+        app:layout_constraintStart_toEndOf="@+id/tempIcon"
+        app:layout_constraintTop_toTopOf="@+id/tempIcon"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6"
-        app:srcCompat="@drawable/roundbutton" />
+        android:id="@+id/illumIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/round_button"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        app:layout_constraintStart_toStartOf="@+id/tempIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tempIcon"
+        app:srcCompat="@drawable/sunlight" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
+        android:id="@+id/hive_currIllumTV"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
+        android:fontFamily="serif"
         android:gravity="center_vertical"
-        android:text="Humidity"
+        android:text="10000lx"
         android:textColor="#000000"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toTopOf="@+id/imageView7" />
+        android:textStyle="bold"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/illumIcon"
+        app:layout_constraintEnd_toEndOf="@+id/album"
+        app:layout_constraintStart_toEndOf="@+id/illumIcon"
+        app:layout_constraintTop_toTopOf="@+id/illumIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

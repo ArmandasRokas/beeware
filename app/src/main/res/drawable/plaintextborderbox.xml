@@ -5,5 +5,6 @@
         android:width="270dp"/>
     <solid android:color="@android:color/white" />
     <stroke android:width="1dip"
-        android:color="#40000000"/>
+        android:color="@color/textfield"/>
+    <corners android:radius="5dp"/>
 </shape>

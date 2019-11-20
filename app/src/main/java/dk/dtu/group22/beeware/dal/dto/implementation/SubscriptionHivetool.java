@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscriptionHivetool implements ISubscription {
     @Override
-    public List<Hive> getHivesToSubscribe() {
+    public List<NameIdPair> getHivesToSubscribe() {
         Document doc = null;
         try {
             doc = Jsoup.connect("http://hivetool.net/hive_data.shtml").get();
@@ -28,18 +28,17 @@ public class SubscriptionHivetool implements ISubscription {
 
         Element content = doc.getElementById("green");
         //   System.out.println(content.toString());
-        ArrayList<Hive> hives = new ArrayList<Hive>();
+        ArrayList<NameIdPair> hivesToSub = new ArrayList<NameIdPair>();
 
         while(content != null){
             Elements links = content.getElementsByTag("a");
             String[] arrOfStr = links.get(0).attr("href").split("=", 2);
-            Hive hive = new Hive();
-            hive.setId(Integer.valueOf(arrOfStr[1]));
-            hive.setName(links.get(0).text());
+            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]));
             content = content.nextElementSibling();
-            hives.add(hive);
+            hivesToSub.add(tmp);
         }
 
-        return hives;
+        return hivesToSub;
     }
 }
+

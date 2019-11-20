@@ -9,10 +9,6 @@
 
         <item name="android:colorBackground">@android:color/white</item>
 
-        <!-- Color for the navigation bar (triangle, circle, square) -->
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:windowLightNavigationBar">true</item>
-
         <!-- Color for the status bar -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowLightStatusBar">true</item>

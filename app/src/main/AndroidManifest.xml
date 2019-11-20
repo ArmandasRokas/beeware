@@ -3,12 +3,13 @@
     package="dk.dtu.group22.beeware">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_beeware_launcher_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -20,16 +21,20 @@
         <activity android:name=".presentation.unused.Login" />
         <activity android:name=".presentation.unused.PersonalSettings" />
         <activity android:name=".presentation.TestingHiveTool" />
-        <activity android:name=".presentation.GraphActivity" />
+        <activity
+            android:name=".presentation.GraphActivity"
+            android:parentActivityName=".presentation.Overview"
+            android:screenOrientation="landscape" />
         <activity android:name=".presentation.GraphViewModel" />
         <activity android:name=".presentation.unused.SubscribeHiveActivity" />
-        <activity android:name=".presentation.SubscribeRecycler" />
-        <activity android:name=".presentation.Overview" >
+        <activity android:name=".presentation.SubscribeRecycler"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.Overview"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

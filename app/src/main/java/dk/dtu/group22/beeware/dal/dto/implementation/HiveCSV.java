@@ -2,12 +2,11 @@ package dk.dtu.group22.beeware.dal.dto.implementation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-//import java.sql.Date;
-import java.util.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,8 @@ import java.util.Scanner;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
 import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
+
+//import java.sql.Date;
 
 public class HiveCSV implements IHive {
     int id_counter;
@@ -81,7 +82,7 @@ public class HiveCSV implements IHive {
 
             data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
         }
-        Hive hive = new Hive();
+        Hive hive = new Hive(42, "dummy");
         hive.setMeasurements(data_measure);
         return hive;
     }

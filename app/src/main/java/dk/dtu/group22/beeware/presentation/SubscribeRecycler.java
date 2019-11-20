@@ -1,76 +1,110 @@
 package dk.dtu.group22.beeware.presentation;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.business.interfaces.ILogic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.User;
+import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
-public class SubscribeRecycler extends AppCompatActivity {
+public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ILogic logic;
+    private Logic logic;
     private TextView errorTv;
     private ProgressBar progressBar;
+    private ImageView backArrow;
+    private TextView availableTextbutton, subscriptionsTextbutton;
+    private View underlineOne, underlineTwo;
+    private List<NameIdPair> allHives;
+    private List<NameIdPair> subscribable = new ArrayList<>();
+    private List<NameIdPair> subscriptions = new ArrayList<>();
+    private EditText searchField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        logic = new Logic();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe);
-        setupToolbar();
+
+        // Initialisation
+        logic = Logic.getSingleton();
+        logic.setContext(this);
 
         errorTv = findViewById(R.id.errorSubscribeHives);
         progressBar = findViewById(R.id.indeterminateBar);
         recyclerView = findViewById(R.id.hivesToSubRV);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
-        // use a linear layout manager
+
+        //recyclerView.setHasFixedSize(true);
+        // Linear layout manager for the recycler view
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        /*
-        List<HighScore> highScores = highScoreRepo.getHighScores();
-        String[] highScoresStringArray = highScores.stream()
-                .map(x -> String.format("%s %s", x.getUsername(), x.getScore()))
-                .toArray(String[]::new);
-        */
+        // Removes the keyboard when the recyclerview is touched (scrolling is going on)
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                return false;
+            }
+        });
 
+        // Own back arrow
+        backArrow = findViewById(R.id.subscribe_back_arrow);
+        backArrow.setOnClickListener(this);
 
+        availableTextbutton = findViewById(R.id.subscribe_available_textbutton);
+        availableTextbutton.setOnClickListener(this);
+        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
+        subscriptionsTextbutton.setOnClickListener(this);
+        underlineOne = findViewById(R.id.subscribe_underline1);
+        underlineTwo = findViewById(R.id.subscribe_underline2);
+
+        searchField = findViewById(R.id.subscribe_search_field);
+        searchField.addTextChangedListener(textWatcher);
+
+        loadListElements();
+    }
+
+    // Gets the names and ids that is possible to subscribe to,
+    // and adds them to the list via the 'SubscribeAdapter' class
+    private void loadListElements() {
         new AsyncTask() {
-            List<Hive> hives;
             String errorMsg = null;
+
             @Override
             protected void onPreExecute() {
                 progressBar.setVisibility(View.VISIBLE);
+                availableTextbutton.setEnabled(false);
+                subscriptionsTextbutton.setEnabled(false);
+                searchField.setEnabled(false);
             }
+
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hives = logic.getHivesToSubscribe();
+                    allHives = logic.getNamesAndIDs();
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();
@@ -82,117 +116,187 @@ public class SubscribeRecycler extends AppCompatActivity {
             @Override
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
-                if (errorMsg != null){
+                if (errorMsg != null) {
                     errorTv.setText(errorMsg);
                 } else{
-                    mAdapter = new SubscribeAdapter(hives);
-                    recyclerView.setAdapter(mAdapter);
+                    splitSubscriptions();
                 }
             }
         }.execute();
-
     }
 
-    // Replaces action bar with custom_toolbar and sets the title of the activity right
-    public void setupToolbar() {
-        // Sets the custom_toolbar for the activity
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    // Splits all the hives into the ones that has been subscribed and the ones that has not
+    private void splitSubscriptions() {
+        List<Integer> subbedIds = logic.getSubscriptionIDs();
 
-        // Calculate ActionBar's height
-        TextView toolbar_title = findViewById(R.id.toolbar_title);
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.MATCH_PARENT);
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        // Checks each hive if it is in the list of subbeds ids
+        for (int i = 0; i < allHives.size(); i++) {
+            // Adding the hive to the subscribable list no matter what
+            subscribable.add(allHives.get(i));
+            for (int id : subbedIds) {
+                if (allHives.get(i).getID() == id) {
+                    // The hive is in the list of subbed ids, so it adds it to
+                    // the list of subscribed hives and removes it from the subscribable
+                    subscriptions.add(allHives.get(i));
+                    subscribable.remove(subscribable.size() - 1);
+                }
+            }
         }
-        params.setMarginEnd(actionBarHeight + 25);
-        toolbar_title.setLayoutParams(params);
+        availableTextbutton.setEnabled(true);
+        subscriptionsTextbutton.setEnabled(true);
+        searchField.setEnabled(true);
 
-        // account logo button left side on custom_toolbar
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        toolbar_title.setText("Subscriptions");
+        // Setting the list (recyclerview) to the subscribable hives
+        recyclerView.setAdapter(new SubscribeAdapter(subscribable));
     }
 
-    // When back arrow button is pressed
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
+    public void onClick(View view) {
+        if (view == backArrow) {
+            finish();
+        } else if (view == availableTextbutton) {
+            // If the user wants to see the available (subscribable) hives
+            errorTv.setVisibility(View.INVISIBLE);
+            errorTv.setText("");
+            searchField.setText("");
+            underlineOne.setVisibility(View.VISIBLE);
+            underlineTwo.setVisibility(View.INVISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+        } else if(view == subscriptionsTextbutton) {
+            // If the user wants to see the subscribed hives
+            if (subscriptions.size() == 0) {
+                errorTv.setVisibility(View.VISIBLE);
+                errorTv.setText("You have no subscriptions.");
+            }
+            searchField.setText("");
+            underlineOne.setVisibility(View.INVISIBLE);
+            underlineTwo.setVisibility(View.VISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
         }
-        return super.onOptionsItemSelected(item);
     }
+
+    // A textwather to see if anything is being written in the edittext that applies it
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.toString().equals("")) {
+                // If the user has deleted the letters to search through hives for
+                underlineOne.setVisibility(View.VISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
+                recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+            } else {
+                // if the user has written something in the search field
+                underlineOne.setVisibility(View.INVISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
+                List<NameIdPair> searchResults = new ArrayList<>();
+                for (int j = 0; j < allHives.size(); j++) {
+                    if (allHives.get(j).getName().toLowerCase()
+                            .startsWith(charSequence.toString().toLowerCase())) {
+                        // The given hive started with the searched term, so add it to a list
+                        searchResults.add(allHives.get(j));
+                    }
+                }
+                recyclerView.setAdapter(new SubscribeAdapter(searchResults));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {}
+    };
 
 }
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
-    private List<Hive> mDataset;
-    private ILogic logic = new Logic();
+
+    private List<Integer> subbedIds;
+    private List<NameIdPair> mDataset;
+    private Logic logic;
+
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public SubscribeAdapter(List<NameIdPair> myDataset) {
+        mDataset = myDataset;
+        logic = Logic.getSingleton();
+        subbedIds = logic.getSubscriptionIDs();
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+
         // each data item is just a string in this case
-        //public TextView textView;
         public TextView subHiveName;
         public Switch subHiveSwitch;
+
         public MyViewHolder(View v) {
             super(v);
-            //textView = v.findViewById(R.id.hiveNameTv);
             subHiveName = v.findViewById(R.id.subscribe_name);
-            // TODO: Når recycleren genbruger switch'ene, tickes de ikke tilbage på off
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public SubscribeAdapter(List<Hive> myDataset) {
-        mDataset = myDataset;
-    }
-
     // Create new views (invoked by the layout manager)
     @Override
-    public SubscribeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                            int viewType) {
+    public SubscribeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_subscribe, parent, false);
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+
+        return new MyViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        //System.out.println((mDataset.get(position).getName()));
-        //holder.textView.setText(mDataset.get(position).getName());
         holder.subHiveName.setText(mDataset.get(position).getName());
 
-        // TODO: Ændre dette så det passer med at være en switch (indlæs subbed hives og tick dem on, samt fjern hives når ticket off)
+        // Checks if the current list position element is in list of subbed ids
+        for (int id : subbedIds) {
+            if (id == mDataset.get(position).getID()) {
+                holder.subHiveSwitch.setChecked(true);
+                break;
+            } else {
+                holder.subHiveSwitch.setChecked(false);
+            }
+        }
+
+        // If a whole item on the recyclerview is pressed, then toggle the subscription switch
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.subHiveSwitch.isChecked()) {
+                    logic.unsubscribeHive(mDataset.get(position).getID());
+                    holder.subHiveSwitch.setChecked(false);
+                } else {
+                    logic.subscribeHive(mDataset.get(position).getID());
+                    holder.subHiveSwitch.setChecked(true);
+                }
+                subbedIds = logic.getSubscriptionIDs();
+            }
+        });
+
+        // Runs when the subscribe switch is being switched on/off
         holder.subHiveSwitch.setOnClickListener(
                 v -> {
-                    // TODO hardcoded user
-                    User user = new User();
-                    user.setId(1);
-                    Hive hive = new Hive();
-                    hive.setId(mDataset.get(position).getId());
-                    hive.setName(mDataset.get(position).getName());
-                    logic.subscribeHive(user, hive );
+                    if (holder.subHiveSwitch.isChecked()) {
+                        // Calls the DAL to save the id in preferenceManager
+                        logic.subscribeHive(mDataset.get(position).getID());
+                    } else {
+                        // Deletes the hive id from the preferenceManager of saved subs in DAL
+                        logic.unsubscribeHive(mDataset.get(position).getID());
+                    }
+                    subbedIds = logic.getSubscriptionIDs();
                 }
         );
+
     }
-
-
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
