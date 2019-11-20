@@ -4,30 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.GraphActivity"
-    android:fitsSystemWindows="true">
+    tools:context=".presentation.GraphActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/custom_toolbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+    <LinearLayout
+        android:id="@+id/toggleDecoration"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/toggleBox"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/weightLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/BEE_graphWeight" />
+
+        <View
+            android:id="@+id/tempLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/BEE_graphTemperature" />
+
+        <View
+            android:id="@+id/lightLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/BEE_graphSunlight" />
+
+        <View
+            android:id="@+id/humidLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/BEE_graphHumidity" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/toggleBox"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/toggleDecoration"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Switch
+            android:id="@+id/weightSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+
+        <Switch
+            android:id="@+id/tempSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+
+        <Switch
+            android:id="@+id/lightSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+
+        <Switch
+            android:id="@+id/humidSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:buttonTintMode="src_atop" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/unitBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/lineChart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintStart_toEndOf="@id/toggleBox"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/axisLeftLegend"
@@ -53,252 +114,23 @@
         android:id="@+id/lineChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/switchBox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unitBox">
-
-
-    </com.github.mikephil.charting.charts.LineChart>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/switchBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toTopOf="@id/subMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineChart">
-
-        <View
-            android:id="@+id/weightDecorativeLine"
-            android:layout_width="20dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/BEE_graphWeight"
-            app:layout_constraintBottom_toBottomOf="@+id/weightSwitch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
-
-        <View
-            android:id="@+id/tempDecorativeLine"
-            android:layout_width="20dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/BEE_graphTemperature"
-            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
-
-        <View
-            android:id="@+id/lightDecorativeLine"
-            android:layout_width="20dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/BEE_graphSunlight"
-            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
-
-        <View
-            android:id="@+id/humidDecorativeLine"
-            android:layout_width="20dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/BEE_graphHumidity"
-            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
-
-
-        <TextView
-            android:id="@+id/weightText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:text="Weight"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/weightSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightDetails"
-            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
-            app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
-
-        <TextView
-            android:id="@+id/tempText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:text="Temperature"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/tempDetails"
-            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
-            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
-
-        <TextView
-            android:id="@+id/lightText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:text="Light"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/lightDetails"
-            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
-            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
-
-        <TextView
-            android:id="@+id/humidText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:text="Humidity"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/humidDetails"
-            app:layout_constraintStart_toEndOf="@+id/weightDecorativeLine"
-            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
-
-        <TextView
-            android:id="@+id/weightDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:text="KG (+diff)"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/weightSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
-            app:layout_constraintTop_toTopOf="@+id/weightSwitch" />
-
-        <TextView
-            android:id="@+id/tempDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="36dp"
-            android:text="Celsius"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tempSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
-            app:layout_constraintTop_toTopOf="@+id/tempSwitch" />
-
-        <TextView
-            android:id="@+id/lightDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="36dp"
-            android:text="Lux"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/lightSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
-            app:layout_constraintTop_toTopOf="@+id/lightSwitch" />
-
-        <TextView
-            android:id="@+id/humidDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="36dp"
-            android:text="%"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/humidSwitch"
-            app:layout_constraintEnd_toStartOf="@+id/weightSwitch"
-            app:layout_constraintTop_toTopOf="@+id/humidSwitch" />
-
-        <Switch
-            android:id="@+id/weightSwitch"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Switch
-            android:id="@+id/tempSwitch"
-            android:layout_width="60dp"
-            android:layout_height="75dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightSwitch" />
-
-        <Switch
-            android:id="@+id/lightSwitch"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tempSwitch" />
-
-        <Switch
-            android:id="@+id/humidSwitch"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="20dp"
-            android:paddingEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lightSwitch" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/subMenu"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchBox">
+        app:layout_constraintStart_toEndOf="@+id/toggleBox"
+        app:layout_constraintTop_toBottomOf="@id/unitBox" />
 
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Button" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Button" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Button" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Button" />
-    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:tint="#FFFFFF"
+        app:backgroundTint="#8F000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_month" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -306,9 +138,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/lineChart"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/lineChart"
         app:layout_constraintTop_toBottomOf="@+id/unitBox" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

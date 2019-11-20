@@ -18,9 +18,9 @@ import dk.dtu.group22.beeware.dal.dao.Measurement;
 public class GraphViewModel extends ViewModel {
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
-    private float leftAxisMin, leftAxismax, rightAxisMin, rightAxisMax;
+    private float xAxisMin = 40, xAxisMax = 0, yAxisMin = 30, yAxisMax = 0;
     private Hive hive;
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 8; // How many millis ago
+    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 4; // How many millis ago
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
@@ -36,7 +36,31 @@ public class GraphViewModel extends ViewModel {
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " + id + ".");
     }
 
-    // TODO: Set max values and scale illuminance and humidity
+    // Set max and min values based on data
+    private void checkMaxMin(float v, char axis) {
+        if (axis == 'x' && v > 1) {
+            if (v > xAxisMax) {
+                xAxisMax = v + 2;
+            } else if (v < xAxisMin) {
+                xAxisMin = v - 2;
+            }
+        } else if (axis == 'y' && v != 0) {
+            if (v > yAxisMax) {
+                yAxisMax = v + 2;
+            } else if (v < yAxisMin) {
+                yAxisMin = v - 2;
+            }
+        }
+    }
+
+    // Scale any data to x axis (log)
+    private float scaleNumToLeftAxis(float min, float max, float in) {
+
+        if (in <= 0) {
+            return 0;
+        }
+        return (float) Math.log(in) * (max - min) / 20 + min;
+    }
 
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
@@ -44,6 +68,7 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             float weight = (float) measure.getWeight();
             res.add(new Entry(time, weight));
+            checkMaxMin(weight, 'x');
             //Log.d(TAG, "extractWeight: TEST: "  + weight);
         }
         return res;
@@ -55,6 +80,7 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             float temp = (float) measure.getTempIn();
             res.add(new Entry(time, temp));
+            checkMaxMin(temp, 'y');
         }
         return res;
     }
@@ -64,8 +90,8 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float illum = (float) measure.getIlluminance();
-            res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, illum)));
-            Log.d(TAG, "extractIlluminance: " + illum);
+            res.add(new Entry(time, scaleNumToLeftAxis(xAxisMin, xAxisMax, illum)));
+            //Log.d(TAG, "extractIlluminance: " + illum);
         }
         return res;
     }
@@ -75,17 +101,10 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, leftAxisMin + (humid / 7)));
+            res.add(new Entry(time, (humid / 105 * (xAxisMax - xAxisMin) + xAxisMin)));
             //Log.d(TAG, "extractHumidity: humid = " + humid);
         }
         return res;
-    }
-
-    private float scaleNumToLeftAxis(float min, float in) {
-        if (in <= 0) {
-            return in;
-        }
-        return 2 * (float) Math.log(in) + min;
     }
 
     /**
@@ -109,36 +128,36 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-    public float getLeftAxisMin() {
-        return leftAxisMin;
+    public float getxAxisMin() {
+        return xAxisMin;
     }
 
-    public void setLeftAxisMin(float leftAxisMin) {
-        this.leftAxisMin = leftAxisMin;
+    public void setxAxisMin(float xAxisMin) {
+        this.xAxisMin = xAxisMin;
     }
 
-    public float getLeftAxismax() {
-        return leftAxismax;
+    public float getxAxisMax() {
+        return xAxisMax;
     }
 
-    public void setLeftAxismax(float leftAxismax) {
-        this.leftAxismax = leftAxismax;
+    public void setxAxisMax(float xAxisMax) {
+        this.xAxisMax = xAxisMax;
     }
 
-    public float getRightAxisMin() {
-        return rightAxisMin;
+    public float getyAxisMin() {
+        return yAxisMin;
     }
 
-    public void setRightAxisMin(float rightAxisMin) {
-        this.rightAxisMin = rightAxisMin;
+    public void setyAxisMin(float yAxisMin) {
+        this.yAxisMin = yAxisMin;
     }
 
-    public float getRightAxisMax() {
-        return rightAxisMax;
+    public float getyAxisMax() {
+        return yAxisMax;
     }
 
-    public void setRightAxisMax(float rightAxisMax) {
-        this.rightAxisMax = rightAxisMax;
+    public void setyAxisMax(float yAxisMax) {
+        this.yAxisMax = yAxisMax;
     }
 
     public void setZoomEnabled(boolean zoomEnabled) {

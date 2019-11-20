@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class GraphActivity extends AppCompatActivity {
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ProgressBar progressBar;
+    private FloatingActionButton floatingActionButton;
 
     private LineChart lineChart;
     private LineDataSet lineDataSetWeight, lineDataSetTemperature,
@@ -50,7 +52,6 @@ public class GraphActivity extends AppCompatActivity {
     private int hiveId;
     private String hiveName;
     private float currentWeight;
-    private int orientation;
 
     private final String TAG = "GraphActivity";
 
@@ -72,24 +73,24 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         progressBar = findViewById(R.id.progressBar);
+        floatingActionButton = findViewById(R.id.floatingActionButton);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
 
-        orientation = this.getResources().getConfiguration().orientation;
-
-        // TODO: set these from user defined critical values (with fallback)
-        graphViewModel.setLeftAxismax(currentWeight + 15);
-        graphViewModel.setLeftAxisMin(currentWeight - 15);
-        graphViewModel.setRightAxisMax(60);
-        graphViewModel.setRightAxisMin(0);
-
-
-        // Show / hide activity bar and big switches on rotation
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        graphViewModel.setZoom(101);
+
+        // Default zoom is set here
+        graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Calendar button clicked");
+            }
+        });
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
@@ -133,10 +134,10 @@ public class GraphActivity extends AppCompatActivity {
         // Scale axises
         YAxis leftAxis = lineChart.getAxisLeft();
         YAxis rightAxis = lineChart.getAxisRight();
-        leftAxis.setAxisMaximum(graphViewModel.getLeftAxismax());
-        leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
-        rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
-        rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
+        leftAxis.setAxisMaximum(graphViewModel.getxAxisMax());
+        leftAxis.setAxisMinimum(graphViewModel.getxAxisMin());
+        rightAxis.setAxisMaximum(graphViewModel.getyAxisMax());
+        rightAxis.setAxisMinimum(graphViewModel.getyAxisMin());
 
         // Set colors and line width
         lineDataSetWeight.setColors(new int[]{R.color.BEE_graphWeight}, this);
@@ -203,8 +204,8 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setDescription(description);
 
         // You can set default zoom in GraphViewModel
-        lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
-        lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
+        //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
+        //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
         // Get lineDataSet visibility from state.
@@ -212,7 +213,6 @@ public class GraphActivity extends AppCompatActivity {
         lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
         lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
         lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
-
     }
 
     // Graph switch listeners use these methods
