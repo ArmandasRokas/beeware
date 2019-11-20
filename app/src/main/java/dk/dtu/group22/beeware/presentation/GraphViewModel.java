@@ -128,6 +128,31 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    public List<List<Entry>> makeMultiListBasedOnDelta(List<Entry> dataset, long delta) {
+        List<List<Entry>> res = new ArrayList<>();
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < dataset.size() - 1; ++i) {
+            float t1 = dataset.get(i).getX();
+            float t2 = dataset.get(i + 1).getX();
+            if (t2 - t1 >= delta || i == dataset.size()-1) {
+                end = i + 1;
+            List<Entry> newList = makeCopyOfInterval(dataset, start, end);
+                res.add(newList);
+                start = end;
+            }
+        }
+        return res;
+    }
+
+    public List<Entry> makeCopyOfInterval(List<Entry> data, int start, int end) {
+        List<Entry> res = new ArrayList<>(end - start);
+        for (int i = start; i < end; ++i) {
+            res.add(data.get(i));
+        }
+        return res;
+    }
+
     public float getxAxisMin() {
         return xAxisMin;
     }
