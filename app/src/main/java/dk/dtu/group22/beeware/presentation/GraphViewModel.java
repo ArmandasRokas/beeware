@@ -16,7 +16,7 @@ import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
 
 public class GraphViewModel extends ViewModel {
-    private final int useOnlyNth = 3;
+    private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
     private float xAxisMin = 40, xAxisMax = 0, yAxisMin = 30, yAxisMax = 0;
