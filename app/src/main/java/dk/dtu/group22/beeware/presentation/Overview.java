@@ -60,7 +60,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hives = logic.getSubscribedHives(1);
+                    hives = logic.getSubscribedHives(2);
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();

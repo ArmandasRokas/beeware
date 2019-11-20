@@ -22,6 +22,10 @@ public class HiveCached {
         hiveHivetool = new HiveHivetool();
     }
 
+    public void cleanCachedHives(){
+        cachedHives = new ArrayList<>();
+    }
+
     public static HiveCached getSingleton() {
         return hiveCached;
     }
@@ -38,39 +42,26 @@ public class HiveCached {
             //boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().compareTo(sinceTime) >= 0;
             //boolean isWithinUntil = hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp().compareTo(sinceTime) <= 0;
 
-            //Timestamp sinceTimeDelta= new Timestamp(sinceTime.getTime());
-            Timestamp untilTimeDelta= new Timestamp(untilTime.getTime() - 300000);
-            //System.out.println("untilTimeDelta: " +  untilTimeDelta + "hive measurments: " +hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp() );
+            Timestamp sinceTimeDelta= new Timestamp(sinceTime.getTime() + 300000*2);
+            Timestamp untilTimeDelta= new Timestamp(untilTime.getTime() - 300000*2);
 
-            boolean isWithinSince = sinceTime.after(hive.getMeasurements().get(0).getTimestamp());
+            boolean isWithinSince = sinceTimeDelta.after(hive.getMeasurements().get(0).getTimestamp());
             boolean isWithinUntil = untilTimeDelta.before(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp());
-            //System.out.println("isWithinSince: " + isWithinSince + " isWihtinUntil: " + isWithinUntil);
             if(!isWithinSince){
-               // cachedHives.remove(hive);
-                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()- 300000)).first;
-               // hive.appendMeasurements(list);
+                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime())).first;
                 if (list != null) {
                     hive.getMeasurements().addAll(0,list);
                 }
-                //cachedHives.add(hive);
             }
 
 
             if(!isWithinUntil){
-                //cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
-                //hive.appendMeasurements(list);
                 if (list != null) {
                     hive.getMeasurements().addAll(list);
                 }
-                ///cachedHives.add(hive);
-
             }
-          /*  if (!(isWithinSince && isWithinUntil)) {
-                List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime).first;
-                hive.setMeasurements(list);
-            }*/
-        } else {
+         } else {
             hive = createHive(id, sinceTime, untilTime);
         }
 

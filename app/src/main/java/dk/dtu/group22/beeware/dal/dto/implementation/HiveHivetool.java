@@ -88,30 +88,35 @@ public class HiveHivetool {
      */
     private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) {
         // Calculates number of days
-        long milliseconds = untilTime.getTime() - sinceTime.getTime();
-        int numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
+        System.out.println(sinceTime + " " + untilTime);
+        double milliseconds = (untilTime.getTime() - sinceTime.getTime()) / 1000;
+        //double numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
+        double numOfDays = (milliseconds * 1000 / (1000*60*60*24));
+        System.out.println(numOfDays);
         String sinceStr = sinceTime.toString().split(" ")[0];
         String untilStr = untilTime.toString().split(" ")[0];
-
+        String untilHours = untilTime.toString().split(" ")[1].split(":")[0];
+        String untilMins = untilTime.toString().split(" ")[1].split(":")[1];
         Document doc = null;
         try {
             doc = Jsoup.connect("http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id="+
                     hiveID+"&start_time=" +
                     sinceStr+ "+23%3A59%3A59&end_time=" +
-                    untilStr+ "+23%3A59%3A59&hive_id="+hiveID+"&number_of_days=" +
+                    untilStr+ "+"+ untilHours+"%3A"+ untilMins+"%3A59&hive_id="+hiveID+"&number_of_days=" +
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
-                    .timeout(100*1000).get();
+                    .timeout(100*1000).maxBodySize(4000000).get();
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }
-
+        //System.out.println(doc);
         Elements nameElement = doc.getElementsByTag("title");
         String name = nameElement.get(0).wholeText().split(": ")[1];
 
         Elements elements = doc.getElementsByTag("div");
         Element e = elements.get(2);
         String[] lines = e.wholeText().split("\n");
+
 
         return new Pair<String[], String>(lines, name);
     }
