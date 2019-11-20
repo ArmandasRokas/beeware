@@ -33,7 +33,6 @@ public class HiveCached {
         // 2. otherwise create hive
         // TODO:
         // How should additional measurements be added to the hive, now that the old ones are being deleted? How does it affect the graphs?
-
         Hive hive = findCachedHive(id);
         if (hive != null) {
             //boolean isWithinSince = hive.getMeasurements().get(0).getTimestamp().compareTo(sinceTime) >= 0;
@@ -47,24 +46,24 @@ public class HiveCached {
             boolean isWithinUntil = untilTimeDelta.before(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp());
             //System.out.println("isWithinSince: " + isWithinSince + " isWihtinUntil: " + isWithinUntil);
             if(!isWithinSince){
-                cachedHives.remove(hive);
+               // cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, sinceTime, new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()- 300000)).first;
                // hive.appendMeasurements(list);
                 if (list != null) {
                     hive.getMeasurements().addAll(0,list);
                 }
-                cachedHives.add(hive);
+                //cachedHives.add(hive);
             }
 
 
             if(!isWithinUntil){
-                cachedHives.remove(hive);
+                //cachedHives.remove(hive);
                 List<Measurement> list = hiveHivetool.getHiveMeasurements(id, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
                 //hive.appendMeasurements(list);
                 if (list != null) {
                     hive.getMeasurements().addAll(list);
                 }
-                cachedHives.add(hive);
+                ///cachedHives.add(hive);
 
             }
           /*  if (!(isWithinSince && isWithinUntil)) {

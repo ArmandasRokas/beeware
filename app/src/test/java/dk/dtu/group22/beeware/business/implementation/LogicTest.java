@@ -16,7 +16,8 @@ public class LogicTest {
     @Test
     public void GivenGetHiveThreeTimes_ReturnSortedHive() throws InterruptedException {
         Logic logic = Logic.getSingleton();
-        long now = System.currentTimeMillis();
+        long now = 1574237548640L;
+        //long fiveMinBeforeNow = (now - 300000 *2);
         long since = now - (86400000 * 3);
         long beforeSince = since - (86400000 * 3);
         long beforeBeforeSince = beforeSince - (86400000 * 3);
@@ -24,9 +25,10 @@ public class LogicTest {
 
         Hive hive2 = logic.getHive(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
 
+        //Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(fiveMinBeforeNow));
         Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
-        Thread.sleep(300000 *2);
-        now = System.currentTimeMillis();
+        //Thread.sleep(300000 *2);
+       // now = System.currentTimeMillis();
         Hive hive4 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
 
         boolean isSorted = true;
