@@ -135,7 +135,7 @@ public class GraphViewModel extends ViewModel {
         for (int i = 0; i < dataset.size() - 1; ++i) {
             float t1 = dataset.get(i).getX();
             float t2 = dataset.get(i + 1).getX();
-            if (t2 - t1 >= delta || i == dataset.size()-1) {
+            if (t2 - t1 >= delta || i == dataset.size() - 2) {
                 end = i + 1;
             List<Entry> newList = makeCopyOfInterval(dataset, start, end);
                 res.add(newList);

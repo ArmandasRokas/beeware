@@ -28,17 +28,15 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
 //import java.time.Instant;
 
@@ -131,20 +129,29 @@ public class GraphActivity extends AppCompatActivity {
             List<List<Entry>> tmpHumid = new ArrayList<>();
             tmpHumid.add(graphViewModel.extractHumidity());
 
-            for(List<Entry> list : tmpWeight) {
-                lineDataSetWeight.add(new LineDataSet(list, "Weight"));
+            boolean firstSet = false;
+            for (int i = 0; i < tmpWeight.size(); ++i) {
+                List<Entry> list = tmpWeight.get(i);
+                if (!firstSet) {
+                    lineDataSetWeight.add(new LineDataSet(list, "Weight"));
+                    firstSet = true;
+                } else {
+                    LineDataSet tmp = new LineDataSet(list, "shouldNotBeSeen");
+                    tmp.setDrawValues(false);
+                    lineDataSetWeight.add(tmp);
+                }
             }
 
             for(List<Entry> list : tmpTemp) {
-                lineDataSetWeight.add(new LineDataSet(list, "Temperature"));
+                lineDataSetTemperature.add(new LineDataSet(list, "Temperature"));
             }
 
             for(List<Entry> list : tmpLight) {
-                lineDataSetWeight.add(new LineDataSet(list, "Sunlight"));
+                lineDataSetSunlight.add(new LineDataSet(list, "Sunlight"));
             }
 
             for(List<Entry> list : tmpHumid){
-                lineDataSetWeight.add(new LineDataSet(list, "Humidity"));
+                lineDataSetHumidity.add(new LineDataSet(list, "Humidity"));
             }
             //Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
         } catch (Exception e) {
@@ -236,7 +243,7 @@ public class GraphActivity extends AppCompatActivity {
 
         // Illuminance
 
-        for(LineDataSet list : lineDataSetHumidity) {
+        for (LineDataSet list : lineDataSetSunlight) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphSunlight}, this);
 
@@ -284,6 +291,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setData(lineData);
         lineChart.setDescription(description);
 
+        lineChart.setMaxVisibleValueCount(4);
         // You can set default zoom in GraphViewModel
         //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
         //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
