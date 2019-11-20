@@ -44,12 +44,10 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
         subHiveButton = findViewById(R.id.subHiveBtn);
         subHiveButton.setOnClickListener(this);
 
-        setupSubscribedHives();
     }
 
-    void setupSubscribedHives() {
-
-        new AsyncTask() {
+    void setupSubscribedHives(boolean run) {
+        AsyncTask asyncTask = new AsyncTask() {
             List<Hive> hives;
             String errorMsg = null;
             @Override
@@ -84,14 +82,27 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                     }
                 }
             }
-        }.execute();
+        };
+
+        if (run) {
+            asyncTask.execute();
+        } else {
+            asyncTask.cancel(true);
+        }
+
     }
 
     @Override
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-        setupSubscribedHives();
+        setupSubscribedHives(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setupSubscribedHives(false);
     }
 
     @Override
