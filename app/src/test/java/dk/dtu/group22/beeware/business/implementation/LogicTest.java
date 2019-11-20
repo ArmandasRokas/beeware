@@ -61,7 +61,7 @@ public class LogicTest {
         for(int i = 0; i < hive4.getMeasurements().size() - 2; i++){
             long t1 = hive4.getMeasurements().get(i).getTimestamp().getTime();
             long t2 = hive4.getMeasurements().get(i+1).getTimestamp().getTime();
-            if(Math.abs(t1-t2)>tenMinInMillis){
+            if(t2-t1>tenMinInMillis){
                 noDeltaGT10Min = false;
                 break;
             }
