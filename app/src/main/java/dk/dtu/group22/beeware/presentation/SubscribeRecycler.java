@@ -85,6 +85,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         searchField.addTextChangedListener(textWatcher);
 
         loadListElements();
+
+
     }
 
     // Gets the names and ids that is possible to subscribe to,
