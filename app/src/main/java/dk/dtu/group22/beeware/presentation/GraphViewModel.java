@@ -101,7 +101,7 @@ public class GraphViewModel extends ViewModel {
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, (humid / 105 * (xAxisMax - xAxisMin) + xAxisMin)));
+            res.add(new Entry(time, ((humid - 30) / 150 * (xAxisMax - xAxisMin) + xAxisMin)));
             //Log.d(TAG, "extractHumidity: humid = " + humid);
         }
         return res;
