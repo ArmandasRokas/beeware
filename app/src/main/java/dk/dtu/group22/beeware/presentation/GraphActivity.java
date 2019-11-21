@@ -42,7 +42,6 @@ import dk.dtu.group22.beeware.R;
 
 import static java.util.Arrays.asList;
 
-//import java.time.Instant;
 
 public class GraphActivity extends AppCompatActivity {
 
@@ -52,10 +51,14 @@ public class GraphActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
 
     private LineChart lineChart;
-    //private LineDataSet lineDataSetWeight, lineDataSetTemperature,
-    //        lineDataSetSunlight, lineDataSetHumidity;
+
+    // Now each dataset is a list of datasets, in order to handle big delta.
+    // Labels are messy with MPAndroidCharts, so only one label needs to be set
+    // when creating graphs. Convention: Always set the last LineDataSet elements label to
+    // a correct label, such as "Weight", but all other labels need to be the empty string "".
     private List<LineDataSet> lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
+
     private int hiveId;
     private String hiveName;
     private float currentWeight;
@@ -92,6 +95,7 @@ public class GraphActivity extends AppCompatActivity {
         graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
 
+        // TODO: This was found unused, whomever responsible, remove
         //floatingActionButton.setOnClickListener(new View.OnClickListener() {
         //    @Override
         //    public void onClick(View v) {
@@ -244,7 +248,6 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         // Illuminance
-
         for (LineDataSet list : lineDataSetSunlight) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphSunlight}, this);
@@ -292,6 +295,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setData(lineData);
         lineChart.setDescription(description);
 
+        // TODO: This is unused whomever responsible remove this
         // You can set default zoom in GraphViewModel
         //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
         //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
