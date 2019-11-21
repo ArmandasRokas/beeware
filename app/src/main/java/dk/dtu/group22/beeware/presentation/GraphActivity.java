@@ -2,6 +2,8 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,15 +133,13 @@ public class GraphActivity extends AppCompatActivity {
             List<List<Entry>> tmpHumid = new ArrayList<>();
             tmpHumid.add(graphViewModel.extractHumidity());
 
-            boolean firstSet = false;
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
-                if (!firstSet) {
+                if (i == tmpWeight.size()-1) {
                     lineDataSetWeight.add(new LineDataSet(list, "Weight"));
-                    firstSet = true;
                 } else {
-                    LineDataSet tmp = new LineDataSet(list, "Weight_NOT_SEEN");
-                    //tmp.;
+                    LineDataSet tmp = new LineDataSet(list, "");
+                    tmp.setForm(Legend.LegendForm.NONE);
                     lineDataSetWeight.add(tmp);
                 }
             }
@@ -291,21 +291,6 @@ public class GraphActivity extends AppCompatActivity {
         // Fill chart with data
         lineChart.setData(lineData);
         lineChart.setDescription(description);
-
-        // Remove unnecessary legends, so that multiple with the same name are not made
-        Legend legend = lineChart.getLegend();
-        List<LegendEntry> refinedLegend = new ArrayList<>();
-        for (int i = 0; i < legend.getEntries().length; ++i) {
-            LegendEntry leg = legend.getEntries()[i];
-            boolean labelIsCorrect = leg.label == lineDataSetWeight.get(0).getLabel()
-                    || leg.label == lineDataSetTemperature.get(0).getLabel()
-                    || leg.label == lineDataSetHumidity.get(0).getLabel()
-                    || leg.label == lineDataSetSunlight.get(0).getLabel();
-            if(labelIsCorrect){
-                refinedLegend.add(leg);
-            }
-        }
-        lineChart.getLegend().setCustom(refinedLegend);
 
         // You can set default zoom in GraphViewModel
         //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
