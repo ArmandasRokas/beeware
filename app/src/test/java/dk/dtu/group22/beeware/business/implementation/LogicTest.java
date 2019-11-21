@@ -10,6 +10,7 @@ import dk.dtu.group22.beeware.dal.dto.implementation.HiveCached;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class LogicTest {
@@ -65,6 +66,7 @@ public class LogicTest {
     @Test
     public void GivenGetHiveThreeTimes_TenMinutes_ReturnSortedHive() throws InterruptedException {
         Logic logic = Logic.getSingleton();
+        long tenMinInMillis = 10*60*1000;
         long now = 1574237548640L;
         long tenMinBeforeNow = (now - 300000 *2);
         long since = now - (86400000 * 3);
@@ -75,12 +77,12 @@ public class LogicTest {
         Hive hive2 = logic.getHive(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
 
         Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(tenMinBeforeNow));
-      //  now = System.currentTimeMillis();
-       // Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
-        //Thread.sleep(300000 *2);
-       // now = System.currentTimeMillis();
         Hive hive4 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
 
+        /**
+         * Test if the measurements is sorted.
+         * Test fails if duplicate measurements exists.
+         */
         boolean isSorted = true;
         for(int i = 0; i < hive4.getMeasurements().size() - 1; i++){
             if(hive4.getMeasurements().get(i).getTimestamp().after(hive4.getMeasurements().get(i+1).getTimestamp())){
@@ -88,13 +90,12 @@ public class LogicTest {
                 System.out.println(hive4.getMeasurements().get(i).getTimestamp() + " " +hive4.getMeasurements().get(i+1).getTimestamp() );
             }
         }
-        /*for(Measurement m: hive4.getMeasurements()){
-            System.out.println(m.getTimestamp());
-        }*/
-
         assertTrue(isSorted);
-        // Test if the gaps between timestamps is maximum of length 10 min
-        long tenMinInMillis = 10*60*1000;
+
+        /**
+         * Test if the gaps between timestamps is maximum of length 10 min
+         */
+
         boolean noDeltaGT10Min = true;
         for(int i = 0; i < hive4.getMeasurements().size() - 2; i++){
             long t1 = hive4.getMeasurements().get(i).getTimestamp().getTime();
@@ -106,6 +107,11 @@ public class LogicTest {
         }
         assertTrue(noDeltaGT10Min);
 
+        /**
+         * Test if requested measurements is fetched
+         */
+        assertTrue( hive4.getMeasurements().get(0).getTimestamp().getTime() - beforeBeforeSince < tenMinInMillis);
+        assertTrue(now - hive4.getMeasurements().get(hive4.getMeasurements().size()-1).getTimestamp().getTime() < tenMinInMillis);
         // Clean up
         HiveCached hiveCached = HiveCached.getSingleton();
         hiveCached.cleanCachedHives();
