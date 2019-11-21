@@ -94,7 +94,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                     listEmptyTv.setText("You have not subscribed to any hives.\nClick the edit button to subscribe to a hive.");
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
-                } else if(logic.getSubscriptionIDs().size() > hives.size()){
+                } else if(hives.size() == 0){
                     listEmptyTv.setText("Error. Data could not be fetched.");
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
