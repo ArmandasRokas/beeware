@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import dk.dtu.group22.beeware.dal.dao.Measurement;
+import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
 
 public class HiveHivetool {
 
@@ -29,7 +31,6 @@ public class HiveHivetool {
         Pair<String[], String> tmp = getDataLines(sinceTime, untilTime, id);
         String[] lines = tmp.first;
         String name = tmp.second;
-
 
         return new Pair<List<Measurement>, String>(extractDataFromCSVLines(lines), name);
     }
@@ -104,7 +105,10 @@ public class HiveHivetool {
                     untilStr+ "+"+ untilHours+"%3A"+ untilMins+"%3A59&hive_id="+hiveID+"&number_of_days=" +
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100*1000).maxBodySize(4000000).get();
-        } catch (IOException e) {
+        } catch (UnknownHostException unknownHostException){
+            throw new ISubscription.UnableToFetchData(unknownHostException.getMessage());
+        }
+        catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }

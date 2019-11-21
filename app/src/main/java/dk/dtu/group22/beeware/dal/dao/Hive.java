@@ -1,9 +1,10 @@
 package dk.dtu.group22.beeware.dal.dao;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hive {
+public class Hive implements Serializable {
     private int id;
     private String name;
     private List<Measurement> measurements;
@@ -17,6 +18,14 @@ public class Hive {
     private Status humidStatus = Status.UNDEFINED;
     private Status illumStatus = Status.UNDEFINED;
     private List<StatusIntrospection> statusIntrospection;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Hive(int id, String name) {
         this.id = id;
@@ -151,7 +160,7 @@ public class Hive {
 
     // This class is used to inspect the reasoning behind different variables status state and why
     // they are set the values that they are.
-    public static class StatusIntrospection {
+    public static class StatusIntrospection implements Serializable {
         private Variables variable;
         private Status status;
         private DataAnalysis reasoning;
@@ -159,6 +168,18 @@ public class Hive {
         public StatusIntrospection(Variables variable, Status status, DataAnalysis reasoning) {
             this.variable = variable;
             this.status = status;
+            this.reasoning = reasoning;
+        }
+
+        public void setVariable(Variables variable) {
+            this.variable = variable;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public void setReasoning(DataAnalysis reasoning) {
             this.reasoning = reasoning;
         }
 
