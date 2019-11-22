@@ -27,9 +27,20 @@ import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
  * If the hive still not found in the file system then create a new hive from HiveTool.
  * If the hive exists, but some measurements missing for given time,
  * so only the missing data fetches.
- * Important: Must be careful calling this function for a time period very
+ *
+ * IMPORTANT:
+ * Must be careful calling this function for a time period very
  * long time ago, because it will fetch all data between that period and
  * existing data in order to avoid gaps between data.
+ *
+ * USER MANUAL:
+ * In order to use file caching ctx should be set by using setCtx(Context ctx) method
+ * To Turn OFF file caching, just do not set ctx.
+ * To Turn OFF caching totally use HiveHiveTool class directly in the caller.
+ *
+ * TESTS:
+ * JUnit tests are written in LogicTest class. Tests must be run every time if
+ * there are made any modifications in caching.
  */
 public class HiveCached {
 
