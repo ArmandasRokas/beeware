@@ -2,6 +2,8 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -30,14 +34,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 
-//import java.time.Instant;
+import static java.util.Arrays.asList;
+
 
 public class GraphActivity extends AppCompatActivity {
 
@@ -47,8 +51,14 @@ public class GraphActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
 
     private LineChart lineChart;
-    private LineDataSet lineDataSetWeight, lineDataSetTemperature,
+
+    // Now each dataset is a list of datasets, in order to handle big delta.
+    // Labels are messy with MPAndroidCharts, so only one label needs to be set
+    // when creating graphs. Convention: Always set the last LineDataSet elements label to
+    // a correct label, such as "Weight", but all other labels need to be the empty string "".
+    private List<LineDataSet> lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
+
     private int hiveId;
     private String hiveName;
     private float currentWeight;
@@ -73,7 +83,7 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         progressBar = findViewById(R.id.progressBar);
-        floatingActionButton = findViewById(R.id.floatingActionButton);
+        //floatingActionButton = findViewById(R.id.floatingActionButton);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
@@ -85,12 +95,13 @@ public class GraphActivity extends AppCompatActivity {
         graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: Calendar button clicked");
-            }
-        });
+        // TODO: This was found unused, whomever responsible, remove
+        //floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        Log.d(TAG, "onClick: Calendar button clicked");
+        //    }
+        //});
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
@@ -110,11 +121,45 @@ public class GraphActivity extends AppCompatActivity {
         //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
 
         try {
-            lineDataSetWeight = new LineDataSet(graphViewModel.extractWeight(), "Weight");
-            lineDataSetTemperature = new LineDataSet(graphViewModel.extractTemperature(), "Temperature");
-            lineDataSetSunlight = new LineDataSet(graphViewModel.extractIlluminance(), "Sunlight");
-            lineDataSetHumidity = new LineDataSet(graphViewModel.extractHumidity(), "Humidity");
-            Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
+            lineDataSetWeight = new ArrayList<>();
+            lineDataSetTemperature = new ArrayList<>();
+            lineDataSetHumidity = new ArrayList<>();
+            lineDataSetSunlight = new ArrayList<>();
+            // Weight has to be split when delta is greater than thirty minutes
+            long thirtyMinInMillis = 30 * 60 * 1000;
+            List<List<Entry>> tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), thirtyMinInMillis);
+
+            // We do not care about the delta for the rest of the data
+            List<List<Entry>> tmpTemp = new ArrayList<>();
+            tmpTemp.add(graphViewModel.extractTemperature());
+            List<List<Entry>> tmpLight = new ArrayList<>();
+            tmpLight.add(graphViewModel.extractIlluminance());
+            List<List<Entry>> tmpHumid = new ArrayList<>();
+            tmpHumid.add(graphViewModel.extractHumidity());
+
+            for (int i = 0; i < tmpWeight.size(); ++i) {
+                List<Entry> list = tmpWeight.get(i);
+                if (i == tmpWeight.size()-1) {
+                    lineDataSetWeight.add(new LineDataSet(list, "Weight"));
+                } else {
+                    LineDataSet tmp = new LineDataSet(list, "");
+                    tmp.setForm(Legend.LegendForm.NONE);
+                    lineDataSetWeight.add(tmp);
+                }
+            }
+
+            for (List<Entry> list : tmpTemp) {
+                lineDataSetTemperature.add(new LineDataSet(list, "Temperature"));
+            }
+
+            for (List<Entry> list : tmpLight) {
+                lineDataSetSunlight.add(new LineDataSet(list, "Sunlight"));
+            }
+
+            for (List<Entry> list : tmpHumid) {
+                lineDataSetHumidity.add(new LineDataSet(list, "Humidity"));
+            }
+            //Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
         } catch (Exception e) {
             e.printStackTrace();
             showEmptyDataSets();
@@ -126,10 +171,21 @@ public class GraphActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new DateFormatter());
 
         //Set Y Axis dependency
-        lineDataSetWeight.setAxisDependency(YAxis.AxisDependency.LEFT);
-        lineDataSetTemperature.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        lineDataSetSunlight.setAxisDependency(YAxis.AxisDependency.LEFT);
-        lineDataSetHumidity.setAxisDependency(YAxis.AxisDependency.LEFT);
+        for (LineDataSet list : lineDataSetWeight) {
+            list.setAxisDependency(YAxis.AxisDependency.LEFT);
+        }
+
+        for (LineDataSet list : lineDataSetTemperature) {
+            list.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        }
+
+        for (LineDataSet list : lineDataSetSunlight) {
+            list.setAxisDependency(YAxis.AxisDependency.LEFT);
+        }
+
+        for (LineDataSet list : lineDataSetHumidity) {
+            list.setAxisDependency(YAxis.AxisDependency.LEFT);
+        }
 
         // Scale axises
         YAxis leftAxis = lineChart.getAxisLeft();
@@ -139,60 +195,96 @@ public class GraphActivity extends AppCompatActivity {
         rightAxis.setAxisMaximum(graphViewModel.getyAxisMax());
         rightAxis.setAxisMinimum(graphViewModel.getyAxisMin());
 
-        // Set colors and line width
-        lineDataSetWeight.setColors(new int[]{R.color.BEE_graphWeight}, this);
-        lineDataSetTemperature.setColors(new int[]{R.color.BEE_graphTemperature}, this);
-        lineDataSetSunlight.setColors(new int[]{R.color.BEE_graphSunlight}, this);
-        lineDataSetHumidity.setColors(new int[]{R.color.BEE_graphHumidity}, this);
+        // Weight
+        for (LineDataSet list : lineDataSetWeight) {
+            // Set colors and line width
+            list.setColors(new int[]{R.color.BEE_graphWeight}, this);
+            list.setLineWidth(5);
+            // Set text size
+            list.setValueTextSize(10);
+            // Smooth Curves
+            list.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+            // Removing values and circle points from weight and temp graphs in landscape
+            list.setDrawValues(false);
+            list.setDrawCircles(false);
+        }
 
-        lineDataSetWeight.setLineWidth(5);
-        lineDataSetTemperature.setLineWidth(5);
-        lineDataSetSunlight.setLineWidth(1);
-        lineDataSetHumidity.setLineWidth(1);
+        // Temperature
+        for (LineDataSet list : lineDataSetTemperature) {
+            // Set colors and line width
+            list.setColors(new int[]{R.color.BEE_graphTemperature}, this);
+            list.setLineWidth(5);
+
+            // Set text size
+            list.setValueTextSize(10);
+
+            // Smooth Curves
+            list.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+            // Removing values and circle points from weight and temp graphs in landscape
+            list.setDrawValues(false);
+            list.setDrawCircles(false);
+        }
+
+        // Humidity
+        for (LineDataSet list : lineDataSetHumidity) {
+            // Set colors and line width
+            list.setColors(new int[]{R.color.BEE_graphHumidity}, this);
+            list.setLineWidth(1);
+
+            // Smooth Curves
+            list.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+            // Removing values and circle points from light and humidity graphs
+            list.setDrawValues(false);
+            list.setDrawCircles(false);
+
+            // Style the light and humidity graphs
+            list.setDrawFilled(true);
+            list.setFillColor(Color.BLUE);
+
+            //set the transparency of light and humidity
+            list.setFillAlpha(20);
+        }
+
+        // Illuminance
+        for (LineDataSet list : lineDataSetSunlight) {
+            // Set colors and line width
+            list.setColors(new int[]{R.color.BEE_graphSunlight}, this);
+
+            list.setLineWidth(1);
+
+            // Smooth Curves
+            list.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+            // Removing values and circle points from light and humidity graphs
+            list.setDrawValues(false);
+            list.setDrawCircles(false);
+
+            // Style the light and humidity graphs
+            list.setDrawFilled(true);
+            list.setFillColor(Color.YELLOW);
+
+            //set the transparency of light and humidity
+            list.setFillAlpha(30);
+        }
+
 
         // Set text size
         lineChart.getXAxis().setTextSize(9);
-        lineDataSetWeight.setValueTextSize(10);
-        lineDataSetTemperature.setValueTextSize(10);
-
-        // Smooth Curves
-        lineDataSetWeight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lineDataSetTemperature.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lineDataSetSunlight.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lineDataSetHumidity.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 
         // Removing values and circle points from weight and temp graphs in landscape
-        lineDataSetWeight.setDrawValues(false);
-        lineDataSetWeight.setDrawCircles(false);
-        lineDataSetTemperature.setDrawValues(false);
-        lineDataSetTemperature.setDrawCircles(false);
 
-        // Removing values and circle points from light and humidity graphs
-        lineDataSetSunlight.setDrawValues(false);
-        lineDataSetSunlight.setDrawCircles(false);
-        lineDataSetHumidity.setDrawValues(false);
-        lineDataSetHumidity.setDrawCircles(false);
-
-        // Style the light and humidity graphs
-        lineDataSetSunlight.setDrawFilled(true);
-        lineDataSetHumidity.setDrawFilled(true);
-        lineDataSetSunlight.setFillColor(Color.YELLOW);
-        lineDataSetHumidity.setFillColor(Color.BLUE);
-
-        //set the transparency of light and humidity
-        lineDataSetSunlight.setFillAlpha(30);
-        lineDataSetHumidity.setFillAlpha(20);
 
         // Collect LineDataSets in a List
-        List<ILineDataSet> LineDataSetList = Arrays.asList(
-                lineDataSetWeight,
-                lineDataSetTemperature,
-                lineDataSetSunlight,
-                lineDataSetHumidity
-        );
+        List<ILineDataSet> lineDataSetList = new ArrayList<>();
+        lineDataSetList.addAll(lineDataSetWeight);
+        lineDataSetList.addAll(lineDataSetTemperature);
+        lineDataSetList.addAll(lineDataSetHumidity);
+        lineDataSetList.addAll(lineDataSetSunlight);
 
         // Feed list of LineDataSets into a LineData object
-        LineData lineData = new LineData(LineDataSetList);
+        LineData lineData = new LineData(lineDataSetList);
 
         // Set description text for LineChart
         Description description = new Description();
@@ -203,39 +295,60 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setData(lineData);
         lineChart.setDescription(description);
 
+        // TODO: This is unused whomever responsible remove this
         // You can set default zoom in GraphViewModel
         //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
         //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
         // Get lineDataSet visibility from state.
-        lineDataSetWeight.setVisible(graphViewModel.isWeightLineVisible());
-        lineDataSetTemperature.setVisible(graphViewModel.isTemperatureLineVisible());
-        lineDataSetSunlight.setVisible(graphViewModel.isSunlightLineVisible());
-        lineDataSetHumidity.setVisible(graphViewModel.isHumidityLineVisible());
+        for (LineDataSet list : lineDataSetWeight) {
+            list.setVisible(graphViewModel.isWeightLineVisible());
+        }
+
+        for (LineDataSet list : lineDataSetTemperature) {
+            list.setVisible(graphViewModel.isTemperatureLineVisible());
+        }
+
+        for (LineDataSet list : lineDataSetSunlight) {
+            list.setVisible(graphViewModel.isSunlightLineVisible());
+        }
+
+        for (LineDataSet list : lineDataSetHumidity) {
+            list.setVisible(graphViewModel.isHumidityLineVisible());
+        }
     }
 
     // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
-        lineDataSetWeight.setVisible(!shown);
+        for (LineDataSet list : lineDataSetWeight) {
+            list.setVisible(!shown);
+        }
         graphViewModel.setWeightLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleTemperature(boolean shown) {
-        lineDataSetTemperature.setVisible(!shown);
+        for (LineDataSet list : lineDataSetTemperature) {
+            list.setVisible(!shown);
+        }
+
         graphViewModel.setTemperatureLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleSunlight(boolean shown) {
-        lineDataSetSunlight.setVisible(!shown);
+        for (LineDataSet list : lineDataSetSunlight) {
+            list.setVisible(!shown);
+        }
         graphViewModel.setSunlightLineVisible(!shown);
         lineChart.invalidate();
     }
 
     public void toggleHumidity(boolean shown) {
-        lineDataSetHumidity.setVisible(!shown);
+        for (LineDataSet list : lineDataSetHumidity) {
+            list.setVisible(!shown);
+        }
         graphViewModel.setHumidityLineVisible(!shown);
         lineChart.invalidate();
     }
@@ -246,10 +359,10 @@ public class GraphActivity extends AppCompatActivity {
         Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
         List<Entry> nullEntries = new ArrayList<>();
         nullEntries.add(new Entry(0, 0));
-        lineDataSetWeight = new LineDataSet(nullEntries, "Weight");
-        lineDataSetTemperature = new LineDataSet(nullEntries, "Temperature");
-        lineDataSetSunlight = new LineDataSet(nullEntries, "Sunlight");
-        lineDataSetHumidity = new LineDataSet(nullEntries, "Humidity");
+        lineDataSetWeight = new ArrayList<>(asList(new LineDataSet(nullEntries, "Weight")));
+        lineDataSetTemperature = new ArrayList<>(asList(new LineDataSet(nullEntries, "Temperature")));
+        lineDataSetSunlight = new ArrayList<>(asList(new LineDataSet(nullEntries, "Sunlight")));
+        lineDataSetHumidity = new ArrayList<>(asList(new LineDataSet(nullEntries, "Humidity")));
     }
 
     // Format dates for graph X axis
@@ -300,16 +413,16 @@ public class GraphActivity extends AppCompatActivity {
         private void setSwitchListeners() {
             // Set listener for small switches after download of Hive.
             weightSwitch.setOnClickListener(v -> {
-                toggleWeight(lineDataSetWeight.isVisible());
+                toggleWeight(lineDataSetWeight.get(0).isVisible());
             });
             tempSwitch.setOnClickListener(v -> {
-                toggleTemperature(lineDataSetTemperature.isVisible());
+                toggleTemperature(lineDataSetTemperature.get(0).isVisible());
             });
             lightSwitch.setOnClickListener(v -> {
-                toggleSunlight(lineDataSetSunlight.isVisible());
+                toggleSunlight(lineDataSetSunlight.get(0).isVisible());
             });
             humidSwitch.setOnClickListener(v -> {
-                toggleHumidity(lineDataSetHumidity.isVisible());
+                toggleHumidity(lineDataSetHumidity.get(0).isVisible());
             });
             weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
             tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());

@@ -145,6 +145,47 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    /**
+     * Split a list such that when delta between two timestamps points is big, then we create
+     * a  new list element.
+     * @param dataset A dataset, where the x coordinate is a timestamp represented in nanoseconds.
+     * @param delta nanosecond time
+     * @return A list of lists, which are non-overlapping intervals, where the end of list element i,
+     * is at least delta time away from list element i+1, for any 0<= i < dataset.size()-1
+     */
+    public List<List<Entry>> makeMultiListBasedOnDelta(List<Entry> dataset, long delta) {
+        List<List<Entry>> res = new ArrayList<>();
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < dataset.size() - 1; ++i) {
+            float t1 = dataset.get(i).getX();
+            float t2 = dataset.get(i + 1).getX();
+            if (t2 - t1 >= delta || i == dataset.size() - 2) {
+                end = i + 1;
+            List<Entry> newList = makeCopyOfInterval(dataset, start, end);
+                res.add(newList);
+                start = end;
+            }
+        }
+        return res;
+    }
+
+    /**
+     *
+     * @param data
+     * @param start
+     * @param end
+     * @return a list of entries, which is a deep copy of the interval specified by start and end.
+     * Of course following Dijkstra indexing intervals [start; end[.
+     */
+    public List<Entry> makeCopyOfInterval(List<Entry> data, int start, int end) {
+        List<Entry> res = new ArrayList<>(end - start);
+        for (int i = start; i < end; ++i) {
+            res.add(data.get(i));
+        }
+        return res;
+    }
+
     public float getxAxisMin() {
         return xAxisMin;
     }
