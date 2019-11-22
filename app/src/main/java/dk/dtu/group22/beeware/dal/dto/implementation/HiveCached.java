@@ -37,7 +37,7 @@ public class HiveCached {
     private HiveHivetool hiveHivetool;
     private Context ctx;
     private final static HiveCached hiveCached = new HiveCached();
-    private boolean isConnectionFailed;
+    private boolean isConnectionFailed = false;
 
     private HiveCached(){
         cachedHives = new ArrayList<>();
@@ -95,7 +95,9 @@ public class HiveCached {
 
     private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
         try {
-            return hiveHivetool.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
+            List<Measurement> mList = hiveHivetool.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
+            isConnectionFailed = false;
+            return mList;
         } catch (ISubscription.UnableToFetchData e){
             isConnectionFailed = true;
             e.printStackTrace();
