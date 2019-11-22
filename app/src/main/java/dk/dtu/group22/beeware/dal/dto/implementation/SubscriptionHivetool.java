@@ -13,6 +13,7 @@ import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
 import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
 
 public class SubscriptionHivetool implements ISubscription {
+
     @Override
     public List<NameIdPair> getHivesToSubscribe() {
         Document doc = null;
@@ -30,6 +31,7 @@ public class SubscriptionHivetool implements ISubscription {
         //   System.out.println(content.toString());
         ArrayList<NameIdPair> hivesToSub = new ArrayList<NameIdPair>();
 
+        int skip = 0;
         while(content != null){
             Elements links = content.getElementsByTag("a");
             String[] arrOfStr = links.get(0).attr("href").split("=", 2);

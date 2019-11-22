@@ -84,13 +84,24 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
 
-        loadListElements();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadListElements(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        loadListElements(false);
     }
 
     // Gets the names and ids that is possible to subscribe to,
     // and adds them to the list via the 'SubscribeAdapter' class
-    private void loadListElements() {
-        new AsyncTask() {
+    private void loadListElements(boolean run) {
+        AsyncTask asyncTask = new AsyncTask() {
             String errorMsg = null;
 
             @Override
@@ -122,7 +133,14 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                     splitSubscriptions();
                 }
             }
-        }.execute();
+        };
+
+        if (run) {
+            asyncTask.execute();
+        } else {
+            asyncTask.cancel(true);
+        }
+
     }
 
     // Splits all the hives into the ones that has been subscribed and the ones that has not
