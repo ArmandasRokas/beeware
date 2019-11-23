@@ -13,4 +13,8 @@ public interface IHive {
      */
     Hive getHive(Hive hive, Timestamp sinceTime, Timestamp untilTime);
 
+    class NoDataAvailableException extends RuntimeException {
+        public NoDataAvailableException(String msg) {super(msg);}
+    }
+
 }

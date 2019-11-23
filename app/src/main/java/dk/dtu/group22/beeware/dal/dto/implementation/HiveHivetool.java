@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.dal.dto.implementation;
 
 import androidx.core.util.Pair;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,9 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import dk.dtu.group22.beeware.dal.dao.Measurement;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import static dk.dtu.group22.beeware.dal.dto.interfaces.IHive.*;
+import static dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription.*;
 
 public class HiveHivetool {
 
@@ -106,9 +107,15 @@ public class HiveHivetool {
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100*1000).maxBodySize(4000000).get();
         } catch (UnknownHostException unknownHostException){
-            throw new ISubscription.UnableToFetchData(unknownHostException.getMessage());
-        }
-        catch (IOException e) {
+            throw new UnableToFetchData(unknownHostException.getMessage());
+        } catch (HttpStatusException e){
+            if(e.getStatusCode() == 500){
+                throw new NoDataAvailableException("There are no available data in given time interval for a hive with id: " + hiveID);
+            } else {
+                e.printStackTrace();
+                throw new UnableToFetchData(e.getMessage());
+            }
+        } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
         }
