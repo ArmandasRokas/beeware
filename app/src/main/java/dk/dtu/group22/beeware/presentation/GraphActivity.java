@@ -8,11 +8,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -43,7 +43,7 @@ public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
-    private ProgressBar progressBar;
+    private ConstraintLayout progressBarLayout;
 
     private LineChart lineChart;
 
@@ -77,7 +77,7 @@ public class GraphActivity extends AppCompatActivity {
             // TODO: Go home, try again message
         }
 
-        progressBar = findViewById(R.id.progressBar);
+        progressBarLayout = findViewById(R.id.progressBarLayout);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
@@ -366,7 +366,7 @@ public class GraphActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
+            progressBarLayout.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -389,7 +389,7 @@ public class GraphActivity extends AppCompatActivity {
             try {
                 setSwitchListeners();
                 new Handler().post(() -> renderGraph());
-                progressBar.setVisibility(View.INVISIBLE);
+                progressBarLayout.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
