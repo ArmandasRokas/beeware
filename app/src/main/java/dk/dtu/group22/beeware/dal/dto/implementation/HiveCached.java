@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
+import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+
+import static dk.dtu.group22.beeware.dal.dto.interfaces.IHive.*;
 
 /**
  * This class checks whether a hive is cached within the given
@@ -109,6 +112,8 @@ public class HiveCached {
             List<Measurement> mList = hiveHivetool.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
             isConnectionFailed = false;
             return mList;
+        } catch (NoDataAvailableException e){
+            e.printStackTrace();
         } catch (ISubscription.UnableToFetchData e){
             isConnectionFailed = true;
             e.printStackTrace();
