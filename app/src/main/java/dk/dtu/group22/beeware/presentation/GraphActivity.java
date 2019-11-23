@@ -2,8 +2,6 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +19,6 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -30,7 +27,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +44,6 @@ public class GraphActivity extends AppCompatActivity {
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ProgressBar progressBar;
-    private FloatingActionButton floatingActionButton;
 
     private LineChart lineChart;
 
@@ -83,7 +78,6 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         progressBar = findViewById(R.id.progressBar);
-        //floatingActionButton = findViewById(R.id.floatingActionButton);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
@@ -94,14 +88,6 @@ public class GraphActivity extends AppCompatActivity {
         // Default zoom is set here
         graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
-
-        // TODO: This was found unused, whomever responsible, remove
-        //floatingActionButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View v) {
-        //        Log.d(TAG, "onClick: Calendar button clicked");
-        //    }
-        //});
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
