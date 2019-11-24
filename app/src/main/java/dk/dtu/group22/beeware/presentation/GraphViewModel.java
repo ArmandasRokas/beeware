@@ -31,13 +31,11 @@ public class GraphViewModel extends ViewModel {
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
-    // Center at last value in array to show current time.
-    private float xCenter = toDate.getTime();
-
     // Data handling for graph
     public void downloadHiveData(int id) {
         hive = logic.getHive(id, fromDate, toDate);
-        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " + id + ".");
+        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
+                id + " from" + fromDate + " to " + toDate + ".");
     }
 
     // Set max and min values based on data

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,6 +28,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -39,13 +41,11 @@ import dk.dtu.group22.beeware.R;
 
 import static java.util.Arrays.asList;
 
-
 public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ConstraintLayout progressBarLayout;
-
     private LineChart lineChart;
 
     // Now each dataset is a list of datasets, in order to handle big delta.
@@ -59,8 +59,9 @@ public class GraphActivity extends AppCompatActivity {
     private String hiveName;
     private float currentWeight;
     private DownloadHiveAsyncTask asyncTask;
-
+    private FloatingActionButton graphMenuButton;
     private final String TAG = "GraphActivity";
+    private FragmentManager fragMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +85,20 @@ public class GraphActivity extends AppCompatActivity {
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
+        graphMenuButton = findViewById(R.id.graphMenuButton);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         graphViewModel.setZoomEnabled(true);
+
+        // Menu button
+
+        graphMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimeFragment().show(getSupportFragmentManager(), "timeDialog");
+            }
+        });
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         asyncTask = new DownloadHiveAsyncTask();
@@ -105,7 +116,26 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setScaleYEnabled(false);
         lineChart.setScaleXEnabled(true);
         //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
-
+/*
+        // TimeFragment, for setting shown period
+        DatePicker datePicker = findViewById(R.id.datePicker);
+        Spinner spinner = findViewById(R.id.spinnerTimeDelta);
+        Button timeSelectedButton = findViewById(R.id.timeSelectedButton);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.time_period, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        timeSelectedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int y = datePicker.getYear();
+                int m = datePicker.getMonth();
+                int d = datePicker.getDayOfMonth();
+                int durationOption = adapter.get;
+                updateTimeDelta(y, m, d, durationOption);
+            }
+        });
+*/
         try {
             lineDataSetWeight = new ArrayList<>();
             lineDataSetTemperature = new ArrayList<>();
@@ -125,7 +155,7 @@ public class GraphActivity extends AppCompatActivity {
 
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
-                if (i == tmpWeight.size()-1) {
+                if (i == tmpWeight.size() - 1) {
                     lineDataSetWeight.add(new LineDataSet(list, "Weight"));
                 } else {
                     LineDataSet tmp = new LineDataSet(list, "");
@@ -255,12 +285,8 @@ public class GraphActivity extends AppCompatActivity {
             list.setFillAlpha(30);
         }
 
-
         // Set text size
         lineChart.getXAxis().setTextSize(9);
-
-        // Removing values and circle points from weight and temp graphs in landscape
-
 
         // Collect LineDataSets in a List
         List<ILineDataSet> lineDataSetList = new ArrayList<>();
@@ -361,6 +387,26 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    private void showSpinnerDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        TimeFragment frag = TimeFragment.newInstance();
+        frag.show(fm, "timespinner");
+    }
+
+    public void updateTimeDelta(Timestamp from, Timestamp to) {
+        graphViewModel.updateTimePeriod(from, to);
+        progressBarLayout.setVisibility(View.VISIBLE);
+        // Get hive and render with new from- and to-dates.
+        Thread thread = new Thread(() -> {
+            graphViewModel.downloadHiveData(hiveId);
+            renderGraph();
+            progressBarLayout.setVisibility(View.INVISIBLE);
+        });
+        thread.start();
+    }
+
+    // Button and methods for setting time interval
+
     // This task downloads data and initializes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
@@ -371,7 +417,6 @@ public class GraphActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Integer... id) {
-            // Todo: pass the real hive
             try {
                 // Download data once
                 if (graphViewModel.getHive() == null) {
@@ -414,11 +459,6 @@ public class GraphActivity extends AppCompatActivity {
             tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
             lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
             humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
-        }
-
-        public void updateTimeDelta(Timestamp from, Timestamp to) {
-            graphViewModel.updateTimePeriod(from, to);
-            asyncTask.execute(hiveId);
         }
     }
 }
