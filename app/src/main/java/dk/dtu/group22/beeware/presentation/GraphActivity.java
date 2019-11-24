@@ -116,26 +116,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setScaleYEnabled(false);
         lineChart.setScaleXEnabled(true);
         //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
-/*
-        // TimeFragment, for setting shown period
-        DatePicker datePicker = findViewById(R.id.datePicker);
-        Spinner spinner = findViewById(R.id.spinnerTimeDelta);
-        Button timeSelectedButton = findViewById(R.id.timeSelectedButton);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.time_period, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        timeSelectedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int y = datePicker.getYear();
-                int m = datePicker.getMonth();
-                int d = datePicker.getDayOfMonth();
-                int durationOption = adapter.get;
-                updateTimeDelta(y, m, d, durationOption);
-            }
-        });
-*/
+
         try {
             lineDataSetWeight = new ArrayList<>();
             lineDataSetTemperature = new ArrayList<>();
@@ -306,11 +287,6 @@ public class GraphActivity extends AppCompatActivity {
         // Fill chart with data
         lineChart.setData(lineData);
         lineChart.setDescription(description);
-
-        // TODO: This is unused whomever responsible remove this
-        // You can set default zoom in GraphViewModel
-        //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
-        //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
         // Get lineDataSet visibility from state.

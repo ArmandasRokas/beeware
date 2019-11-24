@@ -115,13 +115,15 @@ public class TimeFragment extends DialogFragment {
         datePicker.setMaxDate(today.getTime());
         datePicker.setMinDate(lastYear.getTime());
     }
-
+/*
     @Override
     public void onResume() {
         super.onResume();
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        //params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
+
+ */
 }
