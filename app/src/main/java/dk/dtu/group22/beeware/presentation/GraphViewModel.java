@@ -21,19 +21,22 @@ public class GraphViewModel extends ViewModel {
     private Logic logic = Logic.getSingleton();
     private float xAxisMin = 40, xAxisMax = 0, yAxisMin = 30, yAxisMax = 0;
     private Hive hive;
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 4; // How many millis ago
+    private int timeDelta = 1000 * 3600 * 24 * 7;
+    private Timestamp toDate = new Timestamp(new Date().getTime());
+    private Timestamp fromDate = new Timestamp(toDate.getTime() - timeDelta);
+
+
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
     // Center at last value in array to show current time.
-    Date date = new Date();
-    private float xCenter = date.getTime(), pointsVisible;
+    private float xCenter = toDate.getTime();
 
     // Data handling for graph
     public void downloadHiveData(int id) {
-        hive = logic.getHive(id, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
+        hive = logic.getHive(id, fromDate, toDate);
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " + id + ".");
     }
 
@@ -222,23 +225,6 @@ public class GraphViewModel extends ViewModel {
         this.zoomEnabled = zoomEnabled;
     }
 
-    public float getxCenter() {
-        return xCenter;
-    }
-
-    public void setxCenter(float xCenter) {
-        this.xCenter = xCenter;
-    }
-
-    public float getZoom() {
-        // The number "zoom" is total / how many you want to see
-        return hive.getMeasurements().size() / pointsVisible;
-    }
-
-    public void setZoom(float pointsVisible) {
-        this.pointsVisible = pointsVisible;
-    }
-
     public Hive getHive() {
         return hive;
     }
@@ -273,5 +259,10 @@ public class GraphViewModel extends ViewModel {
 
     public void setHumidityLineVisible(boolean humidityLineVisible) {
         this.humidityLineVisible = humidityLineVisible;
+    }
+
+    public void updateTimePeriod(Timestamp from, Timestamp to) {
+        this.fromDate = from;
+        this.toDate = to;
     }
 }

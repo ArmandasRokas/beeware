@@ -28,6 +28,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +58,7 @@ public class GraphActivity extends AppCompatActivity {
     private int hiveId;
     private String hiveName;
     private float currentWeight;
+    private DownloadHiveAsyncTask asyncTask;
 
     private final String TAG = "GraphActivity";
 
@@ -85,12 +87,10 @@ public class GraphActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Default zoom is set here
-        graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
-        DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
+        asyncTask = new DownloadHiveAsyncTask();
         asyncTask.execute(hiveId);
     }
 
@@ -414,6 +414,11 @@ public class GraphActivity extends AppCompatActivity {
             tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
             lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
             humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
+        }
+
+        public void updateTimeDelta(Timestamp from, Timestamp to) {
+            graphViewModel.updateTimePeriod(from, to);
+            asyncTask.execute(hiveId);
         }
     }
 }
