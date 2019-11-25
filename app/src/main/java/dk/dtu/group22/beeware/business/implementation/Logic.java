@@ -1,18 +1,13 @@
 package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.Context;
-
-import androidx.core.util.Pair;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
 import dk.dtu.group22.beeware.dal.dto.implementation.HiveCached;
-import dk.dtu.group22.beeware.dal.dto.implementation.HiveHivetool;
 import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionHivetool;
 import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
@@ -61,8 +56,19 @@ public class Logic {
         long since = now - (86400000 * daysDelta);
         List<Integer> subscribedHives = this.getSubscriptionIDs();
         List<Hive> hivesWithMeasurements = new ArrayList<>();
+        List<Thread> threads = new ArrayList<>();
         for (int id : subscribedHives) {
-            hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
+            Runnable runnable = () -> hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
+            Thread thread = new Thread(runnable);
+            threads.add(thread);
+            thread.start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return hivesWithMeasurements;
     }

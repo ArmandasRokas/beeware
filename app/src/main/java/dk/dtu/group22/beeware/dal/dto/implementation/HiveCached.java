@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.core.util.Pair;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +17,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import dk.dtu.group22.beeware.dal.dao.Hive;
 import dk.dtu.group22.beeware.dal.dao.Measurement;
@@ -54,7 +58,7 @@ public class HiveCached {
     private boolean isConnectionFailed = false;
 
     private HiveCached(){
-        cachedHives = new ArrayList<>();
+        cachedHives = Collections.synchronizedList(new ArrayList<>());
         hiveHivetool = new HiveHivetool();
     }
 
@@ -72,12 +76,14 @@ public class HiveCached {
     }
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime){
+
         Hive hive = findCachedHive(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
         } else {
             hive = createHive(id, sinceTime, untilTime);
         }
+
         return hive;
     }
 
@@ -89,7 +95,8 @@ public class HiveCached {
         boolean isWithinUntil = untilTimeDelta.before(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp());
         boolean isUpdated = false;
         if(!isWithinSince){
-            List<Measurement> list = fetchFromHiveTool(hive, sinceTime, new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()) );
+            List<Measurement> list = fetchFromHiveTool(hive, sinceTime,
+                    new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()) );
             if (list != null) {
                 hive.getMeasurements().addAll(0, list);
                 isUpdated = true;
@@ -136,9 +143,11 @@ public class HiveCached {
     }
 
     private Hive retrieveHiveFromList(int id) {
-        for (Hive hive : cachedHives) {
-            if (hive.getId() == id) {
-                return hive;
+        synchronized (cachedHives){
+            for (Hive hive : cachedHives) {
+                if (hive.getId() == id) {
+                    return hive;
+                }
             }
         }
         return null;
@@ -149,9 +158,11 @@ public class HiveCached {
         if(file.exists()){
             try {
                 FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream is = new ObjectInputStream(fis);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
+                ObjectInputStream is = new ObjectInputStream(bufferedInputStream);
                 Hive hive = (Hive) is.readObject();
                 is.close();
+                bufferedInputStream.close();
                 fis.close();
                 cachedHives.add(hive);
                 return hive;
@@ -170,6 +181,7 @@ public class HiveCached {
         if(ctx != null){
             writeToFile(hive);
         }
+
         cachedHives.add(hive);
 
         return hive;
@@ -179,9 +191,11 @@ public class HiveCached {
         File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
         try {
             FileOutputStream fos = new FileOutputStream(file, false);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
+            BufferedOutputStream bufferedOutputStream= new BufferedOutputStream(fos);
+            ObjectOutputStream os = new ObjectOutputStream(bufferedOutputStream);
             os.writeObject(hive);
             os.close();
+            bufferedOutputStream.close();
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
