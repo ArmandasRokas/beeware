@@ -191,32 +191,16 @@ public class GraphViewModel extends ViewModel {
         return xAxisMin;
     }
 
-    public void setxAxisMin(float xAxisMin) {
-        this.xAxisMin = xAxisMin;
-    }
-
     public float getxAxisMax() {
         return xAxisMax;
-    }
-
-    public void setxAxisMax(float xAxisMax) {
-        this.xAxisMax = xAxisMax;
     }
 
     public float getyAxisMin() {
         return yAxisMin;
     }
 
-    public void setyAxisMin(float yAxisMin) {
-        this.yAxisMin = yAxisMin;
-    }
-
     public float getyAxisMax() {
         return yAxisMax;
-    }
-
-    public void setyAxisMax(float yAxisMax) {
-        this.yAxisMax = yAxisMax;
     }
 
     public void setZoomEnabled(boolean zoomEnabled) {
