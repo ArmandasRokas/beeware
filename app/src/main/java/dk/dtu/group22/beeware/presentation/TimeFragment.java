@@ -66,28 +66,19 @@ public class TimeFragment extends DialogFragment {
 
             switch (option) {
                 case 1:
-                    cal.add(Calendar.DAY_OF_MONTH, 3);
-                    break;
-                case 2:
-                    cal.add(Calendar.WEEK_OF_MONTH, 2);
-                    break;
-                case 3:
-                    cal.add(Calendar.WEEK_OF_MONTH, 4);
-                    break;
-                case 4:
-                    cal.add(Calendar.MONTH, 3);
-                    break;
-                case 5:
-                    cal.add(Calendar.MONTH, 6);
-                    break;
-                case 6:
-                    cal.add(Calendar.YEAR, 1);
+                    cal.add(Calendar.WEEK_OF_MONTH, 1);
                     break;
                 default:
-                    cal.add(Calendar.DAY_OF_MONTH, 1);
+                    cal.add(Calendar.MONTH, 1);
             }
 
             toDate = new Timestamp(cal.getTimeInMillis());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            if (toDate.after(now)) {
+                toDate = now;
+            }
+
             if (option > -1) {
                 listener.updateTimeDelta(fromDate, toDate);
             }
@@ -115,15 +106,4 @@ public class TimeFragment extends DialogFragment {
         datePicker.setMaxDate(today.getTime());
         datePicker.setMinDate(lastYear.getTime());
     }
-/*
-    @Override
-    public void onResume() {
-        super.onResume();
-        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        //params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-    }
-
- */
 }

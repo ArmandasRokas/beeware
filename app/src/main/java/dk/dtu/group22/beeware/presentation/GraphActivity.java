@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -166,6 +165,9 @@ public class GraphActivity extends AppCompatActivity {
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(new DateFormatter());
+        xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
+        xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+
 
         //Set Y Axis dependency
         for (LineDataSet list : lineDataSetWeight) {
@@ -187,10 +189,10 @@ public class GraphActivity extends AppCompatActivity {
         // Scale axises
         YAxis leftAxis = lineChart.getAxisLeft();
         YAxis rightAxis = lineChart.getAxisRight();
-        leftAxis.setAxisMaximum(graphViewModel.getxAxisMax());
-        leftAxis.setAxisMinimum(graphViewModel.getxAxisMin());
-        rightAxis.setAxisMaximum(graphViewModel.getyAxisMax());
-        rightAxis.setAxisMinimum(graphViewModel.getyAxisMin());
+        leftAxis.setAxisMaximum(graphViewModel.getLeftAxisMax());
+        leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
+        rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
+        rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
 
         // Weight
         for (LineDataSet list : lineDataSetWeight) {
@@ -267,7 +269,7 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         // Set text size
-        lineChart.getXAxis().setTextSize(9);
+        lineChart.getXAxis().setTextSize(11);
 
         // Collect LineDataSets in a List
         List<ILineDataSet> lineDataSetList = new ArrayList<>();
@@ -413,8 +415,12 @@ public class GraphActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 setSwitchListeners();
-                new Handler().post(() -> renderGraph());
+                renderGraph();
                 progressBarLayout.setVisibility(View.INVISIBLE);
+                // Start download of whole hive in bg.
+                if (!graphViewModel.isBackgroundDownloadInProgress()) {
+                    graphViewModel.downloadOldDataInBackground(hiveId);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
