@@ -258,8 +258,6 @@ public class GraphViewModel extends ViewModel {
     }
 
     public void downloadOldDataInBackground(int id) {
-        new Thread(() -> {
-            //ArrayList<Thread> threads = new ArrayList<>();
             backgroundDownloadInProgress = true;
             System.out.println("downloadOldDataInBackground: Starting background download.");
 
@@ -267,7 +265,7 @@ public class GraphViewModel extends ViewModel {
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(endDate.getTime());
-            cal.add(Calendar.MONTH, -2);
+        cal.add(Calendar.MONTH, -1);
             Timestamp startDate = new Timestamp(cal.getTimeInMillis());
 
             for (int i = 0; i < 7; i++) {
@@ -286,13 +284,11 @@ public class GraphViewModel extends ViewModel {
                 // Iterate backwards
                 endDate = startDate;
                 cal.setTimeInMillis(endDate.getTime());
-                cal.add(Calendar.MONTH, -3);
+                cal.add(Calendar.MONTH, -2);
                 startDate = new Timestamp(cal.getTimeInMillis());
             }
-
             backgroundDownloadInProgress = false;
             Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
-        }).start();
     }
 
     public boolean isBackgroundDownloadInProgress() {

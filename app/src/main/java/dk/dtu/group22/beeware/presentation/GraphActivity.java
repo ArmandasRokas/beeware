@@ -361,21 +361,22 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    /*
     // Show 'pop-up' where the user can choose a time interval
     private void showSpinnerDialog() {
         FragmentManager fm = getSupportFragmentManager();
         TimeFragment frag = TimeFragment.newInstance();
         frag.show(fm, "timespinner");
-    }
+    }*/
 
     // Update the graph with the new interval
     public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
         graphViewModel.updateTimePeriod(from, to);
-        progressBarLayout.setVisibility(View.VISIBLE);
+        //progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
         if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
-            Toast.makeText(this, "Please wait for background download.", Toast.LENGTH_LONG).show();
-            progressBarLayout.setVisibility(View.INVISIBLE);
+            Toast.makeText(this, "This date is not downloaded yet.", Toast.LENGTH_LONG).show();
+            //progressBarLayout.setVisibility(View.INVISIBLE);
             if (!graphViewModel.isBackgroundDownloadInProgress()) {
                 graphViewModel.downloadOldDataInBackground(hiveId);
             }
@@ -385,7 +386,7 @@ public class GraphActivity extends AppCompatActivity {
                 System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
                 renderGraph();
                 System.out.println("Rendered graph from " + from + " to " + to + ".");
-                progressBarLayout.setVisibility(View.INVISIBLE);
+                //progressBarLayout.setVisibility(View.INVISIBLE);
 
             });
             thread.start();
@@ -400,6 +401,7 @@ public class GraphActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBarLayout.setVisibility(View.VISIBLE);
+            // Turned off in downloadOldDataInBackground
         }
 
         @Override
@@ -421,15 +423,27 @@ public class GraphActivity extends AppCompatActivity {
             try {
                 setSwitchListeners();
                 renderGraph();
-                progressBarLayout.setVisibility(View.INVISIBLE);
                 // Start download of whole hive in bg.
                 if (!graphViewModel.isBackgroundDownloadInProgress()) {
-                    graphViewModel.downloadOldDataInBackground(hiveId);
+                    downloadOldDataInBackground(hiveId);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
             }
+        }
+
+        private void downloadOldDataInBackground(int id) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+            Thread thread = new Thread(() -> {
+                graphViewModel.downloadOldDataInBackground(id);
+                hideProgressBar();
+            });
+            thread.start();
+        }
+
+        public void hideProgressBar() {
+            progressBarLayout.setVisibility(View.INVISIBLE);
         }
 
         private void setSwitchListeners() {
