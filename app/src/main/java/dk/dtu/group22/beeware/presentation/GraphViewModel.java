@@ -274,27 +274,14 @@ public class GraphViewModel extends ViewModel {
 
                 Timestamp a = new Timestamp(startDate.getTime());
                 Timestamp b = new Timestamp(endDate.getTime());
-                //Thread thread = new Thread(() -> {
                 Hive junk = null;
-                    /*try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
+
                 while (junk == null) {
                     junk = logic.getHive(id, a, b);
-                       /* try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }*/
                 }
                     System.out.println("downloadOldDataInBackground: Downloading Hive " + id + ", " +
                             "from " + a.toString().substring(0, 10) + " " +
                             "to " + b.toString().substring(0, 10) + ".");
-                //});
-                //threads.add(thread);
-                //thread.start();
 
                 // Iterate backwards
                 endDate = startDate;
@@ -302,13 +289,7 @@ public class GraphViewModel extends ViewModel {
                 cal.add(Calendar.MONTH, -3);
                 startDate = new Timestamp(cal.getTimeInMillis());
             }
-            /*for (Thread thread : threads) {
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }*/
+
             backgroundDownloadInProgress = false;
             Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
         }).start();

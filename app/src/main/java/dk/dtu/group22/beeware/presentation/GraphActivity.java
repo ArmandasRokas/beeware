@@ -374,7 +374,7 @@ public class GraphActivity extends AppCompatActivity {
         progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
         if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
-            Toast.makeText(this, "Wait for background download.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please wait for background download.", Toast.LENGTH_LONG).show();
             progressBarLayout.setVisibility(View.INVISIBLE);
             if (!graphViewModel.isBackgroundDownloadInProgress()) {
                 graphViewModel.downloadOldDataInBackground(hiveId);
