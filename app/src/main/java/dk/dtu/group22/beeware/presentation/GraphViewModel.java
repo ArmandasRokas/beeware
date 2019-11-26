@@ -267,10 +267,10 @@ public class GraphViewModel extends ViewModel {
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(endDate.getTime());
-            cal.add(Calendar.MONTH, -3);
+            cal.add(Calendar.MONTH, -2);
             Timestamp startDate = new Timestamp(cal.getTimeInMillis());
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 7; i++) {
 
                 Timestamp a = new Timestamp(startDate.getTime());
                 Timestamp b = new Timestamp(endDate.getTime());

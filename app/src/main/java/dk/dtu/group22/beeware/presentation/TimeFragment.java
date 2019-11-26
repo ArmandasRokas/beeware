@@ -68,6 +68,12 @@ public class TimeFragment extends DialogFragment {
                 case 1:
                     cal.add(Calendar.WEEK_OF_MONTH, 1);
                     break;
+                case 2:
+                    cal.add(Calendar.MONTH, 3);
+                    break;
+                case 3:
+                    cal.add(Calendar.YEAR, 1);
+                    break;
                 default:
                     cal.add(Calendar.MONTH, 1);
             }
@@ -79,7 +85,12 @@ public class TimeFragment extends DialogFragment {
                 toDate = now;
             }
 
-            if (option > -1) {
+            // Year ignores date
+            if (option == 3) {
+                cal.setTimeInMillis(now.getTime());
+                cal.add(Calendar.YEAR, -1);
+                listener.showWithNewTimeDelta(new Timestamp(cal.getTimeInMillis()), now);
+            } else if (option > -1) {
                 listener.showWithNewTimeDelta(fromDate, toDate);
             }
             this.dismiss();

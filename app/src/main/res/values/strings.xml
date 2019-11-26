@@ -14,7 +14,8 @@
     <string-array name="time_period">
         <item>Month</item>
         <item>Week</item>
-        <!--item>Year</item-->
+        <item>Quarter</item>
+        <item>Year</item>
     </string-array>
     <!-- Preferences -->
     <string name="subscriptions">subscriptions</string>
