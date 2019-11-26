@@ -75,10 +75,6 @@ public class GraphActivity extends AppCompatActivity {
         currentWeight = intent.getFloatExtra("currentweight", 0);
         Log.d(TAG, "onCreate: currentWeigth:" + currentWeight);
 
-        if (hiveId == -1) {
-            // TODO: Go home, try again message
-        }
-
         progressBarLayout = findViewById(R.id.progressBarLayout);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
