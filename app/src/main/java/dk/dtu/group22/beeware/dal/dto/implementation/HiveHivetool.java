@@ -22,7 +22,7 @@ import static dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription.*;
 
 public class HiveHivetool {
 
-    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) {
+    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) throws NoDataAvailableException,UnableToFetchData, IllegalArgumentException {
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
@@ -117,7 +117,7 @@ public class HiveHivetool {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("Hive with id: " + hiveID + " does not exist");
+            throw new UnableToFetchData(e.getMessage());
         }
         Elements nameElement = doc.getElementsByTag("title");
         String name = nameElement.get(0).wholeText().split(": ")[1];
