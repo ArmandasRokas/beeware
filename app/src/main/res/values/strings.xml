@@ -14,7 +14,7 @@
     <string-array name="time_period">
         <item>Month</item>
         <item>Week</item>
-        <item>Quarter</item>
+        <item>3 months</item>
         <item>Year</item>
     </string-array>
     <!-- Preferences -->

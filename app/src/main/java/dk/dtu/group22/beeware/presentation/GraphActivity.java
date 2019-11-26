@@ -284,6 +284,8 @@ public class GraphActivity extends AppCompatActivity {
 
         // Fill chart with data
         lineChart.setData(lineData);
+        // Remove yellow crosshairs
+        lineChart.getData().setHighlightEnabled(false);
         lineChart.setDescription(description);
         lineChart.invalidate(); // refresh
 

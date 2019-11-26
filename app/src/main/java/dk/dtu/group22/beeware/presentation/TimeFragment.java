@@ -72,6 +72,7 @@ public class TimeFragment extends DialogFragment {
                     cal.add(Calendar.MONTH, 3);
                     break;
                 case 3:
+                    cal.setTimeInMillis(System.currentTimeMillis());
                     cal.add(Calendar.YEAR, 1);
                     break;
                 default:

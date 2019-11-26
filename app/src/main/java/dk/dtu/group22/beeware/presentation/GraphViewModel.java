@@ -33,7 +33,7 @@ public class GraphViewModel extends ViewModel {
 
     // Data handling for graph
     public void downloadHiveData(int id) {
-        hive = logic.getHive(id, snapToStartOfMonth(fromDate), new Timestamp(System.currentTimeMillis()));
+        hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                 id + " from" + fromDate + " to " + toDate + ".");
     }
@@ -265,7 +265,7 @@ public class GraphViewModel extends ViewModel {
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(endDate.getTime());
-        cal.add(Calendar.MONTH, -1);
+        cal.add(Calendar.MONTH, -3);
             Timestamp startDate = new Timestamp(cal.getTimeInMillis());
 
             for (int i = 0; i < 7; i++) {
@@ -277,7 +277,7 @@ public class GraphViewModel extends ViewModel {
                 while (junk == null) {
                     junk = logic.getHive(id, a, b);
                 }
-                    System.out.println("downloadOldDataInBackground: Downloading Hive " + id + ", " +
+                System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
                             "from " + a.toString().substring(0, 10) + " " +
                             "to " + b.toString().substring(0, 10) + ".");
 
@@ -293,27 +293,5 @@ public class GraphViewModel extends ViewModel {
 
     public boolean isBackgroundDownloadInProgress() {
         return backgroundDownloadInProgress;
-    }
-
-    private Timestamp snapToStartOfMonth(Timestamp t) {
-        Calendar in = Calendar.getInstance();
-        in.setTimeInMillis(t.getTime());
-        Calendar out = Calendar.getInstance();
-        out.set(in.get(Calendar.YEAR), in.get(Calendar.MONTH), 1);
-        out.set(Calendar.HOUR, 0);
-        out.set(Calendar.MINUTE, 0);
-        out.set(Calendar.SECOND, 0);
-        return new Timestamp(out.getTimeInMillis());
-    }
-
-    private Timestamp snapToEndOfMonth(Timestamp t) {
-        Calendar in = Calendar.getInstance();
-        in.setTimeInMillis(t.getTime());
-        Calendar out = Calendar.getInstance();
-        out.set(in.get(Calendar.YEAR), in.get(Calendar.MONTH) + 1);
-        out.set(Calendar.HOUR, 0);
-        out.set(Calendar.MINUTE, 0);
-        out.set(Calendar.SECOND, 0);
-        return new Timestamp(out.getTimeInMillis());
     }
 }
