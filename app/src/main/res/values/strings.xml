@@ -9,6 +9,14 @@
     <string name="leftAxisLegend">Kg</string>
     <string name="rightAxisLegend">C°</string>
 
+    <!-- Periods for the spinner in TimeFragment -->
+    <string name="period_prompt">Choose a time period!</string>
+    <string-array name="time_period">
+        <item>Month</item>
+        <item>Week</item>
+        <item>Quarter</item>
+        <item>Year</item>
+    </string-array>
     <!-- Preferences -->
     <string name="subscriptions">subscriptions</string>
 </resources>

@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,7 +27,9 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,13 +40,11 @@ import dk.dtu.group22.beeware.R;
 
 import static java.util.Arrays.asList;
 
-
 public class GraphActivity extends AppCompatActivity {
 
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
-    private ProgressBar progressBar;
-
+    private ConstraintLayout progressBarLayout;
     private LineChart lineChart;
 
     // Now each dataset is a list of datasets, in order to handle big delta.
@@ -57,8 +57,10 @@ public class GraphActivity extends AppCompatActivity {
     private int hiveId;
     private String hiveName;
     private float currentWeight;
-
+    private DownloadHiveAsyncTask asyncTask;
+    private FloatingActionButton graphMenuButton;
     private final String TAG = "GraphActivity";
+    private FragmentManager fragMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,24 +75,28 @@ public class GraphActivity extends AppCompatActivity {
         currentWeight = intent.getFloatExtra("currentweight", 0);
         Log.d(TAG, "onCreate: currentWeigth:" + currentWeight);
 
-        if (hiveId == -1) {
-            // TODO: Go home, try again message
-        }
-
-        progressBar = findViewById(R.id.progressBar);
+        progressBarLayout = findViewById(R.id.progressBarLayout);
         weightSwitch = findViewById(R.id.weightSwitch);
         tempSwitch = findViewById(R.id.tempSwitch);
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
+        graphMenuButton = findViewById(R.id.graphMenuButton);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Default zoom is set here
-        graphViewModel.setZoom(100);
         graphViewModel.setZoomEnabled(true);
 
+        // Menu button
+
+        graphMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimeFragment().show(getSupportFragmentManager(), "timeDialog");
+            }
+        });
+
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
-        DownloadHiveAsyncTask asyncTask = new DownloadHiveAsyncTask();
+        asyncTask = new DownloadHiveAsyncTask();
         asyncTask.execute(hiveId);
     }
 
@@ -125,7 +131,7 @@ public class GraphActivity extends AppCompatActivity {
 
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
-                if (i == tmpWeight.size()-1) {
+                if (i == tmpWeight.size() - 1) {
                     lineDataSetWeight.add(new LineDataSet(list, "Weight"));
                 } else {
                     LineDataSet tmp = new LineDataSet(list, "");
@@ -155,6 +161,9 @@ public class GraphActivity extends AppCompatActivity {
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(new DateFormatter());
+        xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
+        xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+
 
         //Set Y Axis dependency
         for (LineDataSet list : lineDataSetWeight) {
@@ -176,10 +185,10 @@ public class GraphActivity extends AppCompatActivity {
         // Scale axises
         YAxis leftAxis = lineChart.getAxisLeft();
         YAxis rightAxis = lineChart.getAxisRight();
-        leftAxis.setAxisMaximum(graphViewModel.getxAxisMax());
-        leftAxis.setAxisMinimum(graphViewModel.getxAxisMin());
-        rightAxis.setAxisMaximum(graphViewModel.getyAxisMax());
-        rightAxis.setAxisMinimum(graphViewModel.getyAxisMin());
+        leftAxis.setAxisMaximum(graphViewModel.getLeftAxisMax());
+        leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
+        rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
+        rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
 
         // Weight
         for (LineDataSet list : lineDataSetWeight) {
@@ -255,12 +264,8 @@ public class GraphActivity extends AppCompatActivity {
             list.setFillAlpha(30);
         }
 
-
         // Set text size
-        lineChart.getXAxis().setTextSize(9);
-
-        // Removing values and circle points from weight and temp graphs in landscape
-
+        lineChart.getXAxis().setTextSize(11);
 
         // Collect LineDataSets in a List
         List<ILineDataSet> lineDataSetList = new ArrayList<>();
@@ -280,11 +285,6 @@ public class GraphActivity extends AppCompatActivity {
         // Fill chart with data
         lineChart.setData(lineData);
         lineChart.setDescription(description);
-
-        // TODO: This is unused whomever responsible remove this
-        // You can set default zoom in GraphViewModel
-        //lineChart.zoom(graphViewModel.getZoom(), 0, graphViewModel.getxCenter(), 0);
-        //lineChart.centerViewTo(graphViewModel.getxCenter(), (float) 0, lineDataSetWeight.getAxisDependency());
         lineChart.invalidate(); // refresh
 
         // Get lineDataSet visibility from state.
@@ -361,17 +361,51 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    // Show 'pop-up' where the user can choose a time interval
+    private void showSpinnerDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        TimeFragment frag = TimeFragment.newInstance();
+        frag.show(fm, "timespinner");
+    }*/
+
+    // Update the graph with the new interval
+    public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
+        graphViewModel.updateTimePeriod(from, to);
+        //progressBarLayout.setVisibility(View.VISIBLE);
+        // Get hive and render with new from- and to-dates.
+        if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
+            Toast.makeText(this, "This date is not downloaded yet.", Toast.LENGTH_LONG).show();
+            //progressBarLayout.setVisibility(View.INVISIBLE);
+            if (!graphViewModel.isBackgroundDownloadInProgress()) {
+                graphViewModel.downloadOldDataInBackground(hiveId);
+            }
+        } else {
+            Thread thread = new Thread(() -> {
+                graphViewModel.downloadHiveData(hiveId);
+                System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
+                renderGraph();
+                System.out.println("Rendered graph from " + from + " to " + to + ".");
+                //progressBarLayout.setVisibility(View.INVISIBLE);
+
+            });
+            thread.start();
+        }
+    }
+
+    // Button and methods for setting time interval
+
     // This task downloads data and initializes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
+            progressBarLayout.setVisibility(View.VISIBLE);
+            // Turned off in downloadOldDataInBackground
         }
 
         @Override
         protected String doInBackground(Integer... id) {
-            // Todo: pass the real hive
             try {
                 // Download data once
                 if (graphViewModel.getHive() == null) {
@@ -388,12 +422,28 @@ public class GraphActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 setSwitchListeners();
-                new Handler().post(() -> renderGraph());
-                progressBar.setVisibility(View.INVISIBLE);
+                renderGraph();
+                // Start download of whole hive in bg.
+                if (!graphViewModel.isBackgroundDownloadInProgress()) {
+                    downloadOldDataInBackground(hiveId);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
             }
+        }
+
+        private void downloadOldDataInBackground(int id) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+            Thread thread = new Thread(() -> {
+                graphViewModel.downloadOldDataInBackground(id);
+                hideProgressBar();
+            });
+            thread.start();
+        }
+
+        public void hideProgressBar() {
+            progressBarLayout.setVisibility(View.INVISIBLE);
         }
 
         private void setSwitchListeners() {

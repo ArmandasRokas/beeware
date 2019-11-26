@@ -8,6 +8,7 @@ import com.github.mikephil.charting.data.Entry;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,37 +20,37 @@ public class GraphViewModel extends ViewModel {
     private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
-    private float xAxisMin = 40, xAxisMax = 0, yAxisMin = 30, yAxisMax = 0;
+    private float leftAxisMin = 40, leftAxisMax = 0, rightAxisMin = 30, rightAxisMax = 0;
     private Hive hive;
-    private long fromDate = (long) 1000 * 3600 * 24 * 7 * 4; // How many millis ago
+    private int timeDelta = 1000 * 3600 * 24 * 7;
+    private Timestamp toDate = new Timestamp(new Date().getTime());
+    private Timestamp fromDate = new Timestamp(toDate.getTime() - timeDelta);
+    private boolean backgroundDownloadInProgress = false;
 
     // State
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
-    // Center at last value in array to show current time.
-    Date date = new Date();
-    private float xCenter = date.getTime(), pointsVisible;
-
     // Data handling for graph
     public void downloadHiveData(int id) {
-        hive = logic.getHive(id, new Timestamp(System.currentTimeMillis() - fromDate), new Timestamp(System.currentTimeMillis()));
-        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " + id + ".");
+        hive = logic.getHive(id, snapToStartOfMonth(fromDate), new Timestamp(System.currentTimeMillis()));
+        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
+                id + " from" + fromDate + " to " + toDate + ".");
     }
 
     // Set max and min values based on data
     private void checkMaxMin(float v, char axis) {
         if (axis == 'x' && v > 1) {
-            if (v > xAxisMax) {
-                xAxisMax = v + 2;
-            } else if (v < xAxisMin) {
-                xAxisMin = v - 2;
+            if (v > leftAxisMax) {
+                leftAxisMax = v + 2;
+            } else if (v < leftAxisMin) {
+                leftAxisMin = v - 2;
             }
         } else if (axis == 'y' && v != 0) {
-            if (v > yAxisMax) {
-                yAxisMax = v + 2;
-            } else if (v < yAxisMin) {
-                yAxisMin = v - 2;
+            if (v > rightAxisMax) {
+                rightAxisMax = v + 2;
+            } else if (v < rightAxisMin) {
+                rightAxisMin = v - 2;
             }
         }
     }
@@ -101,7 +102,7 @@ public class GraphViewModel extends ViewModel {
             if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float illum = (float) measure.getIlluminance();
-                res.add(new Entry(time, scaleNumToLeftAxis(xAxisMin, xAxisMax, illum)));
+                res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
                 //Log.d(TAG, "extractIlluminance: " + illum);
             }
             i++;
@@ -116,7 +117,7 @@ public class GraphViewModel extends ViewModel {
             if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float humid = (float) measure.getHumidity();
-                res.add(new Entry(time, ((humid - 30) / 150 * (xAxisMax - xAxisMin) + xAxisMin)));
+                res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
                 //Log.d(TAG, "extractHumidity: humid = " + humid);
             }
             i++;
@@ -148,8 +149,9 @@ public class GraphViewModel extends ViewModel {
     /**
      * Split a list such that when delta between two timestamps points is big, then we create
      * a  new list element.
+     *
      * @param dataset A dataset, where the x coordinate is a timestamp represented in nanoseconds.
-     * @param delta nanosecond time
+     * @param delta   nanosecond time
      * @return A list of lists, which are non-overlapping intervals, where the end of list element i,
      * is at least delta time away from list element i+1, for any 0<= i < dataset.size()-1
      */
@@ -162,7 +164,7 @@ public class GraphViewModel extends ViewModel {
             float t2 = dataset.get(i + 1).getX();
             if (t2 - t1 >= delta || i == dataset.size() - 2) {
                 end = i + 1;
-            List<Entry> newList = makeCopyOfInterval(dataset, start, end);
+                List<Entry> newList = makeCopyOfInterval(dataset, start, end);
                 res.add(newList);
                 start = end;
             }
@@ -171,7 +173,6 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     *
      * @param data
      * @param start
      * @param end
@@ -186,57 +187,24 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-    public float getxAxisMin() {
-        return xAxisMin;
+    public float getLeftAxisMin() {
+        return leftAxisMin;
     }
 
-    public void setxAxisMin(float xAxisMin) {
-        this.xAxisMin = xAxisMin;
+    public float getLeftAxisMax() {
+        return leftAxisMax;
     }
 
-    public float getxAxisMax() {
-        return xAxisMax;
+    public float getRightAxisMin() {
+        return rightAxisMin;
     }
 
-    public void setxAxisMax(float xAxisMax) {
-        this.xAxisMax = xAxisMax;
-    }
-
-    public float getyAxisMin() {
-        return yAxisMin;
-    }
-
-    public void setyAxisMin(float yAxisMin) {
-        this.yAxisMin = yAxisMin;
-    }
-
-    public float getyAxisMax() {
-        return yAxisMax;
-    }
-
-    public void setyAxisMax(float yAxisMax) {
-        this.yAxisMax = yAxisMax;
+    public float getRightAxisMax() {
+        return rightAxisMax;
     }
 
     public void setZoomEnabled(boolean zoomEnabled) {
         this.zoomEnabled = zoomEnabled;
-    }
-
-    public float getxCenter() {
-        return xCenter;
-    }
-
-    public void setxCenter(float xCenter) {
-        this.xCenter = xCenter;
-    }
-
-    public float getZoom() {
-        // The number "zoom" is total / how many you want to see
-        return hive.getMeasurements().size() / pointsVisible;
-    }
-
-    public void setZoom(float pointsVisible) {
-        this.pointsVisible = pointsVisible;
     }
 
     public Hive getHive() {
@@ -273,5 +241,79 @@ public class GraphViewModel extends ViewModel {
 
     public void setHumidityLineVisible(boolean humidityLineVisible) {
         this.humidityLineVisible = humidityLineVisible;
+    }
+
+    public void updateTimePeriod(Timestamp from, Timestamp to) {
+        this.fromDate = from;
+        this.toDate = to;
+    }
+
+    // Used to set lower and upper X vale visible
+    public Timestamp getFromDate() {
+        return fromDate;
+    }
+
+    public Timestamp getToDate() {
+        return toDate;
+    }
+
+    public void downloadOldDataInBackground(int id) {
+            backgroundDownloadInProgress = true;
+            System.out.println("downloadOldDataInBackground: Starting background download.");
+
+            Timestamp endDate = new Timestamp(System.currentTimeMillis());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(endDate.getTime());
+        cal.add(Calendar.MONTH, -1);
+            Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+
+            for (int i = 0; i < 7; i++) {
+
+                Timestamp a = new Timestamp(startDate.getTime());
+                Timestamp b = new Timestamp(endDate.getTime());
+                Hive junk = null;
+
+                while (junk == null) {
+                    junk = logic.getHive(id, a, b);
+                }
+                    System.out.println("downloadOldDataInBackground: Downloading Hive " + id + ", " +
+                            "from " + a.toString().substring(0, 10) + " " +
+                            "to " + b.toString().substring(0, 10) + ".");
+
+                // Iterate backwards
+                endDate = startDate;
+                cal.setTimeInMillis(endDate.getTime());
+                cal.add(Calendar.MONTH, -2);
+                startDate = new Timestamp(cal.getTimeInMillis());
+            }
+            backgroundDownloadInProgress = false;
+            Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
+    }
+
+    public boolean isBackgroundDownloadInProgress() {
+        return backgroundDownloadInProgress;
+    }
+
+    private Timestamp snapToStartOfMonth(Timestamp t) {
+        Calendar in = Calendar.getInstance();
+        in.setTimeInMillis(t.getTime());
+        Calendar out = Calendar.getInstance();
+        out.set(in.get(Calendar.YEAR), in.get(Calendar.MONTH), 1);
+        out.set(Calendar.HOUR, 0);
+        out.set(Calendar.MINUTE, 0);
+        out.set(Calendar.SECOND, 0);
+        return new Timestamp(out.getTimeInMillis());
+    }
+
+    private Timestamp snapToEndOfMonth(Timestamp t) {
+        Calendar in = Calendar.getInstance();
+        in.setTimeInMillis(t.getTime());
+        Calendar out = Calendar.getInstance();
+        out.set(in.get(Calendar.YEAR), in.get(Calendar.MONTH) + 1);
+        out.set(Calendar.HOUR, 0);
+        out.set(Calendar.MINUTE, 0);
+        out.set(Calendar.SECOND, 0);
+        return new Timestamp(out.getTimeInMillis());
     }
 }
