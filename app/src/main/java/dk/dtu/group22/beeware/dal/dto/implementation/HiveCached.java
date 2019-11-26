@@ -120,7 +120,7 @@ public class HiveCached {
             isConnectionFailed = false;
             return mList;
         } catch (NoDataAvailableException e){
-            e.printStackTrace();
+            //e.printStackTrace(); Not dangerous exception, so there is no need to flood debugger with this exception
         } catch (ISubscription.UnableToFetchData e){
             isConnectionFailed = true;
             e.printStackTrace();
