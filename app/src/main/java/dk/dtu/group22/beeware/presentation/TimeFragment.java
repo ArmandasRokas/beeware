@@ -80,7 +80,7 @@ public class TimeFragment extends DialogFragment {
             }
 
             if (option > -1) {
-                listener.updateTimeDelta(fromDate, toDate);
+                listener.showWithNewTimeDelta(fromDate, toDate);
             }
             this.dismiss();
         });

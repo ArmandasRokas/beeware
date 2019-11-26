@@ -369,18 +369,24 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     // Update the graph with the new interval
-    public void updateTimeDelta(Timestamp from, Timestamp to) {
+    public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
         graphViewModel.updateTimePeriod(from, to);
         progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
-        Thread thread = new Thread(() -> {
-            graphViewModel.downloadHiveData(hiveId);
-            System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
-            renderGraph();
-            System.out.println("Rendered graph from " + from + " to " + to + ".");
+        if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
+            Toast.makeText(this, "Wait for background download.", Toast.LENGTH_LONG).show();
             progressBarLayout.setVisibility(View.INVISIBLE);
-        });
-        thread.start();
+        } else {
+            Thread thread = new Thread(() -> {
+                graphViewModel.downloadHiveData(hiveId);
+                System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
+                renderGraph();
+                System.out.println("Rendered graph from " + from + " to " + to + ".");
+                progressBarLayout.setVisibility(View.INVISIBLE);
+
+            });
+            thread.start();
+        }
     }
 
     // Button and methods for setting time interval
