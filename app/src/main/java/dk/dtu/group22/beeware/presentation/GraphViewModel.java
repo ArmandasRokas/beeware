@@ -40,7 +40,7 @@ public class GraphViewModel extends ViewModel {
 
     // Set max and min values based on data
     private void checkMaxMin(float v, char axis) {
-        if (axis == 'x' && v > 1) {
+        if (axis == 'x' && v != 0.0) {
             if (v > leftAxisMax) {
                 leftAxisMax = v + 2;
             } else if (v < leftAxisMin) {
