@@ -35,10 +35,11 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private TextView errorTv;
     private ProgressBar progressBar;
     private ImageView backArrow;
-    private TextView availableTextbutton, subscriptionsTextbutton;
-    private View underlineOne, underlineTwo;
+    private TextView availableTextbutton, inactiveTextbutton, subscriptionsTextbutton;
+    private View underlineOne, underlineTwo, underlineThree;
     private List<NameIdPair> allHives;
-    private List<NameIdPair> subscribable = new ArrayList<>();
+    private List<NameIdPair> active = new ArrayList<>();
+    private List<NameIdPair> inactive = new ArrayList<>();
     private List<NameIdPair> subscriptions = new ArrayList<>();
     private EditText searchField;
 
@@ -78,8 +79,11 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         availableTextbutton.setOnClickListener(this);
         subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
         subscriptionsTextbutton.setOnClickListener(this);
+        inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
+        inactiveTextbutton.setOnClickListener(this);
         underlineOne = findViewById(R.id.subscribe_underline1);
         underlineTwo = findViewById(R.id.subscribe_underline2);
+        underlineThree = findViewById(R.id.subscribe_underline3);
 
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
@@ -147,25 +151,33 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private void splitSubscriptions() {
         List<Integer> subbedIds = logic.getSubscriptionIDs();
 
+        boolean wasSubscribed;
+        long twoDaysAgo = System.currentTimeMillis() - 172800000; // The big number is two days in millis
+
         // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
-            // Adding the hive to the subscribable list no matter what
-            subscribable.add(allHives.get(i));
+            wasSubscribed = false;
             for (int id : subbedIds) {
                 if (allHives.get(i).getID() == id) {
                     // The hive is in the list of subbed ids, so it adds it to
-                    // the list of subscribed hives and removes it from the subscribable
+                    // the list of subscribed hives and removes it from the active
                     subscriptions.add(allHives.get(i));
-                    subscribable.remove(subscribable.size() - 1);
+                    wasSubscribed = true;
+                    break;
                 }
             }
+            if (!wasSubscribed) {
+                // TODO: Det kan ikke ud fra NameAndIdPair siges om hivet er inaktivt.
+            }
         }
+
+
         availableTextbutton.setEnabled(true);
         subscriptionsTextbutton.setEnabled(true);
         searchField.setEnabled(true);
 
-        // Setting the list (recyclerview) to the subscribable hives
-        recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+        // Setting the list (recyclerview) to the active hives
+        recyclerView.setAdapter(new SubscribeAdapter(active));
     }
 
     @Override
@@ -173,13 +185,13 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         if (view == backArrow) {
             finish();
         } else if (view == availableTextbutton) {
-            // If the user wants to see the available (subscribable) hives
+            // If the user wants to see the available (active) hives
             errorTv.setVisibility(View.INVISIBLE);
             errorTv.setText("");
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
-            underlineTwo.setVisibility(View.INVISIBLE);
-            recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+            underlineThree.setVisibility(View.INVISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(active));
         } else if(view == subscriptionsTextbutton) {
             // If the user wants to see the subscribed hives
             if (subscriptions.size() == 0) {
@@ -188,7 +200,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
-            underlineTwo.setVisibility(View.VISIBLE);
+            underlineThree.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
         }
     }
@@ -203,12 +215,12 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             if (charSequence.toString().equals("")) {
                 // If the user has deleted the letters to search through hives for
                 underlineOne.setVisibility(View.VISIBLE);
-                underlineTwo.setVisibility(View.INVISIBLE);
-                recyclerView.setAdapter(new SubscribeAdapter(subscribable));
+                underlineThree.setVisibility(View.INVISIBLE);
+                recyclerView.setAdapter(new SubscribeAdapter(active));
             } else {
                 // if the user has written something in the search field
                 underlineOne.setVisibility(View.INVISIBLE);
-                underlineTwo.setVisibility(View.INVISIBLE);
+                underlineThree.setVisibility(View.INVISIBLE);
                 List<NameIdPair> searchResults = new ArrayList<>();
                 for (int j = 0; j < allHives.size(); j++) {
                     if (allHives.get(j).getName().toLowerCase()
