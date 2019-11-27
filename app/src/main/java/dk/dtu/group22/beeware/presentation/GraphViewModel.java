@@ -282,7 +282,7 @@ public class GraphViewModel extends ViewModel {
                             "to " + b.toString().substring(0, 10) + ".");
 
                 // Iterate backwards
-                endDate = startDate;
+                endDate = new Timestamp(startDate.getTime());
                 cal.setTimeInMillis(endDate.getTime());
                 cal.add(Calendar.MONTH, -2);
                 startDate = new Timestamp(cal.getTimeInMillis());

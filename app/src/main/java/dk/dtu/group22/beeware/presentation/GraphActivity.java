@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -60,7 +59,6 @@ public class GraphActivity extends AppCompatActivity {
     private DownloadHiveAsyncTask asyncTask;
     private FloatingActionButton graphMenuButton;
     private final String TAG = "GraphActivity";
-    private FragmentManager fragMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,7 +375,11 @@ public class GraphActivity extends AppCompatActivity {
         //progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
         if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
-            Toast.makeText(this, "This date is not downloaded yet.", Toast.LENGTH_LONG).show();
+            if (graphViewModel.isBackgroundDownloadInProgress()) {
+                Toast.makeText(this, "This data is still downloading.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "There is not enough data for the whole period.", Toast.LENGTH_LONG).show();
+            }
             //progressBarLayout.setVisibility(View.INVISIBLE);
             if (!graphViewModel.isBackgroundDownloadInProgress()) {
                 graphViewModel.downloadOldDataInBackground(hiveId);
