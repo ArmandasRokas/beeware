@@ -34,8 +34,14 @@ public class SubscriptionHivetool implements ISubscription {
         int skip = 0;
         while(content != null){
             Elements links = content.getElementsByTag("a");
+            boolean active;
+            if(content.id().equals("green")){
+                active=true;
+            } else {
+                active=false;
+            }
             String[] arrOfStr = links.get(0).attr("href").split("=", 2);
-            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]));
+            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]),active);
             content = content.nextElementSibling();
             hivesToSub.add(tmp);
         }
