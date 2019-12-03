@@ -32,10 +32,10 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Logic logic;
-    private TextView errorTv;
+    private TextView status;
     private ProgressBar progressBar;
     private ImageView backArrow;
-    private TextView availableTextbutton, inactiveTextbutton, subscriptionsTextbutton;
+    private TextView activeTextbutton, inactiveTextbutton, subscriptionsTextbutton;
     private View underlineOne, underlineTwo, underlineThree;
     private List<NameIdPair> allHives;
     private List<NameIdPair> active = new ArrayList<>();
@@ -52,7 +52,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         logic = Logic.getSingleton();
         logic.setContext(this);
 
-        errorTv = findViewById(R.id.errorSubscribeHives);
+        status = findViewById(R.id.statusText);
         progressBar = findViewById(R.id.indeterminateBar);
         recyclerView = findViewById(R.id.hivesToSubRV);
 
@@ -75,8 +75,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         backArrow = findViewById(R.id.subscribe_back_arrow);
         backArrow.setOnClickListener(this);
 
-        availableTextbutton = findViewById(R.id.subscribe_available_textbutton);
-        availableTextbutton.setOnClickListener(this);
+        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
+        activeTextbutton.setOnClickListener(this);
         subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
         subscriptionsTextbutton.setOnClickListener(this);
         inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
@@ -111,7 +111,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             @Override
             protected void onPreExecute() {
                 progressBar.setVisibility(View.VISIBLE);
-                availableTextbutton.setEnabled(false);
+                activeTextbutton.setEnabled(false);
                 subscriptionsTextbutton.setEnabled(false);
                 searchField.setEnabled(false);
             }
@@ -132,7 +132,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null) {
-                    errorTv.setText(errorMsg);
+                    status.setText(errorMsg);
                 } else{
                     splitSubscriptions();
                 }
@@ -167,12 +167,16 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 }
             }
             if (!wasSubscribed) {
-                // TODO: Det kan ikke ud fra NameAndIdPair siges om hivet er inaktivt.
+                if (allHives.get(i).isActive()) {
+                    active.add(allHives.get(i));
+                } else {
+                    inactive.add(allHives.get(i));
+                }
             }
         }
 
 
-        availableTextbutton.setEnabled(true);
+        activeTextbutton.setEnabled(true);
         subscriptionsTextbutton.setEnabled(true);
         searchField.setEnabled(true);
 
@@ -184,22 +188,33 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         if (view == backArrow) {
             finish();
-        } else if (view == availableTextbutton) {
+        } else if (view == activeTextbutton) {
             // If the user wants to see the available (active) hives
-            errorTv.setVisibility(View.INVISIBLE);
-            errorTv.setText("");
+            status.setVisibility(View.INVISIBLE);
+            status.setText("");
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
+            underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(active));
+
+        } else if (view == inactiveTextbutton) {
+            status.setVisibility(View.INVISIBLE);
+            status.setText("");
+            underlineOne.setVisibility(View.INVISIBLE);
+            underlineTwo.setVisibility(View.VISIBLE);
+            underlineThree.setVisibility(View.INVISIBLE);
+            recyclerView.setAdapter(new SubscribeAdapter(inactive));
+
         } else if(view == subscriptionsTextbutton) {
             // If the user wants to see the subscribed hives
             if (subscriptions.size() == 0) {
-                errorTv.setVisibility(View.VISIBLE);
-                errorTv.setText("You have no subscriptions.");
+                status.setVisibility(View.VISIBLE);
+                status.setText("You have no subscriptions.");
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
+            underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
         }
@@ -215,11 +230,13 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             if (charSequence.toString().equals("")) {
                 // If the user has deleted the letters to search through hives for
                 underlineOne.setVisibility(View.VISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
                 underlineThree.setVisibility(View.INVISIBLE);
                 recyclerView.setAdapter(new SubscribeAdapter(active));
             } else {
                 // if the user has written something in the search field
                 underlineOne.setVisibility(View.INVISIBLE);
+                underlineTwo.setVisibility(View.INVISIBLE);
                 underlineThree.setVisibility(View.INVISIBLE);
                 List<NameIdPair> searchResults = new ArrayList<>();
                 for (int j = 0; j < allHives.size(); j++) {
