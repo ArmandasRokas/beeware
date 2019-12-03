@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.presentation;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -189,7 +191,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         if (view == backArrow) {
             finish();
         } else if (view == activeTextbutton) {
-            // If the user wants to see the available (active) hives
+            // If the user wants to see the active hives
             status.setVisibility(View.INVISIBLE);
             status.setText("");
             searchField.setText("");
@@ -199,6 +201,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             recyclerView.setAdapter(new SubscribeAdapter(active));
 
         } else if (view == inactiveTextbutton) {
+            // If the user wants to see the inactive hives
             status.setVisibility(View.INVISIBLE);
             status.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
@@ -206,8 +209,23 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             underlineThree.setVisibility(View.INVISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(inactive));
 
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_warning)
+                    .setTitle("Problematic hives!")
+                    .setMessage("Inactive hives might cause the application to crash. " +
+                            "Subscribing to these beehives is not recommended.")
+                    .setNegativeButton("Go back", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Takes the user back to the list of active hives
+                            SubscribeRecycler.this.onClick(activeTextbutton);
+                        }
+                    })
+                    .setPositiveButton("Continue", null)
+                    .show();
+
         } else if(view == subscriptionsTextbutton) {
-            // If the user wants to see the subscribed hives
+            // If the user wants to see the hives the user has subscribed to
             if (subscriptions.size() == 0) {
                 status.setVisibility(View.VISIBLE);
                 status.setText("You have no subscriptions.");
