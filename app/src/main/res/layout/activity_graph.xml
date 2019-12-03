@@ -54,6 +54,7 @@
         app:layout_constraintStart_toEndOf="@+id/toggleDecoration"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <Switch
             android:id="@+id/weightSwitch"
             android:layout_width="match_parent"
@@ -151,14 +152,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_edit" />
 
-    <!--<androidx.fragment.app.fragment
-        android:id="@+id/graphSpinnerOverlay"
-        android:name="dk.dtu.group22.beeware.presentation.TimeFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
--->
 </androidx.constraintlayout.widget.ConstraintLayout>

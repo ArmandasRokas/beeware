@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -60,7 +59,6 @@ public class GraphActivity extends AppCompatActivity {
     private DownloadHiveAsyncTask asyncTask;
     private FloatingActionButton graphMenuButton;
     private final String TAG = "GraphActivity";
-    private FragmentManager fragMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -376,16 +374,20 @@ public class GraphActivity extends AppCompatActivity {
         graphViewModel.updateTimePeriod(from, to);
         //progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
-        if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
-            Toast.makeText(this, "This date is not downloaded yet.", Toast.LENGTH_LONG).show();
-            //progressBarLayout.setVisibility(View.INVISIBLE);
-            if (!graphViewModel.isBackgroundDownloadInProgress()) {
+        if (graphViewModel.getHive() != null &&
+                from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp()) &&
+                graphViewModel.isBackgroundDownloadInProgress()) {
+            Toast.makeText(this, "This data is still downloading.", Toast.LENGTH_LONG).show();
+        } else {
+            // Check if some data is not found, and inform the user. This should only happen if there is incomplete data at the source (hivetool)
+            if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
+                Toast.makeText(this, "There is not enough data for the whole period.", Toast.LENGTH_LONG).show();
                 graphViewModel.downloadOldDataInBackground(hiveId);
             }
-        } else {
+
             Thread thread = new Thread(() -> {
                 graphViewModel.downloadHiveData(hiveId);
-                System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
+                //System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
                 renderGraph();
                 System.out.println("Rendered graph from " + from + " to " + to + ".");
                 //progressBarLayout.setVisibility(View.INVISIBLE);
@@ -395,7 +397,7 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    // Button and methods for setting time interval
+// Button and methods for setting time interval
 
     // This task downloads data and initializes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
