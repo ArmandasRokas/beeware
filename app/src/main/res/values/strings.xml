@@ -12,10 +12,10 @@
     <!-- Periods for the spinner in TimeFragment -->
     <string name="period_prompt">Choose a time period!</string>
     <string-array name="time_period">
-        <item>Month</item>
-        <item>Week</item>
+        <item>1 month</item>
+        <item>1 week</item>
         <item>3 months</item>
-        <item>Year</item>
+        <item>A year</item>
     </string-array>
     <!-- Preferences -->
     <string name="subscriptions">subscriptions</string>
