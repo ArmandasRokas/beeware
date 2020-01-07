@@ -19,7 +19,7 @@ import java.util.Date;
 
 import dk.dtu.group22.beeware.R;
 
-public class TimeFragment extends DialogFragment {
+public class GraphPeriodFragment extends DialogFragment {
     private Spinner spinner;
     private DatePicker datePicker;
     private Button timeButton;
@@ -28,12 +28,12 @@ public class TimeFragment extends DialogFragment {
     private Timestamp toDate;
     private GraphActivity listener;
 
-    public TimeFragment() {
+    public GraphPeriodFragment() {
         // Required empty public constructor
     }
 
-    public static TimeFragment newInstance() {
-        TimeFragment fragment = new TimeFragment();
+    public static GraphPeriodFragment newInstance() {
+        GraphPeriodFragment fragment = new GraphPeriodFragment();
         return fragment;
     }
 

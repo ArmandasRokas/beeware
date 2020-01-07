@@ -14,14 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.dal.dao.Hive;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
-public class ImageAdapter extends BaseAdapter {
+public class OverviewAdapter extends BaseAdapter {
 
     Context ctx;
     List<Hive> hives;
 
-    ImageAdapter(Context ctx, List<Hive> hives) {
+    OverviewAdapter(Context ctx, List<Hive> hives) {
         this.ctx = ctx;
         this.hives = hives;
 

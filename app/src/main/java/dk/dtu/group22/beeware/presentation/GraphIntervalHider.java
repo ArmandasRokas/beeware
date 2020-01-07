@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import dk.dtu.group22.beeware.R;
 
-public class HiddenInterval extends AppCompatActivity {
+public class GraphIntervalHider extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

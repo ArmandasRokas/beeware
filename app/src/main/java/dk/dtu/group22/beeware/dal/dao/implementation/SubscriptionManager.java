@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dto.implementation;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
+import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
 
 public class SubscriptionManager implements ISubscriptionManager {
 

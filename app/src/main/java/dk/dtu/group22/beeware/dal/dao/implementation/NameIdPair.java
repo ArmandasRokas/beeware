@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dto.interfaces;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
 public class NameIdPair {
     private String name;

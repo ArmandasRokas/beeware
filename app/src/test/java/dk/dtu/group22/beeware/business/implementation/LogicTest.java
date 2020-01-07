@@ -2,18 +2,14 @@ package dk.dtu.group22.beeware.business.implementation;
 
 import org.junit.Test;
 
-import java.sql.Array;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes;
 
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.Measurement;
-import dk.dtu.group22.beeware.dal.dto.implementation.HiveCached;
-import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
+import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -67,8 +63,8 @@ public class LogicTest {
         }
         assertTrue(noDeltaGT10Min);
         // Clean up
-        HiveCached hiveCached = HiveCached.getSingleton();
-        hiveCached.cleanCachedHives();
+        CachingManager cachingManager = CachingManager.getSingleton();
+        cachingManager.cleanCachedHives();
     }
 
     @Test
@@ -121,8 +117,8 @@ public class LogicTest {
         assertTrue( hive4.getMeasurements().get(0).getTimestamp().getTime() - beforeBeforeSince < tenMinInMillis);
         assertTrue(now - hive4.getMeasurements().get(hive4.getMeasurements().size()-1).getTimestamp().getTime() < tenMinInMillis);
         // Clean up
-        HiveCached hiveCached = HiveCached.getSingleton();
-        hiveCached.cleanCachedHives();
+        CachingManager cachingManager = CachingManager.getSingleton();
+        cachingManager.cleanCachedHives();
     }
 
 
@@ -164,8 +160,8 @@ public class LogicTest {
         assertTrue(noDeltaGT10Min);
 
         // Clean up
-        HiveCached hiveCached = HiveCached.getSingleton();
-        hiveCached.cleanCachedHives();
+        CachingManager cachingManager = CachingManager.getSingleton();
+        cachingManager.cleanCachedHives();
     }
 
     public void testGetHive(){

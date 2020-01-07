@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".presentation.TimeFragment">
+    tools:context=".presentation.GraphPeriodFragment">
 
     <TextView
         android:id="@+id/timeHeader1"

@@ -9,7 +9,7 @@
     <string name="leftAxisLegend">Kg</string>
     <string name="rightAxisLegend">C°</string>
 
-    <!-- Periods for the spinner in TimeFragment -->
+    <!-- Periods for the spinner in GraphPeriodFragment -->
     <string name="period_prompt">Choose a time period!</string>
     <string-array name="time_period">
         <item>1 month</item>

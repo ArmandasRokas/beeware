@@ -13,11 +13,12 @@ import java.util.Date;
 import java.util.List;
 
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.Measurement;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public class GraphViewModel extends ViewModel {
-    private final int useOnlyNth = 4;
+    // TODO: Fjern udkommenteret kode
+    //private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin = 40, leftAxisMax = 0, rightAxisMin = 30, rightAxisMax = 0;
@@ -66,61 +67,61 @@ public class GraphViewModel extends ViewModel {
 
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
-        int i = 0;
+        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            if (i % useOnlyNth == 0) {
+            //if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float weight = (float) measure.getWeight();
                 res.add(new Entry(time, weight));
                 checkMaxMin(weight, 'x');
                 //Log.d(TAG, "extractWeight: TEST: "  + weight);
-            }
-            i++;
+            //}
+            //i++;
         }
         return res;
     }
 
     public List<Entry> extractTemperature() {
         List<Entry> res = new ArrayList<>();
-        int i = 0;
+        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            if (i % useOnlyNth == 0) {
+            //if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float temp = (float) measure.getTempIn();
                 res.add(new Entry(time, temp));
                 checkMaxMin(temp, 'y');
-            }
-            i++;
+            //}
+            //i++;
         }
         return res;
     }
 
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
-        int i = 0;
+        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            if (i % useOnlyNth == 0) {
+            //if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float illum = (float) measure.getIlluminance();
                 res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
                 //Log.d(TAG, "extractIlluminance: " + illum);
-            }
-            i++;
+            //}
+            //i++;
         }
         return res;
     }
 
     public List<Entry> extractHumidity() {
         List<Entry> res = new ArrayList<>();
-        int i = 0;
+        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            if (i % useOnlyNth == 0) {
+            //if (i % useOnlyNth == 0) {
                 float time = (float) measure.getTimestamp().getTime();
                 float humid = (float) measure.getHumidity();
                 res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
                 //Log.d(TAG, "extractHumidity: humid = " + humid);
-            }
-            i++;
+            //}
+            //i++;
         }
         return res;
     }
