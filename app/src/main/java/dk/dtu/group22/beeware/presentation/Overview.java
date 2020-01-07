@@ -15,6 +15,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
@@ -67,6 +70,8 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             protected Object doInBackground(Object... arg0) {
                 try {
                     hives = logic.getSubscribedHives(2);
+                    Collections.sort(hives);
+
                     return null;
                 }
                 catch (Exception e) {

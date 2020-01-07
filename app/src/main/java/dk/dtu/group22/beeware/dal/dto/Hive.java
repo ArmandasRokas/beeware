@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hive implements Serializable {
+public class Hive implements Serializable, Comparable<Hive> {
     private int id;
     private String name;
     private List<Measurement> measurements;
@@ -173,6 +173,12 @@ public class Hive implements Serializable {
 
     public void setStatusIntrospection(List<StatusIntrospection> statusIntrospection) {
         this.statusIntrospection = statusIntrospection;
+    }
+
+    @Override
+    public int compareTo(Hive o) {
+        return this.name.compareTo(o.name);
+
     }
 
     public enum Status {
