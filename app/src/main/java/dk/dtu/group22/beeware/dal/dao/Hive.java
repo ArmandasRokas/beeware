@@ -1,6 +1,8 @@
 package dk.dtu.group22.beeware.dal.dao;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,36 @@ public class Hive implements Serializable {
 
     public String getName() {
         return name;
+    }
+    //Gets the time, at which the hive was last updated
+    public String getLastUpdated(){
+        long now = System.currentTimeMillis();
+        long timeDifference = now - measurements.get(measurements.size()-1).getTimestamp().getTime();
+        long hour = 60*60*1000;
+        long day = 60*60*1000*24;
+        DateFormat formatter;
+        if(timeDifference <= hour ){
+            return "Now";
+        } else if(timeDifference > hour && timeDifference < 60*60*24*1000){
+            if(timeDifference < hour*10){
+                formatter = new SimpleDateFormat("H");
+            } else {
+                formatter = new SimpleDateFormat("HH");
+            }
+            String dateFormatted = formatter.format(timeDifference);
+
+            return dateFormatted + " timer siden";
+        } else {
+            if(timeDifference < day*10){
+                formatter = new SimpleDateFormat("d");
+            } else {
+                formatter = new SimpleDateFormat("dd");
+            }
+            String dateFormatted = formatter.format(timeDifference);
+
+            return dateFormatted + " dage siden";
+        }
+
     }
 
     public double getCurrWeight() {

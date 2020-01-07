@@ -19,4 +19,5 @@
     </string-array>
     <!-- Preferences -->
     <string name="subscriptions">subscriptions</string>
+    <string name="sidst_opdateret">Sidst Opdateret</string>
 </resources>

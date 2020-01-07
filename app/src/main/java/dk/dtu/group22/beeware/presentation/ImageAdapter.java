@@ -55,6 +55,7 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView img = gridView.findViewById(R.id.album);
         TextView title = gridView.findViewById(R.id.album_title);
+        TextView lastUpdated = gridView.findViewById(R.id.last_updated_tv);
         TextView weight = gridView.findViewById(R.id.hive_currWeightTV);
         TextView temp = gridView.findViewById(R.id.hive_currTempTV);
         TextView illum = gridView.findViewById(R.id.hive_currIllumTV);
@@ -96,6 +97,7 @@ public class ImageAdapter extends BaseAdapter {
         });
 
         title.setText(hives.get(position).getName());
+        lastUpdated.setText("Sidst opdateret \n" + hives.get(position).getLastUpdated());
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
         String formattedWeightDisplay = "";
         if (Double.isNaN(hives.get(position).getWeightDelta())) {
