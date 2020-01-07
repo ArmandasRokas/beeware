@@ -5,19 +5,19 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.Measurement;
-import dk.dtu.group22.beeware.dal.dto.implementation.HiveCached;
-import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionHivetool;
-import dk.dtu.group22.beeware.dal.dto.implementation.SubscriptionManager;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscriptionManager;
-import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
+import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
+import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionHivetool;
+import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
+import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
+import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
 public class Logic {
 
-   // private HiveHivetool hiveHivetool;
-    private HiveCached hiveCached;
+   // private WebScraper hiveHivetool;
+    private CachingManager cachingManager;
     private ISubscription subscriptionHivetool;
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
@@ -29,8 +29,8 @@ public class Logic {
     }
 
     public Logic() {
-       // this.hiveHivetool = new HiveHivetool();
-        this.hiveCached = HiveCached.getSingleton();
+       // this.hiveHivetool = new WebScraper();
+        this.cachingManager = CachingManager.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
     }
 
@@ -75,7 +75,7 @@ public class Logic {
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
 
-        Hive hive = hiveCached.getHive(id, sinceTime, untilTime);
+        Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
         setCurrValues(hive);
         calculateHiveStatus(hive);
 

@@ -13,7 +13,7 @@ import java.util.Date;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class TestingHiveTool extends AppCompatActivity {
     private Logic logic = Logic.getSingleton();

@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dto.implementation;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
-import dk.dtu.group22.beeware.dal.dto.interfaces.NameIdPair;
+import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
 
 public class SubscriptionHivetool implements ISubscription {
 

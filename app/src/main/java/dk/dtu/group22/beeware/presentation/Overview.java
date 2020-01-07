@@ -19,20 +19,19 @@ import java.util.List;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dto.implementation.HiveCached;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 
 public class Overview extends AppCompatActivity implements View.OnClickListener {
 
     GridView gridView;
     private Logic logic;
     private ImageButton subHiveButton;
-    private ImageAdapter imageAdapter;
+    private OverviewAdapter overviewAdapter;
     private TextView listEmptyTv;
     private ProgressBar progressBar;
     private Context ctx;
-    private HiveCached hiveCached;
+    private CachingManager cachingManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +42,9 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
         ctx = this;
         logic = Logic.getSingleton();
         logic.setContext(ctx);
-        // Boilerplate code to set Context to the HiveCached
-        hiveCached = HiveCached.getSingleton();
-        hiveCached.setCtx(ctx);
+        // Boilerplate code to set Context to the CachingManager
+        cachingManager = CachingManager.getSingleton();
+        cachingManager.setCtx(ctx);
 
         gridView = findViewById(R.id.gridView);
         listEmptyTv = findViewById(R.id.emptyListTV);
@@ -85,7 +84,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             @Override
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
-                if(hiveCached.isConnectionFailed()){
+                if(cachingManager.isConnectionFailed()){
                     Toast toast = Toast.makeText(ctx, "Unable to fetch the newest data.\n Check your internet connection.", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -100,8 +99,8 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                     gridView.setVisibility(View.INVISIBLE);
                 } else {
                     listEmptyTv.setVisibility(View.INVISIBLE);
-                    imageAdapter = new ImageAdapter(ctx, hives);
-                    gridView.setAdapter(imageAdapter);
+                    overviewAdapter = new OverviewAdapter(ctx, hives);
+                    gridView.setAdapter(overviewAdapter);
                     gridView.setVisibility(View.VISIBLE);
                 }
             }

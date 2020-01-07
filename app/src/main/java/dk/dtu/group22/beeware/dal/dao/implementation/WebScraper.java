@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dto.implementation;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import androidx.core.util.Pair;
 
@@ -16,13 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import dk.dtu.group22.beeware.dal.dao.Measurement;
-import static dk.dtu.group22.beeware.dal.dto.interfaces.IHive.*;
-import static dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription.*;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
+import static dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription.*;
 
-public class HiveHivetool {
+public class WebScraper {
 
-    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) throws NoDataAvailableException,UnableToFetchData, IllegalArgumentException {
+    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) {
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
@@ -106,18 +105,12 @@ public class HiveHivetool {
                     untilStr+ "+"+ untilHours+"%3A"+ untilMins+"%3A59&hive_id="+hiveID+"&number_of_days=" +
                     numOfDays+ "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100*1000).maxBodySize(4000000).get();
-        } catch (UnknownHostException unknownHostException){
-            throw new UnableToFetchData(unknownHostException.getMessage());
+        } catch (UnknownHostException u){
+            u.printStackTrace();
         } catch (HttpStatusException e){
-            if(e.getStatusCode() == 500){
-                throw new NoDataAvailableException("There are no available data in given time interval for a hive with id: " + hiveID);
-            } else {
-                e.printStackTrace();
-                throw new UnableToFetchData(e.getMessage());
-            }
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new UnableToFetchData(e.getMessage());
         }
         Elements nameElement = doc.getElementsByTag("title");
         String name = nameElement.get(0).wholeText().split(": ")[1];

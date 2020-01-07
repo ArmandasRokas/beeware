@@ -1,9 +1,6 @@
-package dk.dtu.group22.beeware.dal.dto.implementation;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import androidx.core.util.Pair;
 
@@ -11,21 +8,17 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import dk.dtu.group22.beeware.dal.dao.Hive;
-import dk.dtu.group22.beeware.dal.dao.Measurement;
-import dk.dtu.group22.beeware.dal.dto.interfaces.IHive;
-import dk.dtu.group22.beeware.dal.dto.interfaces.ISubscription;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
+import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
 
-import static dk.dtu.group22.beeware.dal.dto.interfaces.IHive.*;
 
 /**
  * This class checks whether a hive is cached within the given
@@ -49,17 +42,17 @@ import static dk.dtu.group22.beeware.dal.dto.interfaces.IHive.*;
  * JUnit tests are written in LogicTest class. Tests must be run every time if
  * there are made any modifications in caching.
  */
-public class HiveCached {
+public class CachingManager {
 
     private List<Hive> cachedHives;
-    private HiveHivetool hiveHivetool;
+    private WebScraper webScraper;
     private Context ctx;
-    private final static HiveCached hiveCached = new HiveCached();
+    private final static CachingManager CACHING_MANAGER = new CachingManager();
     private boolean isConnectionFailed = false;
 
-    private HiveCached(){
+    private CachingManager(){
         cachedHives = Collections.synchronizedList(new ArrayList<>());
-        hiveHivetool = new HiveHivetool();
+        webScraper = new WebScraper();
     }
 
     public void setCtx(Context ctx) {
@@ -71,8 +64,8 @@ public class HiveCached {
     }
 
 
-    public static HiveCached getSingleton() {
-        return hiveCached;
+    public static CachingManager getSingleton() {
+        return CACHING_MANAGER;
     }
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime){
@@ -116,14 +109,9 @@ public class HiveCached {
 
     private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
         try {
-            List<Measurement> mList = hiveHivetool.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
+            List<Measurement> mList = webScraper.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
             isConnectionFailed = false;
             return mList;
-        } catch (NoDataAvailableException e){
-            //e.printStackTrace(); Not dangerous exception, so there is no need to flood\k debugger with this exception
-        } catch (ISubscription.UnableToFetchData e){
-            isConnectionFailed = true;
-            e.printStackTrace();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -175,7 +163,7 @@ public class HiveCached {
 
     private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
 
-        Pair<List<Measurement>, String> measurementsAndName = hiveHivetool.getHiveMeasurements(id, sinceTime, untilTime);
+        Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
         if(ctx != null){

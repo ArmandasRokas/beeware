@@ -89,7 +89,7 @@ public class GraphActivity extends AppCompatActivity {
         graphMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimeFragment().show(getSupportFragmentManager(), "timeDialog");
+                new GraphPeriodFragment().show(getSupportFragmentManager(), "timeDialog");
             }
         });
 
@@ -365,7 +365,7 @@ public class GraphActivity extends AppCompatActivity {
     // Show 'pop-up' where the user can choose a time interval
     private void showSpinnerDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        TimeFragment frag = TimeFragment.newInstance();
+        GraphPeriodFragment frag = GraphPeriodFragment.newInstance();
         frag.show(fm, "timespinner");
     }*/
 

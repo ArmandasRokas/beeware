@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dao;
+package dk.dtu.group22.beeware.dal.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
