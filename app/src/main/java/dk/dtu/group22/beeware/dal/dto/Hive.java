@@ -56,30 +56,26 @@ public class Hive implements Serializable, Comparable<Hive> {
     //Gets the time, at which the hive was last updated
     public String getLastUpdated(){
         long now = System.currentTimeMillis();
-        long timeDifference = now - measurements.get(measurements.size()-1).getTimestamp().getTime();
+        long lastUpdatedTime = measurements.get(measurements.size()-1).getTimestamp().getTime();
+        long timeDifference = now - lastUpdatedTime;
         long hour = 60*60*1000;
         long day = 60*60*1000*24;
+        String kl = "kl";
+        String den = "d.";
+        DateFormat dateFormatter;
+        DateFormat timeFormatter;
         DateFormat formatter;
         if(timeDifference <= hour ){
             return "Just updated";
-        } else if(timeDifference > hour && timeDifference < 60*60*24*1000){
-            if(timeDifference < hour*10){
-                formatter = new SimpleDateFormat("H");
-            } else {
-                formatter = new SimpleDateFormat("HH");
-            }
-            String dateFormatted = formatter.format(timeDifference);
-
-            return dateFormatted + " hours ago";
         } else {
-            if(timeDifference < day*10){
-                formatter = new SimpleDateFormat("d");
-            } else {
-                formatter = new SimpleDateFormat("dd");
-            }
-            String dateFormatted = formatter.format(timeDifference);
 
-            return dateFormatted + " days ago";
+            dateFormatter = new SimpleDateFormat( "dd-MM-y");
+            timeFormatter = new SimpleDateFormat(" HH:mm");
+            formatter = new SimpleDateFormat("dd-MM-y HH:mm");
+            String dateFormatted = "d. " + dateFormatter.format(lastUpdatedTime) + " kl ".concat(timeFormatter.format(lastUpdatedTime%day));
+
+
+            return dateFormatted;
         }
 
     }
