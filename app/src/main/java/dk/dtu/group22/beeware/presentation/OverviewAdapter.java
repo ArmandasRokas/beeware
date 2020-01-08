@@ -97,7 +97,7 @@ public class OverviewAdapter extends BaseAdapter {
         });
 
         title.setText(hives.get(position).getName());
-        lastUpdated.setText("Sidst opdateret \n" + hives.get(position).getLastUpdated());
+        lastUpdated.setText(hives.get(position).getLastUpdated());
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
         String formattedWeightDisplay = "";
         if (Double.isNaN(hives.get(position).getWeightDelta())) {

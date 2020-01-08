@@ -61,7 +61,7 @@ public class Hive implements Serializable, Comparable<Hive> {
         long day = 60*60*1000*24;
         DateFormat formatter;
         if(timeDifference <= hour ){
-            return "Now";
+            return "Just updated";
         } else if(timeDifference > hour && timeDifference < 60*60*24*1000){
             if(timeDifference < hour*10){
                 formatter = new SimpleDateFormat("H");
@@ -70,7 +70,7 @@ public class Hive implements Serializable, Comparable<Hive> {
             }
             String dateFormatted = formatter.format(timeDifference);
 
-            return dateFormatted + " timer siden";
+            return dateFormatted + " hours ago";
         } else {
             if(timeDifference < day*10){
                 formatter = new SimpleDateFormat("d");
@@ -79,7 +79,7 @@ public class Hive implements Serializable, Comparable<Hive> {
             }
             String dateFormatted = formatter.format(timeDifference);
 
-            return dateFormatted + " dage siden";
+            return dateFormatted + " days ago";
         }
 
     }
@@ -194,8 +194,6 @@ public class Hive implements Serializable, Comparable<Hive> {
                 return 1;
             }
         }
-        return 0;
-
     }
 
     public enum Status {
