@@ -15,6 +15,7 @@ public class Hive implements Serializable, Comparable<Hive> {
     private double currTemp;
     private double currIlluminance;
     private double currHum;
+    private boolean isFavorite = false;
     private Status weightStatus = Status.UNDEFINED;
     private Status tempStatus = Status.UNDEFINED;
     private Status humidStatus = Status.UNDEFINED;
@@ -85,6 +86,13 @@ public class Hive implements Serializable, Comparable<Hive> {
 
     public double getCurrWeight() {
         return currWeight;
+    }
+
+    public boolean getIsFavorite(){
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite){
     }
 
     public void setCurrWeight(double currWeight) {
@@ -177,7 +185,16 @@ public class Hive implements Serializable, Comparable<Hive> {
 
     @Override
     public int compareTo(Hive o) {
-        return this.name.compareTo(o.name);
+        if(this.isFavorite == o.isFavorite){
+            return this.name.compareTo(o.name);
+        } else{
+            if(this.isFavorite && !o.isFavorite){
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
 
     }
 
