@@ -45,18 +45,14 @@ public class GraphActivity extends AppCompatActivity {
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ConstraintLayout progressBarLayout;
     private LineChart lineChart;
-
-    // Now each dataset is a list of datasets, in order to handle big delta.
-    // Labels are messy with MPAndroidCharts, so only one label needs to be set
-    // when creating graphs. Convention: Always set the last LineDataSet elements label to
-    // a correct label, such as "Weight", but all other labels need to be the empty string "".
     private List<LineDataSet> lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
 
     private int hiveId;
     private String hiveName;
     private float currentWeight;
-    private DownloadHiveAsyncTask asyncTask;
+    private DownloadHiveAsyncTask downloadAsyncTask;
+    private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
     private final String TAG = "GraphActivity";
 
@@ -94,8 +90,9 @@ public class GraphActivity extends AppCompatActivity {
         });
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
-        asyncTask = new DownloadHiveAsyncTask();
-        asyncTask.execute(hiveId);
+        downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
+        downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
+        downloadAsyncTask.execute(hiveId);
     }
 
     // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
@@ -106,9 +103,9 @@ public class GraphActivity extends AppCompatActivity {
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
-        lineChart.setScaleYEnabled(false);
+        lineChart.setScaleYEnabled(true);
         lineChart.setScaleXEnabled(true);
-        //lineChart.setPinchZoom(graphViewModel.isZoomEnabled());
+        lineChart.setPinchZoom(true);
 
         try {
             lineDataSetWeight = new ArrayList<>();
@@ -361,43 +358,56 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    // Show 'pop-up' where the user can choose a time interval
-    private void showSpinnerDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        GraphPeriodFragment frag = GraphPeriodFragment.newInstance();
-        frag.show(fm, "timespinner");
-    }*/
-
     // Update the graph with the new interval
     public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
         graphViewModel.updateTimePeriod(from, to);
-        //progressBarLayout.setVisibility(View.VISIBLE);
         // Get hive and render with new from- and to-dates.
         if (graphViewModel.getHive() != null &&
                 from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp()) &&
                 graphViewModel.isBackgroundDownloadInProgress()) {
+            // If hive exists and requested from date is not present AND data is still downloading:
             Toast.makeText(this, "This data is still downloading.", Toast.LENGTH_LONG).show();
         } else {
             // Check if some data is not found, and inform the user. This should only happen if there is incomplete data at the source (hivetool)
             if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
-                Toast.makeText(this, "There is not enough data for the whole period.", Toast.LENGTH_LONG).show();
-                graphViewModel.downloadOldDataInBackground(hiveId);
+                // If hive exists and requested from date is not present, but no download is in progress
+                Toast.makeText(this, "Parts of the period may not have any data.", Toast.LENGTH_LONG).show();
             }
-
-            Thread thread = new Thread(() -> {
+            // Try another download just in case.
+            try {
                 graphViewModel.downloadHiveData(hiveId);
-                //System.out.println("Downloaded hivefrom " + from + " to " + to + ".");
-                renderGraph();
-                System.out.println("Rendered graph from " + from + " to " + to + ".");
-                //progressBarLayout.setVisibility(View.INVISIBLE);
-
-            });
-            thread.start();
+            } catch (Exception e) {
+                Log.d(TAG, "showWithNewTimeDelta: Failed to get new data for rendering.");
+                e.printStackTrace();
+            }
+            renderGraph();
+            System.out.println("Rendered graph from " + from + " to " + to + ".");
         }
     }
 
-// Button and methods for setting time interval
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void setSwitchListeners() {
+        // Set listener for small switches after download of Hive.
+        weightSwitch.setOnClickListener(v -> {
+            toggleWeight(lineDataSetWeight.get(0).isVisible());
+        });
+        tempSwitch.setOnClickListener(v -> {
+            toggleTemperature(lineDataSetTemperature.get(0).isVisible());
+        });
+        lightSwitch.setOnClickListener(v -> {
+            toggleSunlight(lineDataSetSunlight.get(0).isVisible());
+        });
+        humidSwitch.setOnClickListener(v -> {
+            toggleHumidity(lineDataSetHumidity.get(0).isVisible());
+        });
+        weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
+        tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
+        lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
+        humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
+    }
 
     // This task downloads data and initializes drawing of graphs.
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
@@ -405,14 +415,13 @@ public class GraphActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBarLayout.setVisibility(View.VISIBLE);
-            // Turned off in downloadOldDataInBackground
         }
 
         @Override
         protected String doInBackground(Integer... id) {
             try {
-                // Download data once
                 if (graphViewModel.getHive() == null) {
+                    // Downloads recent data.
                     graphViewModel.downloadHiveData(hiveId);
                 }
             } catch (Exception e) {
@@ -429,46 +438,29 @@ public class GraphActivity extends AppCompatActivity {
                 renderGraph();
                 // Start download of whole hive in bg.
                 if (!graphViewModel.isBackgroundDownloadInProgress()) {
-                    downloadOldDataInBackground(hiveId);
+                    downloadBGAsyncTask.execute();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
             }
         }
+    }
 
-        private void downloadOldDataInBackground(int id) {
-            progressBarLayout.setVisibility(View.VISIBLE);
-            Thread thread = new Thread(() -> {
-                graphViewModel.downloadOldDataInBackground(id);
-                hideProgressBar();
-            });
-            thread.start();
+    private class DownloadBGHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
+
+        @Override
+        protected String doInBackground(Integer... id) {
+            graphViewModel.downloadOldDataInBackground(hiveId);
+            return null;
         }
 
-        public void hideProgressBar() {
-            progressBarLayout.setVisibility(View.INVISIBLE);
-        }
-
-        private void setSwitchListeners() {
-            // Set listener for small switches after download of Hive.
-            weightSwitch.setOnClickListener(v -> {
-                toggleWeight(lineDataSetWeight.get(0).isVisible());
-            });
-            tempSwitch.setOnClickListener(v -> {
-                toggleTemperature(lineDataSetTemperature.get(0).isVisible());
-            });
-            lightSwitch.setOnClickListener(v -> {
-                toggleSunlight(lineDataSetSunlight.get(0).isVisible());
-            });
-            humidSwitch.setOnClickListener(v -> {
-                toggleHumidity(lineDataSetHumidity.get(0).isVisible());
-            });
-            weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
-            tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
-            lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
-            humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            hideProgressBar();
         }
     }
 }
+
 
