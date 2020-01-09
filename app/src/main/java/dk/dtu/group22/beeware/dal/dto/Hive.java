@@ -55,29 +55,17 @@ public class Hive implements Serializable, Comparable<Hive> {
     }
     //Gets the time, at which the hive was last updated
     public String getLastUpdated(){
-        long now = System.currentTimeMillis();
         long lastUpdatedTime = measurements.get(measurements.size()-1).getTimestamp().getTime();
-        long timeDifference = now - lastUpdatedTime;
-        long hour = 60*60*1000;
         long day = 60*60*1000*24;
-        String kl = "kl";
-        String den = "d.";
         DateFormat dateFormatter;
         DateFormat timeFormatter;
-        DateFormat formatter;
-        if(timeDifference <= hour ){
-            return "Just updated";
-        } else {
 
-            dateFormatter = new SimpleDateFormat( "dd-MM-y");
-            timeFormatter = new SimpleDateFormat(" HH:mm");
-            formatter = new SimpleDateFormat("dd-MM-y HH:mm");
-            String dateFormatted = "d. " + dateFormatter.format(lastUpdatedTime) + " kl ".concat(timeFormatter.format(lastUpdatedTime%day));
+        dateFormatter = new SimpleDateFormat( "dd-MM-y");
+        timeFormatter = new SimpleDateFormat(" HH:mm");
 
+        String dateFormatted = dateFormatter.format(lastUpdatedTime) + " kl ".concat(timeFormatter.format(lastUpdatedTime % day));
 
-            return dateFormatted;
-        }
-
+        return dateFormatted;
     }
 
     public double getCurrWeight() {
