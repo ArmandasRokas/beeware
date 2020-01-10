@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contraintLayout"
+    android:id="@+id/sub_element_bg"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:foreground="?attr/selectableItemBackgroundBorderless">
+    android:background="#80A7E6A3"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/subscribe_name"
@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/listline"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

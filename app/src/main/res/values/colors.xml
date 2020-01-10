@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#FF780A</color>-->
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#00FF0000</color>
-    <color name="colorAccent">#0099B3</color>
+    <color name="colorAccent">#ff8624</color>
 
     <!--Default dark gray color for background and navbar-->
     <color name="BEE_darkGrayBG">#222222</color>

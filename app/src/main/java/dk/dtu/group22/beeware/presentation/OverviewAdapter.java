@@ -40,7 +40,7 @@ public class OverviewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return R.drawable.beehive2;
+        return R.drawable.beehive;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class OverviewAdapter extends BaseAdapter {
             ImageView currentIcon = icons.get(i);
             Hive.Status currentStatus = statuses.get(i);
             if (currentStatus == Hive.Status.UNDEFINED) {
-                currentIcon.setColorFilter(Color.GRAY);
+                currentIcon.setColorFilter(Color.WHITE);
             } else if (currentStatus == Hive.Status.OK) {
                 currentIcon.setColorFilter(Color.GREEN);
             } else if (currentStatus == Hive.Status.WARNING) {
@@ -101,14 +101,14 @@ public class OverviewAdapter extends BaseAdapter {
         char sign = hives.get(position).getWeightDelta() < 0 ? '\0' : '+';
         String formattedWeightDisplay = "";
         if (Double.isNaN(hives.get(position).getWeightDelta())) {
-            formattedWeightDisplay = String.format("%.1fkg", hives.get(position).getCurrWeight());
+            formattedWeightDisplay = String.format("%.1f kg", hives.get(position).getCurrWeight());
         } else {
-            formattedWeightDisplay = String.format("%.1fkg %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
+            formattedWeightDisplay = String.format("%.1f kg %c%.2f", hives.get(position).getCurrWeight(), sign, hives.get(position).getWeightDelta());
         }
 
         weight.setText(formattedWeightDisplay);
         temp.setText(String.format("%.1f\u2103", hives.get(position).getCurrTemp()));
-        illum.setText(String.format("%.0flx", hives.get(position).getCurrIlluminance()));
+        illum.setText(String.format("%.0f lux", hives.get(position).getCurrIlluminance()));
 
         return gridView;
     }

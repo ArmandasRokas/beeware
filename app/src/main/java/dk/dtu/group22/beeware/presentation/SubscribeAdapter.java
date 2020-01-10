@@ -1,11 +1,13 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -33,11 +35,13 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         // each data item is just a string in this case
+        public ConstraintLayout background;
         public TextView subHiveName;
         public Switch subHiveSwitch;
 
         public MyViewHolder(View v) {
             super(v);
+            background = v.findViewById(R.id.sub_element_bg);
             subHiveName = v.findViewById(R.id.subscribe_name);
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
         }
@@ -57,6 +61,13 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
+        //Alternates the background colors of the list elements
+        if (position % 2 == 0) {
+            holder.background.setBackgroundColor(Color.parseColor("#80BBFFB6"));
+        } else {
+            holder.background.setBackgroundColor(Color.parseColor("#80A7E6A3"));
+        }
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element

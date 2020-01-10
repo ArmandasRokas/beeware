@@ -33,7 +33,6 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     private Logic logic;
     private TextView status;
     private ProgressBar progressBar;
-    private ImageView backArrow;
     private TextView activeTextbutton, inactiveTextbutton, subscriptionsTextbutton;
     private View underlineOne, underlineTwo, underlineThree;
     private List<NameIdPair> allHives;
@@ -69,10 +68,6 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 return false;
             }
         });
-
-        // Own back arrow
-        backArrow = findViewById(R.id.subscribe_back_arrow);
-        backArrow.setOnClickListener(this);
 
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
@@ -185,9 +180,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        if (view == backArrow) {
-            finish();
-        } else if (view == activeTextbutton) {
+        if (view == activeTextbutton) {
             // If the user wants to see the active hives
             status.setVisibility(View.INVISIBLE);
             status.setText("");
