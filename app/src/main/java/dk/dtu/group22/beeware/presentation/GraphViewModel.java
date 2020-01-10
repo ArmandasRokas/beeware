@@ -70,11 +70,11 @@ public class GraphViewModel extends ViewModel {
         //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
             //if (i % useOnlyNth == 0) {
-                float time = (float) measure.getTimestamp().getTime();
-                float weight = (float) measure.getWeight();
-                res.add(new Entry(time, weight));
-                checkMaxMin(weight, 'x');
-                //Log.d(TAG, "extractWeight: TEST: "  + weight);
+            float time = (float) measure.getTimestamp().getTime();
+            float weight = (float) measure.getWeight();
+            res.add(new Entry(time, weight));
+            checkMaxMin(weight, 'x');
+            //Log.d(TAG, "extractWeight: TEST: "  + weight);
             //}
             //i++;
         }
@@ -86,10 +86,10 @@ public class GraphViewModel extends ViewModel {
         //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
             //if (i % useOnlyNth == 0) {
-                float time = (float) measure.getTimestamp().getTime();
-                float temp = (float) measure.getTempIn();
-                res.add(new Entry(time, temp));
-                checkMaxMin(temp, 'y');
+            float time = (float) measure.getTimestamp().getTime();
+            float temp = (float) measure.getTempIn();
+            res.add(new Entry(time, temp));
+            checkMaxMin(temp, 'y');
             //}
             //i++;
         }
@@ -101,10 +101,10 @@ public class GraphViewModel extends ViewModel {
         //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
             //if (i % useOnlyNth == 0) {
-                float time = (float) measure.getTimestamp().getTime();
-                float illum = (float) measure.getIlluminance();
-                res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
-                //Log.d(TAG, "extractIlluminance: " + illum);
+            float time = (float) measure.getTimestamp().getTime();
+            float illum = (float) measure.getIlluminance();
+            res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
+            //Log.d(TAG, "extractIlluminance: " + illum);
             //}
             //i++;
         }
@@ -116,10 +116,10 @@ public class GraphViewModel extends ViewModel {
         //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
             //if (i % useOnlyNth == 0) {
-                float time = (float) measure.getTimestamp().getTime();
-                float humid = (float) measure.getHumidity();
-                res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
-                //Log.d(TAG, "extractHumidity: humid = " + humid);
+            float time = (float) measure.getTimestamp().getTime();
+            float humid = (float) measure.getHumidity();
+            res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
+            //Log.d(TAG, "extractHumidity: humid = " + humid);
             //}
             //i++;
         }
@@ -259,37 +259,37 @@ public class GraphViewModel extends ViewModel {
     }
 
     public void downloadOldDataInBackground(int id) {
-            backgroundDownloadInProgress = true;
-            System.out.println("downloadOldDataInBackground: Starting background download.");
+        backgroundDownloadInProgress = true;
+        System.out.println("downloadOldDataInBackground: Starting background download.");
 
-            Timestamp endDate = new Timestamp(System.currentTimeMillis());
+        Timestamp endDate = new Timestamp(System.currentTimeMillis());
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(endDate.getTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(endDate.getTime());
         cal.add(Calendar.MONTH, -3);
-            Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
 
-            for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
 
-                Timestamp a = new Timestamp(startDate.getTime());
-                Timestamp b = new Timestamp(endDate.getTime());
-                Hive junk = null;
+            Timestamp a = new Timestamp(startDate.getTime());
+            Timestamp b = new Timestamp(endDate.getTime());
+            Hive junk = null;
 
-                while (junk == null) {
-                    junk = logic.getHive(id, a, b);
-                }
-                System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
-                            "from " + a.toString().substring(0, 10) + " " +
-                            "to " + b.toString().substring(0, 10) + ".");
-
-                // Iterate backwards
-                endDate = new Timestamp(startDate.getTime());
-                cal.setTimeInMillis(endDate.getTime());
-                cal.add(Calendar.MONTH, -2);
-                startDate = new Timestamp(cal.getTimeInMillis());
+            while (junk == null) {
+                junk = logic.getHive(id, a, b);
             }
-            backgroundDownloadInProgress = false;
-            Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
+            System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
+                    "from " + a.toString().substring(0, 10) + " " +
+                    "to " + b.toString().substring(0, 10) + ".");
+
+            // Iterate backwards
+            endDate = new Timestamp(startDate.getTime());
+            cal.setTimeInMillis(endDate.getTime());
+            cal.add(Calendar.MONTH, -2);
+            startDate = new Timestamp(cal.getTimeInMillis());
+        }
+        backgroundDownloadInProgress = false;
+        Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
     }
 
     public boolean isBackgroundDownloadInProgress() {
