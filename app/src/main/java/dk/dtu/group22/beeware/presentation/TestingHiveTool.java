@@ -20,7 +20,7 @@ public class TestingHiveTool extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.unused_testing_hive_tool);
+        setContentView(R.layout.unused_graph_prototype);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date dateSince = null;
