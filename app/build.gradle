@@ -35,6 +35,8 @@ dependencies {
     // ViewModel and LiveData
     def lifecycle_version = "2.1.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    // Multi-language (so far: english, danish) support at runtime
+    implementation "com.github.YarikSOffice:lingver:1.2.0"
 }
 
 repositories {
