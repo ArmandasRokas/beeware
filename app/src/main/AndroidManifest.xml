@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
 
     <application
+        android:name=".business.implementation.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_beeware_launcher_logo"
         android:label="@string/app_name"

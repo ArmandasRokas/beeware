@@ -127,7 +127,7 @@ public class GraphActivity extends AppCompatActivity {
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
                 if (i == tmpWeight.size() - 1) {
-                    lineDataSetWeight.add(new LineDataSet(list, "Weight"));
+                    lineDataSetWeight.add(new LineDataSet(list, getString(R.string.Weight)));
                 } else {
                     LineDataSet tmp = new LineDataSet(list, "");
                     tmp.setForm(Legend.LegendForm.NONE);
@@ -136,15 +136,15 @@ public class GraphActivity extends AppCompatActivity {
             }
 
             for (List<Entry> list : tmpTemp) {
-                lineDataSetTemperature.add(new LineDataSet(list, "Temperature"));
+                lineDataSetTemperature.add(new LineDataSet(list, getString(R.string.Temp)));
             }
 
             for (List<Entry> list : tmpLight) {
-                lineDataSetSunlight.add(new LineDataSet(list, "Sunlight"));
+                lineDataSetSunlight.add(new LineDataSet(list, getString(R.string.Sunlight)));
             }
 
             for (List<Entry> list : tmpHumid) {
-                lineDataSetHumidity.add(new LineDataSet(list, "Humidity"));
+                lineDataSetHumidity.add(new LineDataSet(list, getString(R.string.Humidity)));
             }
             //Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
         } catch (Exception e) {
@@ -339,13 +339,13 @@ public class GraphActivity extends AppCompatActivity {
     // Showing empty graph if downloading fails
     void showEmptyDataSets() {
         Log.d(TAG, "onCreate: Could not load hive data.");
-        Toast.makeText(this, "Could not load hive data.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.CouldNotLoadHiveData, Toast.LENGTH_SHORT).show();
         List<Entry> nullEntries = new ArrayList<>();
         nullEntries.add(new Entry(0, 0));
-        lineDataSetWeight = new ArrayList<>(asList(new LineDataSet(nullEntries, "Weight")));
-        lineDataSetTemperature = new ArrayList<>(asList(new LineDataSet(nullEntries, "Temperature")));
-        lineDataSetSunlight = new ArrayList<>(asList(new LineDataSet(nullEntries, "Sunlight")));
-        lineDataSetHumidity = new ArrayList<>(asList(new LineDataSet(nullEntries, "Humidity")));
+        lineDataSetWeight = new ArrayList<>(asList(new LineDataSet(nullEntries, getString(R.string.Weight))));
+        lineDataSetTemperature = new ArrayList<>(asList(new LineDataSet(nullEntries, getString(R.string.Temp))));
+        lineDataSetSunlight = new ArrayList<>(asList(new LineDataSet(nullEntries, getString(R.string.Sunlight))));
+        lineDataSetHumidity = new ArrayList<>(asList(new LineDataSet(nullEntries, getString(R.string.Humidity))));
     }
 
     // Format dates for graph X axis
@@ -366,12 +366,12 @@ public class GraphActivity extends AppCompatActivity {
                 from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp()) &&
                 graphViewModel.isBackgroundDownloadInProgress()) {
             // If hive exists and requested from date is not present AND data is still downloading:
-            Toast.makeText(this, "This data is still downloading.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.ThisDataIsStillDownloading, Toast.LENGTH_LONG).show();
         } else {
             // Check if some data is not found, and inform the user. This should only happen if there is incomplete data at the source (hivetool)
             if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
                 // If hive exists and requested from date is not present, but no download is in progress
-                Toast.makeText(this, "Parts of the period may not have any data.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show();
             }
             // Try another download just in case.
             try {
@@ -442,7 +442,7 @@ public class GraphActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Could not get hive data.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
             }
         }
     }

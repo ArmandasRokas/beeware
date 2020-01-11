@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,11 +15,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.yariksoffice.lingver.Lingver;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
@@ -40,6 +44,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+
 
         // Initialising variables
         ctx = this;
@@ -90,16 +95,16 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
                 if(cachingManager.isConnectionFailed()){
-                    Toast toast = Toast.makeText(ctx, "Unable to fetch the newest data.\n Check your internet connection.", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
                 if(logic.getSubscriptionIDs().size() == 0){
-                    listEmptyTv.setText("You have not subscribed to any hives.\nClick the edit button to subscribe to a hive.");
+                    listEmptyTv.setText(R.string.YouHaveNotSubscribedToAnyHives);
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
                 } else if(hives.size() == 0){
-                    listEmptyTv.setText("Error. Data could not be fetched.");
+                    listEmptyTv.setText(R.string.ErrorDataCouldNotBeFetched);
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
                 } else {

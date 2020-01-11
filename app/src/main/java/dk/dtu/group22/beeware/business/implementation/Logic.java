@@ -1,6 +1,9 @@
 package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.Context;
+
+import com.yariksoffice.lingver.Lingver;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,7 +18,6 @@ import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
 public class Logic {
-
    // private WebScraper hiveHivetool;
     private CachingManager cachingManager;
     private ISubscription subscriptionHivetool;
@@ -32,6 +34,8 @@ public class Logic {
        // this.hiveHivetool = new WebScraper();
         this.cachingManager = CachingManager.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
+
+
     }
 
     public void setContext(Context context) {

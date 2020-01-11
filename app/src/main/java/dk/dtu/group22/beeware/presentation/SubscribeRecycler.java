@@ -201,17 +201,16 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_warning)
-                    .setTitle("Problematic hives!")
-                    .setMessage("Inactive hives might cause the application to crash. " +
-                            "Subscribing to these beehives is not recommended.")
-                    .setNegativeButton("Go back", new DialogInterface.OnClickListener() {
+                    .setTitle(getString(R.string.ProblematicHivesTitle))
+                    .setMessage(getString(R.string.ProblematicHivesBody))
+                    .setNegativeButton(getString(R.string.GoBack), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // Takes the user back to the list of active hives
                             SubscribeRecycler.this.onClick(activeTextbutton);
                         }
                     })
-                    .setPositiveButton("Continue", null)
+                    .setPositiveButton(getString(R.string.Continue), null)
                     .show();
 
         } else if(view == subscriptionsTextbutton) {
