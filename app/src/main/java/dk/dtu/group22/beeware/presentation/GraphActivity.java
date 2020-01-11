@@ -126,7 +126,7 @@ public class GraphActivity extends AppCompatActivity {
 
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
-                if (i == tmpWeight.size() - 1) {
+                if (i == 0) {
                     lineDataSetWeight.add(new LineDataSet(list, getString(R.string.Weight)));
                 } else {
                     LineDataSet tmp = new LineDataSet(list, "");
@@ -264,10 +264,10 @@ public class GraphActivity extends AppCompatActivity {
 
         // Collect LineDataSets in a List
         List<ILineDataSet> lineDataSetList = new ArrayList<>();
-        lineDataSetList.addAll(lineDataSetWeight);
         lineDataSetList.addAll(lineDataSetTemperature);
         lineDataSetList.addAll(lineDataSetHumidity);
         lineDataSetList.addAll(lineDataSetSunlight);
+        lineDataSetList.addAll(lineDataSetWeight);
 
         // Feed list of LineDataSets into a LineData object
         LineData lineData = new LineData(lineDataSetList);
