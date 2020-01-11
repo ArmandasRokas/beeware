@@ -25,7 +25,7 @@
         <activity android:name=".presentation.GraphViewModel" />
         <activity android:name=".presentation.SubscribeRecycler"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".presentation.Overview"
             android:screenOrientation="portrait">
             <intent-filter>

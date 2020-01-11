@@ -4,122 +4,135 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#03A7E6A3"
+    android:background="@drawable/bg_abstract"
     tools:context=".presentation.SubscribeRecycler">
 
-    <EditText
-        android:id="@+id/subscribe_search_field"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_area"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/plaintextborderbox"
-        android:drawableLeft="@drawable/ic_search"
-        android:ems="10"
-        android:hint="@string/search"
-        android:inputType="text"
-        android:padding="10dp"
-        android:textColorLink="#FF8624"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/subscribe_active_textbutton"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center"
-        android:text="@string/available"
-        android:textColor="#FF8624"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toStartOf="@+id/subscribe_inactive_textbutton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <View
-        android:id="@+id/subscribe_underline1"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="10dp"
-        android:background="#FF8624"
-        app:layout_constraintBottom_toBottomOf="@+id/subscribe_active_textbutton"
-        app:layout_constraintEnd_toEndOf="@+id/subscribe_active_textbutton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/subscribe_active_textbutton" />
-
-    <TextView
-        android:id="@+id/subscribe_inactive_textbutton"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center"
-        android:text="@string/inactive"
-        android:textColor="#FF8624"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
+        android:layout_height="110dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/subscribe_underline2"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="8dp"
-        android:background="#FF8624"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/subscribe_inactive_textbutton"
-        app:layout_constraintEnd_toEndOf="@+id/subscribe_inactive_textbutton"
-        app:layout_constraintStart_toStartOf="@+id/subscribe_inactive_textbutton" />
+        <EditText
+            android:id="@+id/subscribe_search_field"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/plaintextborderbox"
+            android:drawableLeft="@drawable/ic_search"
+            android:ems="10"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColorLink="#FF8624"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/subscribe_subscriptions_textbutton"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center"
-        android:text="@string/subs"
-        android:textColor="#FF8624"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/subscribe_inactive_textbutton"
-        app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-        app:layout_constraintVertical_bias="1.0" />
+        <TextView
+            android:id="@+id/subscribe_active_textbutton"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="@string/active"
+            android:textColor="#FF8624"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toStartOf="@+id/subscribe_inactive_textbutton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <View
-        android:id="@+id/subscribe_underline3"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="10dp"
-        android:background="#FF8624"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/subscribe_subscriptions_textbutton"
-        app:layout_constraintEnd_toEndOf="@+id/subscribe_subscriptions_textbutton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/subscribe_subscriptions_textbutton" />
+        <View
+            android:id="@+id/subscribe_underline1"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FF8624"
+            app:layout_constraintBottom_toBottomOf="@+id/subscribe_active_textbutton"
+            app:layout_constraintEnd_toEndOf="@+id/subscribe_active_textbutton"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/subscribe_active_textbutton" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="50dp"
-        android:background="@color/textfield"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field" />
+        <TextView
+            android:id="@+id/subscribe_inactive_textbutton"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="@string/inactive"
+            android:textColor="#FF8624"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <View
+            android:id="@+id/subscribe_underline2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="8dp"
+            android:background="#FF8624"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/subscribe_inactive_textbutton"
+            app:layout_constraintEnd_toEndOf="@+id/subscribe_inactive_textbutton"
+            app:layout_constraintStart_toStartOf="@+id/subscribe_inactive_textbutton" />
+
+        <TextView
+            android:id="@+id/subscribe_subscriptions_textbutton"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="@string/subs"
+            android:textColor="#FF8624"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/subscribe_inactive_textbutton"
+            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <View
+            android:id="@+id/subscribe_underline3"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FF8624"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/subscribe_subscriptions_textbutton"
+            app:layout_constraintEnd_toEndOf="@+id/subscribe_subscriptions_textbutton"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/subscribe_subscriptions_textbutton" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/sub_line_colors"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hivesToSubRV"
@@ -128,7 +141,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toBottomOf="@id/search_area" />
 
     <TextView
         android:id="@+id/statusText"

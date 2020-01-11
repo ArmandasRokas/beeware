@@ -27,7 +27,7 @@
     <string name="ProblematicHivesBody">Inactive hives might cause the application to crash. Subscribing to these beehives is not recommended.</string>
     <string name="GoBack">Go back</string>
     <string name="Continue">Continue</string>
-    <string name="YouHaveNotSubscribedToAnyHives">You have not subscribed to any hives. Click the edit button to subscribe to a hive.</string>
+    <string name="YouHaveNotSubscribedToAnyHives">You have not subscribed to any hives.\nClick the edit button to subscribe to a hive.</string>
     <string name="UnableToFetchNewestData">Unable to fetch the newest data.  Check your internet connection.</string>
     <string name="ErrorDataCouldNotBeFetched">Error. Data could not be fetched.</string>
 
@@ -43,7 +43,7 @@
 
 
     <!-- Subscribe menu -->
-    <string name="available">Available</string>
+    <string name="active">Active</string>
     <string name="search">Search</string>
     <string name="inactive">Inactive</string>
     <string name="subs">Subscriptions</string>

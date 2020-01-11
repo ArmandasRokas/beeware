@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,16 +63,25 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
+        /*
         //Alternates the background colors of the list elements
         if (position % 2 == 0) {
-            holder.background.setBackgroundColor(Color.parseColor("#80BBFFB6"));
+            holder.background.setBackgroundColor(Color.parseColor("#E6A487"));
         } else {
-            holder.background.setBackgroundColor(Color.parseColor("#80A7E6A3"));
+            holder.background.setBackgroundColor(Color.parseColor("#FFB596"));
         }
+        */
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.subHiveName.setText(mDataset.get(position).getName());
+
+        // Changes the text color of the hive name to red if it is inactive
+        if (!mDataset.get(position).isActive()) {
+            holder.subHiveName.setTextColor(Color.argb(255,175,0,0));
+        } else {
+            holder.subHiveName.setTextColor(Color.BLACK);
+        }
 
         // Checks if the current list position element is in list of subbed ids
         for (int id : subbedIds) {

@@ -107,6 +107,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 progressBar.setVisibility(View.VISIBLE);
                 activeTextbutton.setEnabled(false);
                 subscriptionsTextbutton.setEnabled(false);
+                inactiveTextbutton.setEnabled(false);
                 searchField.setEnabled(false);
             }
 
@@ -172,6 +173,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
         activeTextbutton.setEnabled(true);
         subscriptionsTextbutton.setEnabled(true);
+        inactiveTextbutton.setEnabled(true);
         searchField.setEnabled(true);
 
         // Setting the list (recyclerview) to the active hives
@@ -182,8 +184,13 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         if (view == activeTextbutton) {
             // If the user wants to see the active hives
-            status.setVisibility(View.INVISIBLE);
-            status.setText("");
+            if (active.size() == 0) {
+                status.setVisibility(View.VISIBLE);
+                status.setText("List of active hives is empty.");
+            } else {
+                status.setVisibility(View.INVISIBLE);
+                status.setText("");
+            }
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
@@ -192,8 +199,14 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
 
         } else if (view == inactiveTextbutton) {
             // If the user wants to see the inactive hives
-            status.setVisibility(View.INVISIBLE);
-            status.setText("");
+            if (active.size() == 0) {
+                status.setVisibility(View.VISIBLE);
+                status.setText("List of inactive hives is empty.");
+            } else {
+                status.setVisibility(View.INVISIBLE);
+                status.setText("");
+            }
+            searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
             underlineTwo.setVisibility(View.VISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);

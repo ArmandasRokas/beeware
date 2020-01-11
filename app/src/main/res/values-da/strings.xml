@@ -14,7 +14,7 @@
     <string name="ProblematicHivesBody">Disse bistader er inaktive og kan lede appen til sammenbrud. At tilføje disse stader er ikke anbefalet.</string>
     <string name="GoBack">Tilbage</string>
     <string name="Continue">Fortsæt</string>
-    <string name="YouHaveNotSubscribedToAnyHives">Du har ikke tilføjet nogle bistader. Klik på redigeringsknappen for at tilføje.</string>
+    <string name="YouHaveNotSubscribedToAnyHives">Du har ikke tilføjet nogen bistader.\nKlik på redigeringsknappen for at tilføje.</string>
     <string name="UnableToFetchNewestData">Det lykkedes ikke at hente det nyeste data. Verificer din internetforbindelse.</string>
     <string name="ErrorDataCouldNotBeFetched">Der skete en fejl: Data kunne ikke hentes.</string>
 
@@ -29,9 +29,9 @@
     <string name="FailedToGetHive">Kunne ikke hente stade-data.</string>
 
     <!-- Subscribe menu -->
-    <string name="available">Tilgængelige</string>
+    <string name="active">Aktive</string>
     <string name="search">Søg</string>
-    <string name="inactive">Deaktiveret</string>
+    <string name="inactive">Inaktive</string>
     <string name="subs">Tilføjede</string>
 
 </resources>

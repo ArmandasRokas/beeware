@@ -5,7 +5,7 @@
     android:id="@+id/sub_element_bg"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="#80A7E6A3"
+    android:background="#00A7E6A3"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     android:orientation="vertical">
 
@@ -37,8 +37,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/listline"
-        android:visibility="invisible"
+        android:background="@color/sub_line_colors"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
