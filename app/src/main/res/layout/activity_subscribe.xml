@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_abstract"
+    android:background="@drawable/img_background"
     tools:context=".presentation.SubscribeRecycler">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
-            android:background="@drawable/plaintextborderbox"
+            android:background="@drawable/field_borderbox"
             android:drawableLeft="@drawable/ic_search"
             android:ems="10"
             android:hint="@string/search"

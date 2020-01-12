@@ -3,8 +3,8 @@
     <!-- Period prompts on graphs -->
     <string name="period_prompt">Choose a time period!</string>
     <string-array name="time_period">
-        <item>1 måned</item>
         <item>1 uge</item>
+        <item>1 måned</item>
         <item>3 måneder</item>
         <item>Et år</item>
     </string-array>

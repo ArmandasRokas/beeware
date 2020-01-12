@@ -59,7 +59,7 @@
         app:layout_constraintTop_toTopOf="@+id/datePicker" />
 
     <Button
-        android:id="@+id/timeSelectedButton"
+        android:id="@+id/btn_view_period"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

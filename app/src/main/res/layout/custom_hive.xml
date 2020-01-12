@@ -14,7 +14,7 @@
         android:layout_height="240dp"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/bistade"
-        android:src="@drawable/beehive"
+        android:src="@drawable/img_beehive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -28,11 +28,11 @@
         android:layout_height="55dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/hexagon_button"
+        android:background="@drawable/btn_hexagon"
         android:paddingBottom="6dp"
         app:layout_constraintStart_toStartOf="@+id/album"
         app:layout_constraintTop_toTopOf="@+id/album"
-        app:srcCompat="@drawable/weight" />
+        app:srcCompat="@drawable/ic_weight" />
 
     <TextView
         android:id="@+id/hive_currWeightTV"
@@ -55,10 +55,10 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginTop="18dp"
-        android:background="@drawable/hexagon_button"
+        android:background="@drawable/btn_hexagon"
         app:layout_constraintStart_toStartOf="@+id/weightIcon"
         app:layout_constraintTop_toBottomOf="@+id/weightIcon"
-        app:srcCompat="@drawable/temperature" />
+        app:srcCompat="@drawable/ic_temperature" />
 
     <TextView
         android:id="@+id/tempInTV"
@@ -79,12 +79,12 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginTop="18dp"
-        android:background="@drawable/hexagon_button"
+        android:background="@drawable/btn_hexagon"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         app:layout_constraintStart_toStartOf="@+id/tempIcon"
         app:layout_constraintTop_toBottomOf="@+id/tempIcon"
-        app:srcCompat="@drawable/sunlight" />
+        app:srcCompat="@drawable/ic_sunlight" />
 
     <TextView
         android:id="@+id/hive_currIllumTV"

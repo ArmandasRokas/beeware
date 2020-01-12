@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_abstract"
+    android:background="@drawable/img_background"
     android:fitsSystemWindows="true"
     tools:context=".presentation.Overview">
 
@@ -46,7 +46,7 @@
         android:id="@+id/subHiveBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/round_button_ripple_effect"
+        android:background="@drawable/btn_round_effect"
         android:backgroundTint="#FF8624"
         android:elevation="5dp"
         android:src="@drawable/ic_edit"

@@ -16,8 +16,8 @@
     <!-- Period prompts on graphs -->
     <string name="period_prompt">Choose a time period!</string>
     <string-array name="time_period">
-        <item>1 month</item>
         <item>1 week</item>
+        <item>1 month</item>
         <item>3 months</item>
         <item>A year</item>
     </string-array>

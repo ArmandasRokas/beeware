@@ -40,7 +40,7 @@ public class OverviewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return R.drawable.beehive;
+        return R.drawable.img_beehive;
     }
 
     @Override

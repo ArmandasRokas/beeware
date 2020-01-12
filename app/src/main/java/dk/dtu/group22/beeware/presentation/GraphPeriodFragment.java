@@ -22,7 +22,7 @@ import dk.dtu.group22.beeware.R;
 public class GraphPeriodFragment extends DialogFragment {
     private Spinner spinner;
     private DatePicker datePicker;
-    private Button timeButton;
+    private Button viewPeriod;
     private int option = 0;
     private Timestamp fromDate;
     private Timestamp toDate;
@@ -55,28 +55,29 @@ public class GraphPeriodFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         spinner = view.findViewById(R.id.spinnerTimeDelta);
         datePicker = view.findViewById(R.id.datePicker);
-        timeButton = view.findViewById(R.id.timeSelectedButton);
+        viewPeriod = view.findViewById(R.id.btn_view_period);
         Calendar cal = Calendar.getInstance();
         listener = (GraphActivity) getActivity();
 
         // Setup listeners
-        timeButton.setOnClickListener(v -> {
+        viewPeriod.setOnClickListener(v -> {
             cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
             fromDate = new Timestamp(cal.getTimeInMillis());
 
+            // Switches on the selected period from the spinner
             switch (option) {
                 case 1:
-                    cal.add(Calendar.WEEK_OF_MONTH, 1);
+                    cal.add(Calendar.MONTH, 1); // 1 month
                     break;
                 case 2:
-                    cal.add(Calendar.MONTH, 3);
+                    cal.add(Calendar.MONTH, 3); // 3 months
                     break;
                 case 3:
                     cal.setTimeInMillis(System.currentTimeMillis());
-                    cal.add(Calendar.YEAR, 1);
+                    cal.add(Calendar.YEAR, 1); // A year
                     break;
                 default:
-                    cal.add(Calendar.MONTH, 1);
+                    cal.add(Calendar.WEEK_OF_MONTH, 1); // 1 week
             }
 
             toDate = new Timestamp(cal.getTimeInMillis());
@@ -112,6 +113,8 @@ public class GraphPeriodFragment extends DialogFragment {
                 option = -1; // 2 Week default
             }
         });
+
+        // Set the time interval on the datepicker
         Date today = cal.getTime();
         cal.add(Calendar.YEAR, -1);
         Date lastYear = cal.getTime();

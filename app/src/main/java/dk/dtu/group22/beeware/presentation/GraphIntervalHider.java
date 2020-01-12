@@ -38,9 +38,9 @@ public class GraphIntervalHider extends AppCompatActivity {
         toolbar_title.setLayoutParams(params);
 
         // account logo button left side on custom_toolbar
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbar_title.setText("Hive x interval");
     }
