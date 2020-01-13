@@ -26,7 +26,7 @@ public class GraphPeriodFragment extends DialogFragment {
     private int option = 0;
     private Timestamp fromDate;
     private Timestamp toDate;
-    private GraphActivity listener;
+    private GraphActivity activity;
 
     public GraphPeriodFragment() {
         // Required empty public constructor
@@ -52,7 +52,7 @@ public class GraphPeriodFragment extends DialogFragment {
         datePicker = view.findViewById(R.id.datePicker);
         viewPeriod = view.findViewById(R.id.btn_view_period);
         Calendar cal = Calendar.getInstance();
-        listener = (GraphActivity) getActivity();
+        activity = (GraphActivity) getActivity();
 
         // Setup listeners
         viewPeriod.setOnClickListener(v -> {
@@ -86,9 +86,9 @@ public class GraphPeriodFragment extends DialogFragment {
             if (option == 3) {
                 cal.setTimeInMillis(now.getTime());
                 cal.add(Calendar.YEAR, -1);
-                listener.showWithNewTimeDelta(new Timestamp(cal.getTimeInMillis()), now);
+                activity.showWithNewTimeDelta(new Timestamp(cal.getTimeInMillis()), now);
             } else if (option > -1) {
-                listener.showWithNewTimeDelta(fromDate, toDate);
+                activity.showWithNewTimeDelta(fromDate, toDate);
             }
             this.dismiss();
         });
