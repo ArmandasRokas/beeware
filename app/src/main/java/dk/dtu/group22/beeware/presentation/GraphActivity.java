@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,8 @@ public class GraphActivity extends AppCompatActivity {
     private LineChart lineChart;
     private List<LineDataSet> lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
+    private YAxis rightYAxis, leftYAxis;
+    private TextView leftAxisUnit, rightAxisUnit;
 
     private int hiveId;
     private String hiveName;
@@ -75,13 +78,15 @@ public class GraphActivity extends AppCompatActivity {
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
         graphMenuButton = findViewById(R.id.graphMenuButton);
+        leftAxisUnit = findViewById(R.id.axisLeftLegend);
+        rightAxisUnit = findViewById(R.id.axisRightLegend);
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         graphViewModel.setZoomEnabled(true);
 
         // Menu button
-
         graphMenuButton.setOnClickListener(v ->
                 new GraphPeriodFragment().show(getSupportFragmentManager(), "timeDialog"
                 ));
@@ -105,6 +110,10 @@ public class GraphActivity extends AppCompatActivity {
         //lineChart.setPinchZoom(true); // Y zooms together with X, not separately.
 
         lineChart.setNoDataText(getString(R.string.noChartDataText));
+
+        // Y-axis
+        rightYAxis = lineChart.getAxisRight();
+        leftYAxis = lineChart.getAxisLeft();
 
         try {
             lineDataSetWeight = new ArrayList<>();
@@ -177,12 +186,13 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         // Scale axises
-        YAxis leftAxis = lineChart.getAxisLeft();
-        YAxis rightAxis = lineChart.getAxisRight();
-        leftAxis.setAxisMaximum(graphViewModel.getLeftAxisMax());
-        leftAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
-        rightAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
-        rightAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
+        leftYAxis.setAxisMaximum(graphViewModel.getLeftAxisMax());
+        leftYAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
+        rightYAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
+        rightYAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
+        // Temp transparent on load
+        rightYAxis.setTextColor(Color.alpha(0));
+        rightAxisUnit.setEnabled(false);
 
         // Weight
         for (LineDataSet list : lineDataSetWeight) {
@@ -393,9 +403,25 @@ public class GraphActivity extends AppCompatActivity {
         // Set listener for small switches after download of Hive.
         weightSwitch.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.get(0).isVisible());
+            // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
+            if (lineDataSetWeight.get(0).isVisible()) {
+                leftYAxis.setTextColor(Color.BLACK);
+                leftAxisUnit.setEnabled(true);
+            } else {
+                leftYAxis.setTextColor(Color.alpha(0));
+                leftAxisUnit.setEnabled(false);
+            }
         });
         tempSwitch.setOnClickListener(v -> {
             toggleTemperature(lineDataSetTemperature.get(0).isVisible());
+            // Toggle y value visibility
+            if (lineDataSetTemperature.get(0).isVisible()) {
+                rightYAxis.setTextColor(Color.BLACK);
+                rightAxisUnit.setEnabled(true);
+            } else {
+                rightYAxis.setTextColor(Color.alpha(0));
+                rightAxisUnit.setEnabled(false);
+            }
         });
         lightSwitch.setOnClickListener(v -> {
             toggleSunlight(lineDataSetSunlight.get(0).isVisible());

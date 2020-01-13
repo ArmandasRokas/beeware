@@ -120,7 +120,7 @@ public class GraphViewModel extends ViewModel {
             if (isInInterval(measure.getTimestamp())) {
                 float humid = (float) measure.getHumidity();
                 //res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
-                res.add(new Entry(time, (humid / 102) * (leftAxisMax - leftAxisMin))); // Percentage of matrix height
+                res.add(new Entry(time, (humid / 102) * (leftAxisMax - leftAxisMin) + leftAxisMin)); // Percentage of matrix height
             }
         }
         return res;
