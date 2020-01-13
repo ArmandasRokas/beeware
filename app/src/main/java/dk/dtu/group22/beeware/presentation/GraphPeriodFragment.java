@@ -32,11 +32,6 @@ public class GraphPeriodFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static GraphPeriodFragment newInstance() {
-        GraphPeriodFragment fragment = new GraphPeriodFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

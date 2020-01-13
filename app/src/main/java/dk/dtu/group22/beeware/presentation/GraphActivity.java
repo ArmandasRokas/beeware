@@ -82,12 +82,9 @@ public class GraphActivity extends AppCompatActivity {
 
         // Menu button
 
-        graphMenuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new GraphPeriodFragment().show(getSupportFragmentManager(), "timeDialog");
-            }
-        });
+        graphMenuButton.setOnClickListener(v ->
+                new GraphPeriodFragment().show(getSupportFragmentManager(), "timeDialog"
+                ));
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
@@ -105,7 +102,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setDragEnabled(true);
         lineChart.setScaleYEnabled(true);
         lineChart.setScaleXEnabled(true);
-        lineChart.setPinchZoom(true);
+        //lineChart.setPinchZoom(true); // Y zooms together with X, not separately.
 
         try {
             lineDataSetWeight = new ArrayList<>();
@@ -281,6 +278,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setData(lineData);
         // Remove yellow crosshairs
         lineChart.getData().setHighlightEnabled(false);
+        lineChart.getLegend().setEnabled(false);
         lineChart.setDescription(description);
         lineChart.invalidate(); // refresh
 
