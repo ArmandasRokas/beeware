@@ -104,6 +104,8 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setScaleXEnabled(true);
         //lineChart.setPinchZoom(true); // Y zooms together with X, not separately.
 
+        lineChart.setNoDataText(getString(R.string.noChartDataText));
+
         try {
             lineDataSetWeight = new ArrayList<>();
             lineDataSetTemperature = new ArrayList<>();

@@ -49,5 +49,6 @@
     <string name="search">Search</string>
     <string name="inactive">Inactive</string>
     <string name="subs">Subscriptions</string>
+    <string name="noChartDataText">No data available.</string>
 
 </resources>
