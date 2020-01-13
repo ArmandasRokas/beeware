@@ -21,7 +21,7 @@ public class GraphViewModel extends ViewModel {
     //private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
-    private float leftAxisMin = 40, leftAxisMax = 0, rightAxisMin = 30, rightAxisMax = 0;
+    private float leftAxisMin, leftAxisMax, rightAxisMin, rightAxisMax;
     private Hive hive;
     private int timeDelta = 1000 * 3600 * 24 * 7;
     private Timestamp toDate = new Timestamp(new Date().getTime());
@@ -41,17 +41,17 @@ public class GraphViewModel extends ViewModel {
 
     // Set max and min values based on data
     private void checkMaxMin(float v, char axis) {
-        if (axis == 'x' && v != 0.0) {
+        if (axis == 'l' && v != 0.0) {
             if (v > leftAxisMax) {
-                leftAxisMax = v + 2;
+                leftAxisMax = v + 1;
             } else if (v < leftAxisMin) {
-                leftAxisMin = v - 2;
+                leftAxisMin = v - 1;
             }
-        } else if (axis == 'y' && v != 0) {
+        } else if (axis == 'r' && v != 0) {
             if (v > rightAxisMax) {
-                rightAxisMax = v + 2;
+                rightAxisMax = v + 1;
             } else if (v < rightAxisMin) {
-                rightAxisMin = v - 2;
+                rightAxisMin = v - 1;
             }
         }
     }
@@ -65,63 +65,63 @@ public class GraphViewModel extends ViewModel {
         return (float) Math.log(in) * (max - min) / 20 + min;
     }
 
+    private boolean isInInterval(Timestamp t) {
+        return t.getTime() >= fromDate.getTime() && t.getTime() <= toDate.getTime();
+    }
+
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
-        //int i = 0;
+        leftAxisMin = 99;
+        leftAxisMax = -99;
         for (Measurement measure : hive.getMeasurements()) {
-            //if (i % useOnlyNth == 0) {
             float time = (float) measure.getTimestamp().getTime();
-            float weight = (float) measure.getWeight();
-            res.add(new Entry(time, weight));
-            checkMaxMin(weight, 'x');
-            //Log.d(TAG, "extractWeight: TEST: "  + weight);
-            //}
-            //i++;
+            if (isInInterval(measure.getTimestamp())) {
+                // If this data is in requested interval
+                float weight = (float) measure.getWeight();
+                res.add(new Entry(time, weight));
+                checkMaxMin(weight, 'l');
+            }
         }
         return res;
     }
 
     public List<Entry> extractTemperature() {
         List<Entry> res = new ArrayList<>();
-        //int i = 0;
+        rightAxisMin = 99;
+        rightAxisMax = -99;
         for (Measurement measure : hive.getMeasurements()) {
-            //if (i % useOnlyNth == 0) {
             float time = (float) measure.getTimestamp().getTime();
-            float temp = (float) measure.getTempIn();
-            res.add(new Entry(time, temp));
-            checkMaxMin(temp, 'y');
-            //}
-            //i++;
+            if (isInInterval(measure.getTimestamp())) {
+                // If this data is in requested interval
+                float temp = (float) measure.getTempIn();
+                res.add(new Entry(time, temp));
+                checkMaxMin(temp, 'r');
+            }
         }
         return res;
     }
 
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
-        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            //if (i % useOnlyNth == 0) {
             float time = (float) measure.getTimestamp().getTime();
-            float illum = (float) measure.getIlluminance();
-            res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
-            //Log.d(TAG, "extractIlluminance: " + illum);
-            //}
-            //i++;
+            if (isInInterval(measure.getTimestamp())) {
+                float illum = (float) measure.getIlluminance();
+                res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
+            }
         }
         return res;
     }
 
     public List<Entry> extractHumidity() {
         List<Entry> res = new ArrayList<>();
-        //int i = 0;
         for (Measurement measure : hive.getMeasurements()) {
-            //if (i % useOnlyNth == 0) {
             float time = (float) measure.getTimestamp().getTime();
-            float humid = (float) measure.getHumidity();
-            res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
-            //Log.d(TAG, "extractHumidity: humid = " + humid);
-            //}
-            //i++;
+            if (isInInterval(measure.getTimestamp())) {
+                float humid = (float) measure.getHumidity();
+                //res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
+                res.add(new Entry(time, (humid / 102) * (leftAxisMax - leftAxisMin))); // Percentage of matrix height
+            }
         }
         return res;
     }
@@ -294,5 +294,21 @@ public class GraphViewModel extends ViewModel {
 
     public boolean isBackgroundDownloadInProgress() {
         return backgroundDownloadInProgress;
+    }
+
+    public float getGranularity(char yAxis) {
+        // Custom granularity (numeric distance between labels on y axis).
+
+        /*First draft:
+         * Round the distance between axis max and min up to something easily divisible by 6,
+         * e.g 12 , 3, or 1.2, and set (left/right) axismax and axismin accordingly. This could be
+         * defined in a list or by an algorithm. Then set axis granularity to a 6th of this number.
+         * The challenge is to define arbitrary "round numbers" for any scale. It's important
+         * that the axis minimum is also a round number by the same definition.
+         *
+         * This must be called after making the linedataset (where we get max and min),
+         * but before rendering.*/
+
+        return 0;
     }
 }
