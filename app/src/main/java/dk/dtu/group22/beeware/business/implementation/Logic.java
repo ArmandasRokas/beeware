@@ -391,7 +391,7 @@ public class Logic {
         NotificationCompat.Builder notificationBuilder;
 
         notificationBuilder = new NotificationCompat.Builder(ctx, "Beeware");
-        notificationBuilder.setSmallIcon(R.drawable.beehive);
+        notificationBuilder.setSmallIcon(R.drawable.img_beehive);
         notificationBuilder.setContentTitle("BEEWARE");
         notificationBuilder.setContentText(details);
         notificationBuilder.setAutoCancel(true);
