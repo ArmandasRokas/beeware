@@ -32,8 +32,20 @@ public class GraphViewModel extends ViewModel {
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
+    private void roundFromDateToMidnight() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(fromDate.getTime());
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        fromDate = new Timestamp(cal.getTimeInMillis());
+        Log.d(TAG, "roundFromDateToMidnight: Corrected from date to midnight: " + fromDate);
+    }
+
     // Data handling for graph
     public void downloadHiveData(int id) {
+        roundFromDateToMidnight();
         hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                 id + " from" + fromDate + " to " + toDate + ".");

@@ -34,4 +34,14 @@
     <string name="inactive">Inaktive</string>
     <string name="subs">Tilføjede</string>
 
+    <!-- Graph xml -->
+    <string name="noChartDataText">Data mangler.</string>
+    <string name="temperature">Temperatur</string>
+    <string name="luminocity">Lysstyrke</string>
+    <string name="humidity">Luftfugtighed</string>
+    <string name="weight">Vægt</string>
+    <string name="from_date">Startdato</string>
+    <string name="period_label">Periode</string>
+    <string name="select_data_period_button">Vælg en periode</string>
+
 </resources>

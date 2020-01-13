@@ -162,7 +162,7 @@ public class GraphActivity extends AppCompatActivity {
 
         // Format X- Axis to time string
         XAxis xAxis = lineChart.getXAxis();
-        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setGranularity(900000f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
         xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
@@ -192,7 +192,7 @@ public class GraphActivity extends AppCompatActivity {
         rightYAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
         // Temp transparent on load
         rightYAxis.setTextColor(Color.alpha(0));
-        rightAxisUnit.setEnabled(false);
+        rightAxisUnit.setTextColor(Color.alpha(0));
 
         // Weight
         for (LineDataSet list : lineDataSetWeight) {
@@ -391,7 +391,7 @@ public class GraphActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             renderGraph();
-            System.out.println("Rendered graph from " + from + " to " + to + ".");
+            System.out.println("Rendered graph from " + graphViewModel.getFromDate() + " to " + to + ".");
         }
     }
 
@@ -406,10 +406,10 @@ public class GraphActivity extends AppCompatActivity {
             // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
             if (lineDataSetWeight.get(0).isVisible()) {
                 leftYAxis.setTextColor(Color.BLACK);
-                leftAxisUnit.setEnabled(true);
+                leftAxisUnit.setTextColor(Color.BLACK);
             } else {
                 leftYAxis.setTextColor(Color.alpha(0));
-                leftAxisUnit.setEnabled(false);
+                leftAxisUnit.setTextColor(Color.alpha(0));
             }
         });
         tempSwitch.setOnClickListener(v -> {
@@ -417,10 +417,10 @@ public class GraphActivity extends AppCompatActivity {
             // Toggle y value visibility
             if (lineDataSetTemperature.get(0).isVisible()) {
                 rightYAxis.setTextColor(Color.BLACK);
-                rightAxisUnit.setEnabled(true);
+                rightAxisUnit.setTextColor(Color.BLACK);
             } else {
                 rightYAxis.setTextColor(Color.alpha(0));
-                rightAxisUnit.setEnabled(false);
+                rightAxisUnit.setTextColor(Color.alpha(0));
             }
         });
         lightSwitch.setOnClickListener(v -> {
@@ -461,6 +461,8 @@ public class GraphActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 setSwitchListeners();
+                TextView name = findViewById(R.id.hiveNameTextView);
+                name.setText(hiveName);
                 renderGraph();
                 // Start download of whole hive in bg.
                 if (!graphViewModel.isBackgroundDownloadInProgress()) {

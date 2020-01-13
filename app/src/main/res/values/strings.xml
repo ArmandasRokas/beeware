@@ -49,6 +49,8 @@
     <string name="search">Search</string>
     <string name="inactive">Inactive</string>
     <string name="subs">Subscriptions</string>
+
+    <!-- Graph xml -->
     <string name="noChartDataText">No data available.</string>
     <string name="temperature">Temperature</string>
     <string name="luminocity">Luminocity</string>
