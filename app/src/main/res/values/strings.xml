@@ -50,5 +50,12 @@
     <string name="inactive">Inactive</string>
     <string name="subs">Subscriptions</string>
     <string name="noChartDataText">No data available.</string>
+    <string name="temperature">Temperature</string>
+    <string name="luminocity">Luminocity</string>
+    <string name="humidity">Humidity</string>
+    <string name="weight">Weight</string>
+    <string name="from_date">From date</string>
+    <string name="period_label">Period back</string>
+    <string name="select_data_period_button">Select data period</string>
 
 </resources>

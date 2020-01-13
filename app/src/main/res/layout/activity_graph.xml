@@ -147,7 +147,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="0dp"
-            android:text="Weight"
+            android:text="@string/weight"
             android:textSize="12sp" />
 
         <View
@@ -164,7 +164,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="0dp"
-            android:text="Temperature"
+            android:text="@string/temperature"
             android:textSize="12sp" />
 
         <View
@@ -181,7 +181,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="0dp"
-            android:text="Luminocity"
+            android:text="@string/luminocity"
             android:textSize="12sp" />
 
         <View
@@ -198,7 +198,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="0dp"
-            android:text="Humidity"
+            android:text="@string/humidity"
             android:textSize="12sp" />
 
     </LinearLayout>
