@@ -1,13 +1,21 @@
 package dk.dtu.group22.beeware.business.implementation;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 
+import androidx.core.app.NotificationCompat;
 import com.yariksoffice.lingver.Lingver;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
@@ -16,6 +24,9 @@ import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
+import dk.dtu.group22.beeware.presentation.Overview;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Logic {
    // private WebScraper hiveHivetool;
@@ -24,6 +35,7 @@ public class Logic {
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
     private final static Logic logic = new Logic();
+    private NotificationManager notificationManager;
 
 
     public static Logic getSingleton() {
@@ -41,6 +53,10 @@ public class Logic {
     public void setContext(Context context) {
         this.ctx = context;
         this.subscriptionManager = new SubscriptionManager(context);
+    }
+
+    public void setNotificationManager(NotificationManager notificationManager){
+        this.notificationManager = notificationManager;
     }
 
     public void subscribeHive(int id) {
@@ -99,9 +115,6 @@ public class Logic {
             throw new HivesToSubscribeNoFound(e.getMessage());
         }
     }
-
-
-
 
 
     /**
@@ -365,5 +378,48 @@ public class Logic {
     interface StatusCalculator {
         Hive.StatusIntrospection calculate(Hive hive);
     }
+
+    /**
+     * Method to generate a notification for the user.
+     *
+     * @param details The info the notification should provide.
+     */
+    public void createNotification(String details){
+
+        createNotificationChannel();
+
+        NotificationCompat.Builder notificationBuilder;
+
+        notificationBuilder = new NotificationCompat.Builder(ctx, "Beeware");
+        notificationBuilder.setSmallIcon(R.drawable.beehive);
+        notificationBuilder.setContentTitle("BEEWARE");
+        notificationBuilder.setContentText(details);
+        notificationBuilder.setAutoCancel(true);
+
+        Intent intent = new Intent(ctx, Overview.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(pendingIntent);
+
+        notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    /**
+     * Method to set up a channel for the notifications.
+     */
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String name = "Beeware";
+            String description = "Notifications from Beeware";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("Beeware", name, importance);
+            channel.setDescription(description);
+
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,8 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 public class Overview extends AppCompatActivity implements View.OnClickListener {
 
     GridView gridView;
@@ -50,6 +53,9 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
         ctx = this;
         logic = Logic.getSingleton();
         logic.setContext(ctx);
+        //TODO Insert in App-class.
+        logic.setNotificationManager((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+
         // Boilerplate code to set Context to the CachingManager
         cachingManager = CachingManager.getSingleton();
         cachingManager.setCtx(ctx);

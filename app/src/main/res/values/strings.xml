@@ -12,6 +12,8 @@
     <string name="hive">Hive</string>
     <string name="leftAxisLegend">Kg</string>
     <string name="rightAxisLegend">C°</string>
+    <string name="channel_name">Channel</string>
+    <string name="channel_description">Description</string>
 
     <!-- Period prompts on graphs -->
     <string name="period_prompt">Choose a time period!</string>
