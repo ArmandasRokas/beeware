@@ -81,6 +81,65 @@ public class GraphViewModel extends ViewModel {
         return t.getTime() >= fromDate.getTime() && t.getTime() <= toDate.getTime();
     }
 
+    /**
+     * Calculates period length. This can be used to make an
+     * average of n data points, or make a decision to keep only data from midnight.
+     */
+    public boolean useMidnightData() {
+        double days = (toDate.getTime() - fromDate.getTime()) / 86400000; // Millis in a day
+        System.out.println("Days requested: " + days);
+        if (days > 32) {
+            System.out.println("Using midnight data. Days requested: " + days);
+            // Midnight data
+            return true;
+        }
+        return false;
+    }
+
+    public List<Entry> extractMidnightWeight() {
+        boolean foundMidnight = false;
+        List<Entry> res = new ArrayList<>();
+        leftAxisMin = 99;
+        leftAxisMax = -99;
+        Calendar cal = Calendar.getInstance();
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            cal.setTimeInMillis((long) time);
+            if (isInInterval(measure.getTimestamp()) && cal.get(Calendar.HOUR_OF_DAY) == 0 && !foundMidnight) {
+                // If this data is in requested interval
+                float weight = (float) measure.getWeight();
+                res.add(new Entry(time, weight));
+                checkMaxMin(weight, 'l');
+                foundMidnight = true;
+            } else if (foundMidnight && cal.get(Calendar.HOUR_OF_DAY) != 0) {
+                foundMidnight = false;
+            }
+        }
+        return res;
+    }
+
+    public List<Entry> extractMiddayTemperature() {
+        List<Entry> res = new ArrayList<>();
+        rightAxisMin = 99;
+        rightAxisMax = -99;
+        boolean foundMidday = false;
+        Calendar cal = Calendar.getInstance();
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            cal.setTimeInMillis((long) time);
+            if (isInInterval(measure.getTimestamp()) && cal.get(Calendar.HOUR_OF_DAY) == 12 && !foundMidday) {
+                // If this data is in requested interval
+                float temp = (float) measure.getTempIn();
+                res.add(new Entry(time, temp));
+                checkMaxMin(temp, 'r');
+                foundMidday = true;
+            } else if (foundMidday && cal.get(Calendar.HOUR_OF_DAY) != 12) {
+                foundMidday = false;
+            }
+        }
+        return res;
+    }
+
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
         leftAxisMin = 99;

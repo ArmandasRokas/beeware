@@ -68,7 +68,8 @@ public class WebScraper {
                     Date date = dateFormat.parse(raw_data[timestampIndex]);
                     timestamp = new Timestamp(date.getTime());
                 } catch (ParseException pe) {
-                    pe.printStackTrace();
+                    //pe.printStackTrace();
+                    System.out.println("Parse Exception.");
                     // If timestamp is nonsense, go to next data
                     continue;
                 }
@@ -108,11 +109,14 @@ public class WebScraper {
                     numOfDays + "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
                     .timeout(100 * 1000).maxBodySize(4000000).get();
         } catch (UnknownHostException u) {
-            u.printStackTrace();
+            //u.printStackTrace();
+            System.out.println("Unknown host.");
         } catch (HttpStatusException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("HTTP status exception.");
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("IO Exception");
         }
         Elements nameElement = doc.getElementsByTag("title");
         String name = nameElement.get(0).wholeText().split(": ")[1];

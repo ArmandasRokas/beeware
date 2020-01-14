@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -120,13 +121,20 @@ public class GraphActivity extends AppCompatActivity {
             lineDataSetTemperature = new ArrayList<>();
             lineDataSetHumidity = new ArrayList<>();
             lineDataSetSunlight = new ArrayList<>();
-            // Weight has to be split when delta is greater than thirty minutes
-            long thirtyMinInMillis = 30 * 60 * 1000;
-            List<List<Entry>> tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), thirtyMinInMillis);
-
-            // We do not care about the delta for the rest of the data
+            long acceptedDelta;
+            List<List<Entry>> tmpWeight;
             List<List<Entry>> tmpTemp = new ArrayList<>();
-            tmpTemp.add(graphViewModel.extractTemperature());
+            // Weight has to be split when delta is greater than thirty minutes
+            if (!graphViewModel.useMidnightData()) {
+                acceptedDelta = 30 * 60 * 1000;
+                tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
+                tmpTemp.add(graphViewModel.extractTemperature());
+            } else {
+                acceptedDelta = 3 * 24 * 60 * 60 * 1000;
+                tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractMidnightWeight(), acceptedDelta);
+                tmpTemp.add(graphViewModel.extractMiddayTemperature());
+            }
+
             List<List<Entry>> tmpLight = new ArrayList<>();
             tmpLight.add(graphViewModel.extractIlluminance());
             List<List<Entry>> tmpHumid = new ArrayList<>();
@@ -190,9 +198,9 @@ public class GraphActivity extends AppCompatActivity {
         leftYAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
         rightYAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
         rightYAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
-        // Temp transparent on load
-        rightYAxis.setTextColor(Color.alpha(0));
-        rightAxisUnit.setTextColor(Color.alpha(0));
+
+        // Temp transparent on load if not visible
+        showYAxisDetails(graphViewModel.isTemperatureLineVisible(), 'r');
 
         // Weight
         for (LineDataSet list : lineDataSetWeight) {
@@ -205,7 +213,12 @@ public class GraphActivity extends AppCompatActivity {
             list.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
             // Removing values and circle points from weight and temp graphs in landscape
             list.setDrawValues(false);
-            list.setDrawCircles(false);
+            // Show point circles if period long
+            if (graphViewModel.useMidnightData()) {
+                list.setDrawCircles(true);
+            } else {
+                list.setDrawCircles(false);
+            }
         }
 
         // Temperature
@@ -312,12 +325,36 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    // Show and hide y axis info like values, units and grid lines
+    private void showYAxisDetails(boolean show, char yAxis) {
+        if (show && yAxis == 'r') {
+            rightYAxis.setTextColor(Color.BLACK);
+            rightAxisUnit.setTextColor(Color.BLACK);
+            rightYAxis.setGridColor(R.color.BEE_graphTemperature);
+            rightYAxis.setGridDashedLine(new DashPathEffect(new float[]{8, 4}, 2));
+        } else if (yAxis == 'r') {
+            rightYAxis.setTextColor(Color.alpha(0));
+            rightAxisUnit.setTextColor(Color.alpha(0));
+            rightYAxis.setGridColor(Color.alpha(0));
+        } else if (show && yAxis == 'l') {
+            leftYAxis.setTextColor(Color.BLACK);
+            leftAxisUnit.setTextColor(Color.BLACK);
+            leftYAxis.setGridColor(Color.GRAY);
+        } else if (yAxis == 'l') {
+            leftYAxis.setTextColor(Color.alpha(0));
+            leftAxisUnit.setTextColor(Color.alpha(0));
+            leftYAxis.setGridColor(Color.alpha(0));
+        }
+    }
+
     // Graph switch listeners use these methods
     public void toggleWeight(boolean shown) {
         for (LineDataSet list : lineDataSetWeight) {
             list.setVisible(!shown);
         }
         graphViewModel.setWeightLineVisible(!shown);
+        // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
+        showYAxisDetails(graphViewModel.isWeightLineVisible(), 'l');
         lineChart.invalidate();
     }
 
@@ -325,8 +362,9 @@ public class GraphActivity extends AppCompatActivity {
         for (LineDataSet list : lineDataSetTemperature) {
             list.setVisible(!shown);
         }
-
         graphViewModel.setTemperatureLineVisible(!shown);
+        // Toggle y value visibility
+        showYAxisDetails(graphViewModel.isTemperatureLineVisible(), 'r');
         lineChart.invalidate();
     }
 
@@ -403,25 +441,9 @@ public class GraphActivity extends AppCompatActivity {
         // Set listener for small switches after download of Hive.
         weightSwitch.setOnClickListener(v -> {
             toggleWeight(lineDataSetWeight.get(0).isVisible());
-            // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
-            if (lineDataSetWeight.get(0).isVisible()) {
-                leftYAxis.setTextColor(Color.BLACK);
-                leftAxisUnit.setTextColor(Color.BLACK);
-            } else {
-                leftYAxis.setTextColor(Color.alpha(0));
-                leftAxisUnit.setTextColor(Color.alpha(0));
-            }
         });
         tempSwitch.setOnClickListener(v -> {
             toggleTemperature(lineDataSetTemperature.get(0).isVisible());
-            // Toggle y value visibility
-            if (lineDataSetTemperature.get(0).isVisible()) {
-                rightYAxis.setTextColor(Color.BLACK);
-                rightAxisUnit.setTextColor(Color.BLACK);
-            } else {
-                rightYAxis.setTextColor(Color.alpha(0));
-                rightAxisUnit.setTextColor(Color.alpha(0));
-            }
         });
         lightSwitch.setOnClickListener(v -> {
             toggleSunlight(lineDataSetSunlight.get(0).isVisible());
@@ -494,5 +516,4 @@ public class GraphActivity extends AppCompatActivity {
         return graphViewModel;
     }
 }
-
 
