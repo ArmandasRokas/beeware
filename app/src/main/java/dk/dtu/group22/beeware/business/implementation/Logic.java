@@ -29,7 +29,6 @@ import dk.dtu.group22.beeware.presentation.Overview;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Logic {
-   // private WebScraper hiveHivetool;
     private CachingManager cachingManager;
     private ISubscription subscriptionHivetool;
     private ISubscriptionManager subscriptionManager;
@@ -43,7 +42,6 @@ public class Logic {
     }
 
     public Logic() {
-       // this.hiveHivetool = new WebScraper();
         this.cachingManager = CachingManager.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
 
@@ -97,7 +95,6 @@ public class Logic {
 
         Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
         setCurrValues(hive);
-        calculateHiveStatus(hive);
 
         return hive;
     }
@@ -122,9 +119,20 @@ public class Logic {
      * It sets the status of each variable to the worst it could find according to the different use-cases.
      * One lambda is one use-case, which affect the status in some way.
      *
-     * @param hive The hive to calculate statuses for
+     *
+     * @param hive The hive to calculate statuses for.
+     *             Pre-condition: Hive must contain newest data
+     *             Post-condition: Hive will now have a StatusIntrospection object,
+     *             denoting its statuses, it will also calculate
+     *             delta value of weight between the previous two midnights.
+     *             The hive will have its status set, for each variable,
+     *             set to the "most dangerous" level.
+     *             That means that if it has two statuses for Weight, but one is of  level Ok,
+     *             and another is of level Danger, then it will set the weight
+     *             status of the hive to Danger
      */
-    private void calculateHiveStatus(Hive hive) {
+    public void calculateHiveStatus(Hive hive) {
+        hive.resetStatuses();
         // Calculate various enum statuses
         List<StatusCalculator> calculators = new ArrayList<>();
 
@@ -156,28 +164,27 @@ public class Logic {
         calculators.add(calculateDelta);
 
 
-        // TODO: Make a manager for preferences, so that the configured value is not hardcoded
-
         // Use case: User has set a critical threshold for weight, which the hive must not fall below
         StatusCalculator weightFallsBelowConfiguredValue = (Hive inputHive) -> {
-            double configuredWeightThreshold = 15.0;
-            //System.out.println("Hive:" + inputHive.getName() + " Curr weight:" + inputHive.getCurrWeight());
-            if (inputHive.getCurrWeight() < configuredWeightThreshold) {
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            double configuredWeightThreshold = inputHive.getWeightIndicator();
+            if (inputHive.getCurrWeight() > configuredWeightThreshold + 5) {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            } else {
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
-            return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+
         };
         calculators.add(weightFallsBelowConfiguredValue);
 
 
         // Use case: User has set a critical threshold for temp, which the hive must not fall below
         StatusCalculator tempFallsBelowConfiguredValue = (Hive inputHive) -> {
-            double configuredTempThreshold = 30.0;
-            if (inputHive.getCurrTemp() < configuredTempThreshold) {
-                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING,
-                        Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            double configuredTempThreshold = inputHive.getTempIndicator();
+            if (inputHive.getCurrTemp() > configuredTempThreshold + 10) {
+                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            } else {
+                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
-            return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
         };
         calculators.add(tempFallsBelowConfiguredValue);
 
@@ -259,9 +266,6 @@ public class Logic {
         List<Hive.StatusIntrospection> statusReasonings = new ArrayList<>();
         for (StatusCalculator calculator : calculators) {
             Hive.StatusIntrospection tmp = calculator.calculate(hive);
-            //if (tmp == null) {
-            //    continue;
-            //}
             statusReasonings.add(tmp);
 
             if (tmp.getVariable() == Hive.Variables.HUMIDITY) {

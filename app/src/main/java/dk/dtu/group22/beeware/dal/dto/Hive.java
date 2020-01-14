@@ -15,12 +15,16 @@ public class Hive implements Serializable, Comparable<Hive> {
     private double currTemp;
     private double currIlluminance;
     private double currHum;
-    private boolean isFavorite = false;
     private Status weightStatus = Status.UNDEFINED;
     private Status tempStatus = Status.UNDEFINED;
     private Status humidStatus = Status.UNDEFINED;
     private Status illumStatus = Status.UNDEFINED;
     private List<StatusIntrospection> statusIntrospection;
+    // Critical indicator values
+    private int weightIndicator = 15;
+    private int tempIndicator = 30;
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -49,10 +53,17 @@ public class Hive implements Serializable, Comparable<Hive> {
                 ", illumStatus=" + illumStatus +
                 '}';
     }
+    public String statusToString(){
+               return ", weightStatus=" + weightStatus + "\n"+
+                ", tempStatus=" + tempStatus + "\n"+
+                ", humidStatus=" + humidStatus +"\n"+
+                ", illumStatus=" + illumStatus;
+    }
 
     public String getName() {
         return name;
     }
+
     //Gets the time, at which the hive was last updated
     public String getLastUpdated(){
         long lastUpdatedTime = measurements.get(measurements.size()-1).getTimestamp().getTime();
@@ -68,15 +79,31 @@ public class Hive implements Serializable, Comparable<Hive> {
         return dateFormatted;
     }
 
+    public int getWeightIndicator() {
+        return weightIndicator;
+    }
+
+    public void setWeightIndicator(int weightIndicator) {
+        this.weightIndicator = weightIndicator;
+    }
+
+    public void resetStatuses(){
+        this.illumStatus = Status.UNDEFINED;
+        this.humidStatus = Status.UNDEFINED;
+        this.tempStatus = Status.UNDEFINED;
+        this.weightStatus = Status.UNDEFINED;
+    }
+
+    public double getTempIndicator() {
+        return tempIndicator;
+    }
+
+    public void setTempIndicator(int tempIndicator) {
+        this.tempIndicator = tempIndicator;
+    }
+
     public double getCurrWeight() {
         return currWeight;
-    }
-
-    public boolean getIsFavorite(){
-        return isFavorite;
-    }
-
-    public void setIsFavorite(boolean isFavorite){
     }
 
     public void setCurrWeight(double currWeight) {
@@ -169,15 +196,7 @@ public class Hive implements Serializable, Comparable<Hive> {
 
     @Override
     public int compareTo(Hive o) {
-        if(this.isFavorite == o.isFavorite){
-            return this.name.compareTo(o.name);
-        } else{
-            if(this.isFavorite && !o.isFavorite){
-                return -1;
-            } else {
-                return 1;
-            }
-        }
+        return this.name.compareTo(o.name);
     }
 
     public enum Status {

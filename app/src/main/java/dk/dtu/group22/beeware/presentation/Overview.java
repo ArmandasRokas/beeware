@@ -66,8 +66,11 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
         subHiveButton = findViewById(R.id.subHiveBtn);
         subHiveButton.setOnClickListener(this);
 
+
+
     }
 
+    // Shouldnt do-in-background check if it is cancelled?
     void setupSubscribedHives(boolean run) {
         AsyncTask asyncTask = new AsyncTask() {
             List<Hive> hives = new ArrayList<>();
@@ -100,6 +103,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             @Override
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
+
                 if(cachingManager.isConnectionFailed()){
                     Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -119,6 +123,11 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                     gridView.setAdapter(overviewAdapter);
                     gridView.setVisibility(View.VISIBLE);
                 }
+
+                for(Hive hive: hives){
+                    //Updates the icons of the hives, according to each hives' Configuration values.
+                    logic.calculateHiveStatus(hive);
+                }
             }
         };
 
@@ -135,6 +144,7 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     {  // After a pause OR at startup
         super.onResume();
         setupSubscribedHives(true);
+
     }
 
     @Override

@@ -22,7 +22,7 @@ import dk.dtu.group22.beeware.R;
 public class GraphPeriodFragment extends DialogFragment {
     private Spinner spinner;
     private DatePicker datePicker;
-    private Button viewPeriod;
+    private Button viewPeriod, settingsButton;
     private int option = 0;
     private Timestamp fromDate;
     private Timestamp toDate;
@@ -51,8 +51,18 @@ public class GraphPeriodFragment extends DialogFragment {
         spinner = view.findViewById(R.id.spinnerTimeDelta);
         datePicker = view.findViewById(R.id.datePicker);
         viewPeriod = view.findViewById(R.id.btn_view_period);
+        settingsButton = view.findViewById(R.id.settingsButton);
         Calendar cal = Calendar.getInstance();
         activity = (GraphActivity) getActivity();
+
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ConfigurationFragment().show(getFragmentManager(), "configurationDialog");
+            }
+        });
+
 
         // Setup listeners
         viewPeriod.setOnClickListener(v -> {
@@ -116,4 +126,6 @@ public class GraphPeriodFragment extends DialogFragment {
         datePicker.setMaxDate(today.getTime());
         datePicker.setMinDate(lastYear.getTime());
     }
+
+
 }

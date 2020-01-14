@@ -489,6 +489,10 @@ public class GraphActivity extends AppCompatActivity {
             hideProgressBar();
         }
     }
+
+    public GraphViewModel getGraphViewModel(){
+        return graphViewModel;
+    }
 }
 
 
