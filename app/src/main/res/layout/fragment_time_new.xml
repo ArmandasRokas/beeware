@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        app:layout_constraintTop_toBottomOf="@+id/newTime_settings"
         app:layout_constraintVertical_bias="0.0">
 
         <Spinner
@@ -88,28 +88,28 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/newTime_viewperiod_btn"
+    <ImageView
+        android:id="@+id/newTime_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="25dp"
+        app:layout_constraintEnd_toEndOf="@+id/newTime_to_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings" />
+
+    <Button
+        android:id="@+id/newTime_viewperiod_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="#00FFFFFF"
+        android:paddingStart="15dp"
         android:text="View Period"
-        android:textColor="#ff8624"
-        android:textSize="16sp"
+        android:textColor="@color/app_theme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/newTime_to_text"
         app:layout_constraintTop_toBottomOf="@+id/newTime_to_text"
         app:layout_constraintVertical_bias="1.0" />
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/newTime_to_text"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

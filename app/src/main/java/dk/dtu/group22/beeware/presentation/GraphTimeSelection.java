@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,7 +26,9 @@ import dk.dtu.group22.beeware.R;
 public class GraphTimeSelection extends DialogFragment implements View.OnClickListener {
 
     private Fragment calendarFragment;
-    private TextView fromDate, toDate, viewPeriod;
+    private TextView fromDate, toDate;
+    private Button viewPeriod;
+    private ImageView settingsButton;
     private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
@@ -58,9 +62,11 @@ public class GraphTimeSelection extends DialogFragment implements View.OnClickLi
         toDate = view.findViewById(R.id.newTime_to_text);
         spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
+        settingsButton = view.findViewById(R.id.newTime_settings);
 
         fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
+        settingsButton.setOnClickListener(this);
 
         // Set starting from and to date or just to date
         long givenFromDate = this.getArguments().getLong("selected1");
@@ -151,6 +157,8 @@ public class GraphTimeSelection extends DialogFragment implements View.OnClickLi
             ((GraphActivity) getActivity()).showWithNewTimeDelta(new Timestamp(selectedDate),
                     new Timestamp(selectedDate + spinnerSelection));
             this.dismiss();
+        } else if (v == settingsButton) {
+            new ConfigurationFragment().show(getFragmentManager(), "configurationDialog");
         }
     }
 

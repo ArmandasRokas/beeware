@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
 
         <!-- Color for the status bar -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>

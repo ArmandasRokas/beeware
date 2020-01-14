@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -212,7 +213,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             underlineThree.setVisibility(View.INVISIBLE);
             recyclerView.setAdapter(new SubscribeAdapter(inactive));
 
-            new AlertDialog.Builder(this)
+            AlertDialog dialog = new AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_warning)
                     .setTitle(getString(R.string.ProblematicHivesTitle))
                     .setMessage(getString(R.string.ProblematicHivesBody))
@@ -225,6 +226,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                     })
                     .setPositiveButton(getString(R.string.Continue), null)
                     .show();
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#ff8624"));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff8624"));
 
         } else if(view == subscriptionsTextbutton) {
             // If the user wants to see the hives the user has subscribed to

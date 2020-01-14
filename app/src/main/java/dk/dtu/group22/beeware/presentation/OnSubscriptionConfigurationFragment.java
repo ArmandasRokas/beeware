@@ -1,15 +1,12 @@
 package dk.dtu.group22.beeware.presentation;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +41,7 @@ public class OnSubscriptionConfigurationFragment extends DialogFragment implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_on_subscription_configuration, container, false);
+        return inflater.inflate(R.layout.fragment_onsub_configuration, container, false);
     }
 
     @Override
@@ -62,7 +59,7 @@ public class OnSubscriptionConfigurationFragment extends DialogFragment implemen
         weightIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getWeightIndicator()));
         tempIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getTempIndicator()));
 
-        doneButton = view.findViewById(R.id.doneButton);
+        doneButton = view.findViewById(R.id.onsub_config_save);
         doneButton.setOnClickListener(this);
 
         hiveNameTV.setText(logic.getHive(getArguments().getInt("ID")).getName());

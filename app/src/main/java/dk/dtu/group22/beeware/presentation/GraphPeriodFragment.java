@@ -55,7 +55,7 @@ public class GraphPeriodFragment extends DialogFragment {
         Calendar cal = Calendar.getInstance();
         activity = (GraphActivity) getActivity();
 
-
+        /*
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +71,7 @@ public class GraphPeriodFragment extends DialogFragment {
                 new ConfigurationFragment().show(getFragmentManager(), "configurationDialog");
             }
         });
+        */
 
 
         // Setup listeners

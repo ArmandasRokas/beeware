@@ -12,18 +12,20 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 
-public class ConfigurationFragment extends DialogFragment {
+public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
 
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private GraphViewModel listener;
     private Logic logic = Logic.getSingleton();
+    private Button saveButton;
 
     public ConfigurationFragment() {
         // Required empty public constructor
@@ -47,6 +49,9 @@ public class ConfigurationFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view,savedInstanceState);
+
+        saveButton = view.findViewById(R.id.config_save);
+        saveButton.setOnClickListener(this);
 
         hiveNameTV = view.findViewById(R.id.hiveNameTV);
 
@@ -85,5 +90,10 @@ public class ConfigurationFragment extends DialogFragment {
         if(listener.getHive().getHasBeenConfigured() == false){
             listener.getHive().setHasBeenConfigured(true);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        this.dismiss();
     }
 }
