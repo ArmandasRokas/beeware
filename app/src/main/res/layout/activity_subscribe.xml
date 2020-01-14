@@ -24,7 +24,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
             android:background="@drawable/field_borderbox"
-            android:drawableLeft="@drawable/ic_search"
+            android:drawableStart="@drawable/ic_search"
             android:ems="10"
             android:hint="@string/search"
             android:inputType="text"

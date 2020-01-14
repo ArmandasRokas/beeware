@@ -31,6 +31,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +44,8 @@ import static java.util.Arrays.asList;
 
 public class GraphActivity extends AppCompatActivity {
 
+    private long fromDate = 0L, toDate = 0L;
+    private int spinnerItem;
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ConstraintLayout progressBarLayout;
@@ -87,15 +90,37 @@ public class GraphActivity extends AppCompatActivity {
 
         graphViewModel.setZoomEnabled(true);
 
-        // Menu button
-        graphMenuButton.setOnClickListener(v ->
-                new GraphPeriodFragment().show(getSupportFragmentManager(), "timeDialog"
-                ));
+        // Button for changing period
+
+        graphMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GraphTimeSelection gts = new GraphTimeSelection();
+                Bundle bundle = new Bundle();
+                if (fromDate != 0L && toDate != 0L) {
+                    bundle.putLong("selected1", fromDate);
+                    bundle.putLong("selected2", toDate);
+                    bundle.putInt("spinnerItem", spinnerItem);
+                } else {
+                    bundle.putLong("selected1", 0L);
+                    bundle.putLong("selected2", 0L);
+                    bundle.putInt("spinnerItem", 0);
+                }
+                gts.setArguments(bundle);
+                gts.show(getSupportFragmentManager(), "timeDialog");
+            }
+        });
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
         downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
         downloadAsyncTask.execute(hiveId);
+    }
+
+    public void setPeriod(long fromDate, long toDate, int spinnerItem) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.spinnerItem = spinnerItem;
     }
 
     // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
