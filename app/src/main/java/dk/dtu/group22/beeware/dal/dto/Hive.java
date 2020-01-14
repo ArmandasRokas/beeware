@@ -23,6 +23,7 @@ public class Hive implements Serializable, Comparable<Hive> {
     // Critical indicator values
     private int weightIndicator = 15;
     private int tempIndicator = 30;
+    private boolean hasBeenConfigured = false;
 
 
 
@@ -79,6 +80,14 @@ public class Hive implements Serializable, Comparable<Hive> {
         return dateFormatted;
     }
 
+    public boolean getHasBeenConfigured() {
+        return hasBeenConfigured;
+    }
+
+    public void setHasBeenConfigured(boolean hasBeenConfigured) {
+        this.hasBeenConfigured = hasBeenConfigured;
+    }
+
     public int getWeightIndicator() {
         return weightIndicator;
     }
@@ -94,7 +103,7 @@ public class Hive implements Serializable, Comparable<Hive> {
         this.weightStatus = Status.UNDEFINED;
     }
 
-    public double getTempIndicator() {
+    public int getTempIndicator() {
         return tempIndicator;
     }
 

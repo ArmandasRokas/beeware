@@ -3,7 +3,6 @@ package dk.dtu.group22.beeware.presentation;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,14 +15,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.yariksoffice.lingver.Lingver;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
@@ -42,6 +36,8 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
     private ProgressBar progressBar;
     private Context ctx;
     private CachingManager cachingManager;
+    private Overview overview;
+    private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +81,11 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                 try {
                     hives = logic.getSubscribedHives(2);
                     Collections.sort(hives);
+                    for(Integer i: logic.getSubscriptionIDs()){
 
+                        subscribedHiveIDs.add(i);
+
+                    }
                     return null;
                 }
                 catch (Exception e) {
@@ -128,6 +128,16 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
+
+                for(Hive hive: hives){
+                    if(!hive.getHasBeenConfigured() ){
+                        OnSubscriptionConfigurationFragment oscf = new OnSubscriptionConfigurationFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("ID", hive.getId());
+                        oscf.setArguments(bundle);
+                        oscf.show(getSupportFragmentManager(), "configurationDialog");
+                    }
+                }
             }
         };
 
@@ -159,5 +169,9 @@ public class Overview extends AppCompatActivity implements View.OnClickListener 
             Intent ID = new Intent(this, SubscribeRecycler.class);
             startActivity(ID);
         }
+    }
+
+    public Overview getOverview() {
+        return overview;
     }
 }

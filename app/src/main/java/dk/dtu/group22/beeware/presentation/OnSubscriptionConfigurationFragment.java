@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.presentation;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,20 +13,22 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 
-public class ConfigurationFragment extends DialogFragment {
+public class OnSubscriptionConfigurationFragment extends DialogFragment implements View.OnClickListener {
 
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV;
     private EditText weightIndicatorNum, tempIndicatorNum;
-    private GraphViewModel listener;
+    private Button doneButton;
     private Logic logic = Logic.getSingleton();
+    private OverviewAdapter listener;
 
-    public ConfigurationFragment() {
+    public OnSubscriptionConfigurationFragment() {
         // Required empty public constructor
     }
 
@@ -41,7 +44,7 @@ public class ConfigurationFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_configuration, container, false);
+        return inflater.inflate(R.layout.fragment_on_subscription_configuration, container, false);
     }
 
     @Override
@@ -56,34 +59,38 @@ public class ConfigurationFragment extends DialogFragment {
         weightIndicatorNum = view.findViewById(R.id.weightIndicatorNum);
         tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
 
-        //weightIndicatorNum.setInputType(InputType.TYPE_NULL);
-        //tempIndicatorNum.setInputType(InputType.TYPE);
+        weightIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getWeightIndicator()));
+        tempIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getTempIndicator()));
 
-        listener = ((GraphActivity) getActivity()).getGraphViewModel();
+        doneButton = view.findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(this);
 
-        hiveNameTV.setText(listener.getHive().getName());
+        hiveNameTV.setText(logic.getHive(getArguments().getInt("ID")).getName());
 
         weightIndicatorTV.setText("Weight (kg)");
         tempIndicatorTV.setText("Temperature (*C)");
 
 
-
-        weightIndicatorNum.setText(Integer.toString(listener.getHive().getWeightIndicator()));
-        tempIndicatorNum.setText(Integer.toString(listener.getHive().getTempIndicator()));
     }
+
+
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        listener.getHive().setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
-        listener.getHive().setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+        logic.getHive(getArguments().getInt("ID")).setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
+        logic.getHive(getArguments().getInt("ID")).setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+        logic.getHive(getArguments().getInt("ID")).setHasBeenConfigured(true);
 
-        System.out.println( "weight indicator : " + listener.getHive().getWeightIndicator() );
-        System.out.println( "temp indicator : " + listener.getHive().getTempIndicator() );
+        logic.calculateHiveStatus(logic.getHive(getArguments().getInt("ID")));
 
-        if(listener.getHive().getHasBeenConfigured() == false){
-            listener.getHive().setHasBeenConfigured(true);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == doneButton){
+            this.dismiss();
         }
     }
 }

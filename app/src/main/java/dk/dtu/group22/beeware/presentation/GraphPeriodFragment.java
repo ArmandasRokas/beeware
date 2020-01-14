@@ -64,6 +64,15 @@ public class GraphPeriodFragment extends DialogFragment {
         });
 
 
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ConfigurationFragment().show(getFragmentManager(), "configurationDialog");
+            }
+        });
+
+
         // Setup listeners
         viewPeriod.setOnClickListener(v -> {
             cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());

@@ -99,6 +99,11 @@ public class Logic {
         return hive;
     }
 
+    public Hive getHive(int id){
+        Hive hive = cachingManager.getHive(id);
+        return hive;
+    }
+
 
     public List<NameIdPair> getNamesAndIDs() {
         try {

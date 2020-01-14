@@ -80,6 +80,16 @@ public class CachingManager {
         return hive;
     }
 
+    public Hive getHive(int id){
+
+
+        for(Hive hive: cachedHives ){
+            if(id == hive.getId()){
+                return hive;
+            }
+        }
+        return null;
+    }
     private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
         Timestamp sinceTimeDelta= new Timestamp(sinceTime.getTime() + 300000*2);
         Timestamp untilTimeDelta= new Timestamp(untilTime.getTime() - 300000*2);
