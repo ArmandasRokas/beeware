@@ -322,7 +322,7 @@ public class GraphActivity extends AppCompatActivity {
         // Set description text for LineChart
         Description description = new Description();
         description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[4]);
-        description.setText(hiveName);
+        description.setText("");
 
         // Fill chart with data
         lineChart.setData(lineData);
