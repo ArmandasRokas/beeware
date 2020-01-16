@@ -17,14 +17,14 @@ import android.widget.TextView;
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 
-public class OnSubscriptionConfigurationFragment extends DialogFragment implements View.OnClickListener {
+public class OnSubConfigurationFragment extends DialogFragment implements View.OnClickListener {
 
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, doneButton;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private OverviewAdapter listener;
 
-    public OnSubscriptionConfigurationFragment() {
+    public OnSubConfigurationFragment() {
         // Required empty public constructor
     }
 

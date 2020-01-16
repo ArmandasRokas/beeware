@@ -13,8 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +22,6 @@ import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Overview extends CustomActivity implements View.OnClickListener {
 
@@ -132,7 +128,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
 
                 for(Hive hive: hives){
                     if(!hive.getHasBeenConfigured() ){
-                        OnSubscriptionConfigurationFragment oscf = new OnSubscriptionConfigurationFragment();
+                        OnSubConfigurationFragment oscf = new OnSubConfigurationFragment();
                         Bundle bundle = new Bundle();
                         bundle.putInt("ID", hive.getId());
                         oscf.setArguments(bundle);
