@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "665425451335",
+    "firebase_url": "https://beeware-bbb55.firebaseio.com",
+    "project_id": "beeware-bbb55",
+    "storage_bucket": "beeware-bbb55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665425451335:android:b63310dd27f50d343ad462",
+        "android_client_info": {
+          "package_name": "dk.dtu.group22.beeware"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "665425451335-ob853bc1t0aejsliq51k3nnqn9at4trm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvdboJwQweIpUpw9nGlfnuIAnJu2RimyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "665425451335-ob853bc1t0aejsliq51k3nnqn9at4trm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

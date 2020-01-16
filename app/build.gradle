@@ -1,4 +1,9 @@
 apply plugin: 'com.android.application'
+// Firebase
+apply plugin: 'com.google.gms.google-services'
+// Firebase crashlytics
+apply plugin: 'io.fabric'
+
 
 android {
     compileSdkVersion 29
@@ -41,6 +46,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // Multi-language (so far: english, danish) support at runtime
     implementation "com.github.YarikSOffice:lingver:1.2.0"
+    // Google firebase analytics
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    // Firebase - Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
 }
 
 repositories {
