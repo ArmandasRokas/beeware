@@ -37,7 +37,7 @@ public class SubscriptionHivetool implements ISubscription {
         Elements table = doc.select("table");
         Elements rows = table.select("tr");
         //Gets locations from HTML doc
-        for (int i = 3; i < rows.size(); i++) { //first row is the column names, so it is skipped
+        for (int i = 4; i < rows.size(); i++) { //first row is the column names, so it is skipped
             Element row = rows.get(i);
             Elements cols = row.select("td");
 

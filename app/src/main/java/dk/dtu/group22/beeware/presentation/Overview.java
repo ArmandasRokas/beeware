@@ -130,7 +130,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                         ConfigurePromptFragment cpf = new ConfigurePromptFragment();
                         cpf.show(getSupportFragmentManager(),"ConfigurationPromptDialog");
                         break;
-
                     }
                 }
 
