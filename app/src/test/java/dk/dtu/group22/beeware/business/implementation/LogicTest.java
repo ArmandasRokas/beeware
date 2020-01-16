@@ -208,10 +208,10 @@ public class LogicTest {
         // getNamesAndIDs() is called, in order to recieve a list of names and ids from Hivetool.net
         // Firstly, we test whether the list contains several active hives.
         List<NameIdPair> namesAndIDs = logic.getNamesAndIDs();
-        NameIdPair FHAStade1 = new NameIdPair("FHA_Stade1", 240,true);
-        NameIdPair Athens = new NameIdPair("Athens", 10,true);
-        NameIdPair Colony1 = new NameIdPair("Colony1", 176,true);
-        NameIdPair PetesBees = new NameIdPair("PetesBees", 112, true);
+        NameIdPair FHAStade1 = new NameIdPair("FHA_Stade1", 240,true, "KBH");
+        NameIdPair Athens = new NameIdPair("Athens", 10,true, "JAPAN");
+        NameIdPair Colony1 = new NameIdPair("Colony1", 176,true, "STOCKHOLM");
+        NameIdPair PetesBees = new NameIdPair("PetesBees", 112, true, "OSLO");
 
         assertTrue(namesAndIDs.contains(FHAStade1));
         assertTrue(namesAndIDs.contains(Athens));
@@ -220,10 +220,10 @@ public class LogicTest {
 
         // Secondly, we test to see if the list also contains inactive hives.
 
-        NameIdPair Deseret = new NameIdPair("Deseret", 147,false);
-        NameIdPair England = new NameIdPair("England", 128,false);
-        NameIdPair Judge = new NameIdPair("Judge", 101,false);
-        NameIdPair Radiance = new NameIdPair("Radiance", 38,false);
+        NameIdPair Deseret = new NameIdPair("Deseret", 147,false, "MASSACHSUETS");
+        NameIdPair England = new NameIdPair("England", 128,false, "TEXLCOCO");
+        NameIdPair Judge = new NameIdPair("Judge", 101,false, "PRAG");
+        NameIdPair Radiance = new NameIdPair("Radiance", 38,false, "BERGEN");
 
         assertTrue(namesAndIDs.contains(Deseret));
         assertTrue(namesAndIDs.contains(England));

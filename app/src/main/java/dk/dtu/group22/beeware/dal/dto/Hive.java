@@ -76,7 +76,6 @@ public class Hive implements Serializable, Comparable<Hive> {
         timeFormatter = new SimpleDateFormat("HH:mm");
 
         String dateFormatted = dateFormatter.format(lastUpdatedTime) + " kl. ".concat(timeFormatter.format(lastUpdatedTime % day));
-
         return dateFormatted;
     }
 

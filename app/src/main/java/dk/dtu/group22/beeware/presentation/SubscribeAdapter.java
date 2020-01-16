@@ -1,6 +1,5 @@
 package dk.dtu.group22.beeware.presentation;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +37,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         // each data item is just a string in this case
         public ConstraintLayout background;
         public TextView subHiveName;
+        public TextView subHiveLocation;
         public Switch subHiveSwitch;
 
         public MyViewHolder(View v) {
@@ -45,6 +45,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             background = v.findViewById(R.id.sub_element_bg);
             subHiveName = v.findViewById(R.id.subscribe_name);
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
+            subHiveLocation = v.findViewById(R.id.subHiveLocation);
         }
     }
 
@@ -75,6 +76,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.subHiveName.setText(mDataset.get(position).getName());
+        holder.subHiveLocation.setText(mDataset.get(position).getLocation());
 
         // Changes the text color of the hive name to red if it is inactive
         if (!mDataset.get(position).isActive()) {
