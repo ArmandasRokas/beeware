@@ -4,11 +4,13 @@ public class NameIdPair {
     private String name;
     private int id;
     private boolean active;
+    private String location;
 
-    public NameIdPair(String name, int id, boolean active) {
+    public NameIdPair(String name, int id, boolean active, String location) {
         this.name = name;
         this.id = id;
         this.active = active;
+        this.location = location;
     }
 
     @Override
@@ -17,6 +19,7 @@ public class NameIdPair {
                 "name='" + name + '\'' +
                 ", id=" + id +
                 ", active=" + active +
+                ", location =" + location +
                 '}';
     }
 
@@ -34,5 +37,9 @@ public class NameIdPair {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getLocation() {
+        return location;
     }
 }
