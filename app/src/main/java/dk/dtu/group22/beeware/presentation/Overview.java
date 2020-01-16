@@ -72,6 +72,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
             protected void onPreExecute() {
                 listEmptyTv.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
+
             }
             @Override
             protected Object doInBackground(Object... arg0) {
@@ -100,6 +101,14 @@ public class Overview extends CustomActivity implements View.OnClickListener {
             @Override
             protected void onPostExecute(Object titler) {
                 progressBar.setVisibility(View.INVISIBLE);
+                for(Hive hive: hives){
+                    if(!hive.getHasBeenConfigured()){
+                        ConfigurePromptFragment cpf = new ConfigurePromptFragment();
+                        cpf.show(getSupportFragmentManager(),"ConfigurationPromptDialog");
+                        break;
+                    }
+                }
+
 
                 if(cachingManager.isConnectionFailed()){
                     Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
@@ -125,14 +134,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
-                for(Hive hive: hives){
-                    if(!hive.getHasBeenConfigured()){
-                        ConfigurePromptFragment cpf = new ConfigurePromptFragment();
-                        cpf.show(getSupportFragmentManager(),"ConfigurationPromptDialog");
-                        break;
 
-                    }
-                }
 
 
 
