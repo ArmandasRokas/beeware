@@ -14,9 +14,11 @@
     <string name="rightAxisLegend" translatable="false">C°</string>
     <string name="channel_name" translatable="false">Channel</string>
     <string name="channel_description" translatable="false">Description</string>
+    <string name="textPlaceholder" translatable="false">Placeholder</string>
+    <string name="datePlaceholder" translatable="false">00-00-0000</string>
 
     <!-- Period prompts on graphs -->
-    <string name="period_prompt">Choose a time period!</string>
+    <string name="ViewPeriod">VIEW PERIOD</string>
     <string-array name="time_period">
         <item>1 week</item>
         <item>1 month</item>
@@ -32,6 +34,9 @@
     <string name="YouHaveNotSubscribedToAnyHives">You have not subscribed to any hives.\nClick the edit button to subscribe to a hive.</string>
     <string name="UnableToFetchNewestData">Unable to fetch the newest data.  Check your internet connection.</string>
     <string name="ErrorDataCouldNotBeFetched">Error. Data could not be fetched.</string>
+    <string name="WeightIconDescription">Icon of a weight</string>
+    <string name="TempIconDescription">Icon of a thermometer</string>
+    <string name="SunligtIconDescription">Icon of a sun</string>
 
     <!-- Graph -->
     <string name="Weight">Weight</string>
@@ -59,5 +64,13 @@
     <string name="from_date">From date</string>
     <string name="period_label">Period back</string>
     <string name="select_data_period_button">Select data period</string>
+    <string name="SettingsButtonDescription">Button for settings</string>
+
+    <!-- Configuration xml -->
+    <string name="ConfiguringHive">Configuring:</string>
+    <string name="ConfigInformation">This number indicates, at which value the Hive\'s icon will change from green to yellow.</string>
+    <string name="ConfigWeight">Weight</string>
+    <string name="ConfigTemp">Temperature</string>
+    <string name="ConfigSave">SAVE</string>
 
 </resources>
