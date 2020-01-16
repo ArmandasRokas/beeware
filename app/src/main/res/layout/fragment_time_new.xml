@@ -107,6 +107,7 @@
         android:text="@string/ViewPeriod"
         android:textColor="@color/app_theme"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newTime_to_text"

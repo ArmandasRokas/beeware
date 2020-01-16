@@ -3,6 +3,7 @@ package dk.dtu.group22.beeware.presentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -227,7 +228,9 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                     .setPositiveButton(getString(R.string.Continue), null)
                     .show();
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#ff8624"));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTypeface(null, Typeface.BOLD);
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff8624"));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTypeface(null, Typeface.BOLD);
 
         } else if(view == subscriptionsTextbutton) {
             // If the user wants to see the hives the user has subscribed to

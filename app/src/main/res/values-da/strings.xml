@@ -52,6 +52,14 @@
     <string name="from_date">Startdato</string>
     <string name="period_label">Periode</string>
     <string name="select_data_period_button">Vælg en periode</string>
+
+    <!-- Configure prompt xml -->
+    <string name="PromptTitle">Konfigurering</string>
+    <string name="PromptMessage">Du har abonneret på bistader der ikke er konfigureret endnu.\nVil du konfigurere dem nu?</string>
+    <string name="SetDefaults">SÆT STANDARDER</string>
+    <string name="ConfigureNow">KONFIGURER</string>
+
+    <!-- Configuration xml -->
     <string name="ConfigSave">GEM</string>
     <string name="ConfigTemp">Temperatur (\u2103)</string>
     <string name="ConfigWeight">Vægt (kg)</string>

@@ -72,6 +72,12 @@
     <string name="select_data_period_button">Select data period</string>
     <string name="SettingsButtonDescription">Button for settings</string>
 
+    <!-- Configure prompt xml -->
+    <string name="PromptTitle">Configuration</string>
+    <string name="PromptMessage">You have subscribed to hives that are not yet configured.\nWould you like to configure them now?</string>
+    <string name="SetDefaults">SET DEFAULTS</string>
+    <string name="ConfigureNow">CONFIGURE</string>
+
     <!-- Configuration xml -->
     <string name="ConfiguringHive">Configuring:</string>
     <string name="ConfigInformation">This number indicates, at which value the Hive\'s icon will change from green to yellow.</string>
