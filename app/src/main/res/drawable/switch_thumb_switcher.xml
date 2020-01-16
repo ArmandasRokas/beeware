@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/switch_thumb_checked"
+        android:state_checked="true" android:top="1.5dp" />
+    <item android:drawable="@drawable/switch_thumb_default" android:top="1.5dp" />
+</selector>

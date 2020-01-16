@@ -76,7 +76,15 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.subHiveName.setText(mDataset.get(position).getName());
-        holder.subHiveLocation.setText(mDataset.get(position).getLocation());
+
+        String location = mDataset.get(position).getLocation();
+        if (location.startsWith(",")) {
+            location = location.substring(1);
+        }
+        if (location.startsWith(" ")) {
+            location = location.substring(1);
+        }
+        holder.subHiveLocation.setText(location);
 
         // Changes the text color of the hive name to red if it is inactive
         if (!mDataset.get(position).isActive()) {

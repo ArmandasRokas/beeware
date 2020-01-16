@@ -60,26 +60,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:clickable="false" />
+            android:clickable="false"
+            android:thumb="@drawable/switch_thumb" />
 
         <Switch
             android:id="@+id/tempSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:thumb="@drawable/switch_thumb" />
 
         <Switch
             android:id="@+id/lightSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:thumb="@drawable/switch_thumb" />
 
         <Switch
             android:id="@+id/humidSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:buttonTintMode="src_atop" />
+            android:buttonTintMode="src_atop"
+            android:thumb="@drawable/switch_thumb" />
     </LinearLayout>
 
     <LinearLayout
