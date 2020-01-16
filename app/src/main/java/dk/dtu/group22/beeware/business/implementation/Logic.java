@@ -192,7 +192,7 @@ public class Logic {
             } else if( inputHive.getCurrTemp() < configuredTempThreshold - 10) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             } else{
-                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
         };
         calculators.add(tempFallsBelowConfiguredValue);
