@@ -17,7 +17,6 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
 class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
-
     private List<Integer> subbedIds;
     private List<NameIdPair> mDataset;
     private Logic logic;

@@ -33,7 +33,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
     private ProgressBar progressBar;
     private Context ctx;
     private CachingManager cachingManager;
-    private Overview overview;
+    private boolean configureNow = false;
     private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
 
     @Override
@@ -125,16 +125,17 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
-
                 for(Hive hive: hives){
-                    if(!hive.getHasBeenConfigured() ){
-                        OnSubConfigurationFragment oscf = new OnSubConfigurationFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("ID", hive.getId());
-                        oscf.setArguments(bundle);
-                        oscf.show(getSupportFragmentManager(), "configurationDialog");
+                    if(!hive.getHasBeenConfigured()){
+                        ConfigurePromptFragment cpf = new ConfigurePromptFragment();
+                        cpf.show(getSupportFragmentManager(),"ConfigurationPromptDialog");
+                        break;
+
                     }
                 }
+
+
+
             }
         };
 
@@ -152,6 +153,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         super.onResume();
         setupSubscribedHives(true);
 
+
     }
 
     @Override
@@ -168,7 +170,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         }
     }
 
-    public Overview getOverview() {
-        return overview;
+    public void setConfigureNow(boolean configureNow) {
+        this.configureNow = configureNow;
     }
 }
