@@ -12,7 +12,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -31,7 +30,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,10 +37,11 @@ import java.util.List;
 import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 
 import static java.util.Arrays.asList;
 
-public class GraphActivity extends AppCompatActivity {
+public class GraphActivity extends CustomActivity {
 
     private long fromDate = 0L, toDate = 0L;
     private int spinnerItem;

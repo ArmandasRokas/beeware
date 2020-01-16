@@ -20,13 +20,14 @@ import java.util.Collections;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
-public class Overview extends AppCompatActivity implements View.OnClickListener {
+public class Overview extends CustomActivity implements View.OnClickListener {
 
     GridView gridView;
     private Logic logic;

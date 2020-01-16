@@ -3,8 +3,6 @@ package dk.dtu.group22.beeware.presentation;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,10 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
-public class TestingHiveTool extends AppCompatActivity {
+public class TestingHiveTool extends CustomActivity {
     private Logic logic = Logic.getSingleton();
     @Override
     protected void onCreate(Bundle savedInstanceState) {

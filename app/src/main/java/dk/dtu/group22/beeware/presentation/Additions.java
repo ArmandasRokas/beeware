@@ -6,12 +6,12 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 
-public class Additions extends AppCompatActivity {
+public class Additions extends CustomActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
