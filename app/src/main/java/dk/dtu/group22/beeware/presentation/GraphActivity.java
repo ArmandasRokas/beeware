@@ -194,7 +194,7 @@ public class GraphActivity extends CustomActivity {
 
         // Format X- Axis to time string
         XAxis xAxis = lineChart.getXAxis();
-        xAxis.setGranularity(900000f); // minimum axis-step (interval) is 1
+        xAxis.setGranularity(900000f); // minimum axis-step (interval) is 15 minutes
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
         xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
@@ -210,11 +210,11 @@ public class GraphActivity extends CustomActivity {
         }
 
         for (LineDataSet list : lineDataSetSunlight) {
-            list.setAxisDependency(YAxis.AxisDependency.LEFT);
+            list.setAxisDependency(YAxis.AxisDependency.RIGHT);
         }
 
         for (LineDataSet list : lineDataSetHumidity) {
-            list.setAxisDependency(YAxis.AxisDependency.LEFT);
+            list.setAxisDependency(YAxis.AxisDependency.RIGHT);
         }
 
         // Scale axises
@@ -287,7 +287,6 @@ public class GraphActivity extends CustomActivity {
         for (LineDataSet list : lineDataSetSunlight) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphSunlight}, this);
-
             list.setLineWidth(1);
 
             // Smooth Curves
@@ -298,8 +297,10 @@ public class GraphActivity extends CustomActivity {
             list.setDrawCircles(false);
 
             // Style the light and humidity graphs
-            list.setDrawFilled(true);
-            list.setFillColor(Color.YELLOW);
+            if (rightYAxis.getAxisMinimum() > 0) {
+                list.setDrawFilled(true);
+                list.setFillColor(Color.YELLOW);
+            }
 
             //set the transparency of light and humidity
             list.setFillAlpha(30);
@@ -379,6 +380,7 @@ public class GraphActivity extends CustomActivity {
         graphViewModel.setWeightLineVisible(!shown);
         // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
         showYAxisDetails(graphViewModel.isWeightLineVisible(), 'l');
+        weightSwitch.setChecked(!shown);
         lineChart.invalidate();
     }
 
@@ -389,6 +391,7 @@ public class GraphActivity extends CustomActivity {
         graphViewModel.setTemperatureLineVisible(!shown);
         // Toggle y value visibility
         showYAxisDetails(graphViewModel.isTemperatureLineVisible(), 'r');
+        tempSwitch.setChecked(!shown);
         lineChart.invalidate();
     }
 
@@ -397,6 +400,7 @@ public class GraphActivity extends CustomActivity {
             list.setVisible(!shown);
         }
         graphViewModel.setSunlightLineVisible(!shown);
+        lightSwitch.setChecked(!shown);
         lineChart.invalidate();
     }
 
@@ -405,6 +409,7 @@ public class GraphActivity extends CustomActivity {
             list.setVisible(!shown);
         }
         graphViewModel.setHumidityLineVisible(!shown);
+        humidSwitch.setChecked(!shown);
         lineChart.invalidate();
     }
 
@@ -535,7 +540,8 @@ public class GraphActivity extends CustomActivity {
             hideProgressBar();
         }
     }
-    public GraphViewModel getGraphViewModel(){
+
+    public GraphViewModel getGraphViewModel() {
         return graphViewModel;
     }
 }

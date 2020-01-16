@@ -17,11 +17,10 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public class GraphViewModel extends ViewModel {
-    // TODO: Fjern udkommenteret kode
     //private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
-    private float leftAxisMin, leftAxisMax, rightAxisMin, rightAxisMax;
+    private float leftAxisMin, leftAxisMax, rightAxisMin, rightAxisMax, illumMax, illumMin;
     private Hive hive;
     private int timeDelta = 1000 * 3600 * 24 * 7;
     private Timestamp toDate = new Timestamp(new Date().getTime());
@@ -32,23 +31,58 @@ public class GraphViewModel extends ViewModel {
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
-    private void roundFromDateToMidnight() {
+    private Timestamp roundDateToMidnight(Timestamp stamp) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(fromDate.getTime());
+        cal.setTimeInMillis(stamp.getTime());
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        fromDate = new Timestamp(cal.getTimeInMillis());
-        Log.d(TAG, "roundFromDateToMidnight: Corrected from date to midnight: " + fromDate);
+        Timestamp result = new Timestamp(cal.getTimeInMillis());
+        Log.d(TAG, "roundDateToMidnight: Corrected the date to midnight: " + result);
+        return result;
     }
 
     // Data handling for graph
     public void downloadHiveData(int id) {
-        roundFromDateToMidnight();
+        fromDate = roundDateToMidnight(fromDate);
         hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                 id + " from" + fromDate + " to " + toDate + ".");
+    }
+
+    public void downloadOldDataInBackground(int id) {
+        backgroundDownloadInProgress = true;
+        System.out.println("downloadOldDataInBackground: Starting background download.");
+
+        Timestamp endDate = new Timestamp(System.currentTimeMillis());
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(endDate.getTime());
+        cal.add(Calendar.MONTH, -3);
+        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+        startDate = roundDateToMidnight(startDate);
+
+        for (int i = 0; i < 7; i++) {
+
+            Timestamp a = new Timestamp(startDate.getTime());
+            Timestamp b = new Timestamp(endDate.getTime());
+            Hive junk = null;
+
+            while (junk == null) {
+                junk = logic.getHive(id, a, b);
+            }
+            System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
+                    "from " + a.toString().substring(0, 10) + " " +
+                    "to " + b.toString().substring(0, 10) + ".");
+
+            // Iterate backwards
+            endDate = new Timestamp(startDate.getTime());
+            cal.setTimeInMillis(endDate.getTime());
+            cal.add(Calendar.MONTH, -2);
+            startDate = new Timestamp(cal.getTimeInMillis());
+        }
+        backgroundDownloadInProgress = false;
+        Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
     }
 
     // Set max and min values based on data
@@ -65,16 +99,14 @@ public class GraphViewModel extends ViewModel {
             } else if (v < rightAxisMin) {
                 rightAxisMin = v - 1;
             }
+        } else if (axis == 'i' && v != 0) {
+            // i for illuminance
+            if (v > illumMax) {
+                illumMax = v + 1;
+            } else if (v < illumMin) {
+                illumMin = v - 1;
+            }
         }
-    }
-
-    // Scale any data to x axis (log)
-    private float scaleNumToLeftAxis(float min, float max, float in) {
-
-        if (in <= 0) {
-            return 0;
-        }
-        return (float) Math.log(in) * (max - min) / 20 + min;
     }
 
     private boolean isInInterval(Timestamp t) {
@@ -165,6 +197,9 @@ public class GraphViewModel extends ViewModel {
             if (isInInterval(measure.getTimestamp())) {
                 // If this data is in requested interval
                 float temp = (float) measure.getTempIn();
+                if (temp < 0) {
+                    temp = 0;
+                }
                 res.add(new Entry(time, temp));
                 checkMaxMin(temp, 'r');
             }
@@ -178,7 +213,14 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float illum = (float) measure.getIlluminance();
-                res.add(new Entry(time, scaleNumToLeftAxis(leftAxisMin, leftAxisMax, illum)));
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+
+                    checkMaxMin(illum, 'i');
+                    res.add(new Entry(time, (float) 0.98 * (illum) / (illumMax - illumMin) * (rightAxisMax - rightAxisMin) + rightAxisMin));
+                } else {
+                    res.add(new Entry(time, 0));
+                }
             }
         }
         return res;
@@ -190,8 +232,7 @@ public class GraphViewModel extends ViewModel {
             float time = (float) measure.getTimestamp().getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float humid = (float) measure.getHumidity();
-                //res.add(new Entry(time, ((humid - 30) / 150 * (leftAxisMax - leftAxisMin) + leftAxisMin)));
-                res.add(new Entry(time, (humid / 102) * (leftAxisMax - leftAxisMin) + leftAxisMin)); // Percentage of matrix height
+                res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height
             }
         }
         return res;
@@ -329,57 +370,9 @@ public class GraphViewModel extends ViewModel {
         return toDate;
     }
 
-    public void downloadOldDataInBackground(int id) {
-        backgroundDownloadInProgress = true;
-        System.out.println("downloadOldDataInBackground: Starting background download.");
-
-        Timestamp endDate = new Timestamp(System.currentTimeMillis());
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(endDate.getTime());
-        cal.add(Calendar.MONTH, -3);
-        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
-
-        for (int i = 0; i < 7; i++) {
-
-            Timestamp a = new Timestamp(startDate.getTime());
-            Timestamp b = new Timestamp(endDate.getTime());
-            Hive junk = null;
-
-            while (junk == null) {
-                junk = logic.getHive(id, a, b);
-            }
-            System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
-                    "from " + a.toString().substring(0, 10) + " " +
-                    "to " + b.toString().substring(0, 10) + ".");
-
-            // Iterate backwards
-            endDate = new Timestamp(startDate.getTime());
-            cal.setTimeInMillis(endDate.getTime());
-            cal.add(Calendar.MONTH, -2);
-            startDate = new Timestamp(cal.getTimeInMillis());
-        }
-        backgroundDownloadInProgress = false;
-        Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
-    }
 
     public boolean isBackgroundDownloadInProgress() {
         return backgroundDownloadInProgress;
     }
 
-    public float getGranularity(char yAxis) {
-        // Custom granularity (numeric distance between labels on y axis).
-
-        /*First draft:
-         * Round the distance between axis max and min up to something easily divisible by 6,
-         * e.g 12 , 3, or 1.2, and set (left/right) axismax and axismin accordingly. This could be
-         * defined in a list or by an algorithm. Then set axis granularity to a 6th of this number.
-         * The challenge is to define arbitrary "round numbers" for any scale. It's important
-         * that the axis minimum is also a round number by the same definition.
-         *
-         * This must be called after making the linedataset (where we get max and min),
-         * but before rendering.*/
-
-        return 0;
-    }
 }
