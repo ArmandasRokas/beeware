@@ -210,14 +210,21 @@ public class GraphViewModel extends ViewModel {
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
-            float time = (float) measure.getTimestamp().getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float illum = (float) measure.getIlluminance();
                 if (illum > 0) {
                     illum = (float) Math.log(illum);
-
                     checkMaxMin(illum, 'i');
-                    res.add(new Entry(time, (float) 0.98 * (illum) / (illumMax - illumMin) * (rightAxisMax - rightAxisMin) + rightAxisMin));
+                }
+            }
+        }
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            if (isInInterval(measure.getTimestamp())) {
+                float illum = (float) (measure.getIlluminance() + 1.1);
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+                    res.add(new Entry(time, (float) 0.98 * (illum / illumMax) * (rightAxisMax - rightAxisMin) + rightAxisMin));
                 } else {
                     res.add(new Entry(time, 0));
                 }
