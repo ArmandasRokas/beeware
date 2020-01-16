@@ -30,8 +30,6 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +64,6 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         listener = ((GraphActivity) getActivity()).getGraphViewModel();
 
         hiveNameTV.setText(listener.getHive().getName());
-
-        weightIndicatorTV.setText("Weight (kg)");
-        tempIndicatorTV.setText("Temperature (*C)");
-
-
 
         weightIndicatorNum.setText(Integer.toString(listener.getHive().getWeightIndicator()));
         tempIndicatorNum.setText(Integer.toString(listener.getHive().getTempIndicator()));

@@ -17,6 +17,10 @@
     <string name="textPlaceholder" translatable="false">Placeholder</string>
     <string name="datePlaceholder" translatable="false">00-00-0000</string>
 
+    <!-- At errors -->
+    <string name="NoInternetConnection">No internet connection.</string>
+    <string name="ClassError">: class error.</string>
+
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">VIEW PERIOD</string>
     <string-array name="time_period">
@@ -54,6 +58,8 @@
     <string name="search">Search</string>
     <string name="inactive">Inactive</string>
     <string name="subs">Subscriptions</string>
+    <string name="NoSubscriptions">You have no subscriptions.</string>
+    <string name="EmptyList">The list is empty.</string>
 
     <!-- Graph xml -->
     <string name="noChartDataText">No data available.</string>
@@ -69,8 +75,8 @@
     <!-- Configuration xml -->
     <string name="ConfiguringHive">Configuring:</string>
     <string name="ConfigInformation">This number indicates, at which value the Hive\'s icon will change from green to yellow.</string>
-    <string name="ConfigWeight">Weight</string>
-    <string name="ConfigTemp">Temperature</string>
+    <string name="ConfigWeight">Weight (kg)</string>
+    <string name="ConfigTemp">Temperature (\u2103) </string>
     <string name="ConfigSave">SAVE</string>
 
 </resources>

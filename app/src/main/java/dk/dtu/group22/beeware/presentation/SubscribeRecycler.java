@@ -187,7 +187,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             // If the user wants to see the active hives
             if (active.size() == 0) {
                 status.setVisibility(View.VISIBLE);
-                status.setText("List of active hives is empty.");
+                status.setText(getString(R.string.EmptyList));
             } else {
                 status.setVisibility(View.INVISIBLE);
                 status.setText("");
@@ -202,7 +202,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             // If the user wants to see the inactive hives
             if (active.size() == 0) {
                 status.setVisibility(View.VISIBLE);
-                status.setText("List of inactive hives is empty.");
+                status.setText(getString(R.string.EmptyList));
             } else {
                 status.setVisibility(View.INVISIBLE);
                 status.setText("");
@@ -233,7 +233,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             // If the user wants to see the hives the user has subscribed to
             if (subscriptions.size() == 0) {
                 status.setVisibility(View.VISIBLE);
-                status.setText("You have no subscriptions.");
+                status.setText(getString(R.string.NoSubscriptions));
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);

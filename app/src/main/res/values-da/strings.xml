@@ -1,7 +1,11 @@
 <resources>
 
+    <!-- At errors -->
+    <string name="NoInternetConnection">Ingen internet forbindelse.</string>
+    <string name="ClassError">: klasse fejl.</string>
+
     <!-- Period prompts on graphs -->
-    <string name="ViewPeriod">VIEW PERIOD</string>
+    <string name="ViewPeriod">SE PERIODE</string>
     <string-array name="time_period">
         <item>1 uge</item>
         <item>1 måned</item>
@@ -35,7 +39,9 @@
     <string name="active">Aktive</string>
     <string name="search">Søg</string>
     <string name="inactive">Inaktive</string>
-    <string name="subs">Tilføjede</string>
+    <string name="subs">Abonnementer</string>
+    <string name="NoSubscriptions">Du har ingen abonnementer.</string>
+    <string name="EmptyList">Listen er tom.</string>
 
     <!-- Graph xml -->
     <string name="noChartDataText">Data mangler.</string>
@@ -47,10 +53,10 @@
     <string name="period_label">Periode</string>
     <string name="select_data_period_button">Vælg en periode</string>
     <string name="ConfigSave">GEM</string>
-    <string name="ConfigTemp">Temperatur</string>
-    <string name="ConfigWeight">Vægt</string>
+    <string name="ConfigTemp">Temperatur (\u2103)</string>
+    <string name="ConfigWeight">Vægt (kg)</string>
     <string name="ConfiguringHive">Konfigurerer:</string>
-    <string name="ConfigInformation">Dette nummer indikerer, hvilken værdi bistadets ikon vil skifte fra grøn til gul ved.</string>
+    <string name="ConfigInformation">Dette nummer indikerer den værdi, hvor bistadets ikon vil skifte fra grøn til gul.</string>
     <string name="SettingsButtonDescription">Knap til indstillinger</string>
 
 </resources>

@@ -24,7 +24,7 @@ public class SubscriptionHivetool implements ISubscription {
         }
 
         if(doc == null){
-            throw new UnableToFetchData("Doc error. Unable to fetch data");
+            throw new UnableToFetchData("SubscriptionHivetool class error.\nCheck device internet connection.");
         }
 
         Element content = doc.getElementById("green"); //Selects the first table to read from.

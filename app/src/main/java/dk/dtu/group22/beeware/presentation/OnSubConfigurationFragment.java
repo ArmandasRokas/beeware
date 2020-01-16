@@ -28,8 +28,6 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,14 +60,7 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
         doneButton.setOnClickListener(this);
 
         hiveNameTV.setText(logic.getHive(getArguments().getInt("ID")).getName());
-
-        weightIndicatorTV.setText("Weight (kg)");
-        tempIndicatorTV.setText("Temperature (*C)");
-
-
     }
-
-
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
@@ -87,9 +78,6 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
         logic.getHive(getArguments().getInt("ID")).setHasBeenConfigured(true);
 
         logic.calculateHiveStatus(logic.getHive(getArguments().getInt("ID")));
-
-
-
     }
 
     @Override
