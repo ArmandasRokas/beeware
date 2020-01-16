@@ -172,9 +172,11 @@ public class Logic {
         // Use case: User has set a critical threshold for weight, which the hive must not fall below
         StatusCalculator weightFallsBelowConfiguredValue = (Hive inputHive) -> {
             double configuredWeightThreshold = inputHive.getWeightIndicator();
-            if (inputHive.getCurrWeight() > configuredWeightThreshold + 5) {
+            if (inputHive.getCurrWeight() > configuredWeightThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else {
+            } else if(inputHive.getCurrWeight() < configuredWeightThreshold - 5){
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            } else{
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
 
@@ -185,10 +187,12 @@ public class Logic {
         // Use case: User has set a critical threshold for temp, which the hive must not fall below
         StatusCalculator tempFallsBelowConfiguredValue = (Hive inputHive) -> {
             double configuredTempThreshold = inputHive.getTempIndicator();
-            if (inputHive.getCurrTemp() > configuredTempThreshold + 10) {
+            if (inputHive.getCurrTemp() > configuredTempThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else {
-                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            } else if( inputHive.getCurrTemp() < configuredTempThreshold - 10) {
+                return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
+            } else{
+                return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
         };
         calculators.add(tempFallsBelowConfiguredValue);

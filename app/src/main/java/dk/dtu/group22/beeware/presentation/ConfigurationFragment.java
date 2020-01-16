@@ -81,6 +81,13 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
+        if(weightIndicatorNum.getText().toString().isEmpty()){
+            weightIndicatorNum.setText(Integer.toString(listener.getHive().getWeightIndicator()));
+        }
+        if(tempIndicatorNum.getText().toString().isEmpty()){
+            tempIndicatorNum.setText(Integer.toString(listener.getHive().getTempIndicator()));
+        }
+
         listener.getHive().setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
         listener.getHive().setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
 
@@ -90,6 +97,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         if(listener.getHive().getHasBeenConfigured() == false){
             listener.getHive().setHasBeenConfigured(true);
         }
+
+
     }
 
     @Override

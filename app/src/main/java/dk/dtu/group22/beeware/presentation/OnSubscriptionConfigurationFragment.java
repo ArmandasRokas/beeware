@@ -76,11 +76,20 @@ public class OnSubscriptionConfigurationFragment extends DialogFragment implemen
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
+        if(weightIndicatorNum.getText().toString().isEmpty()){
+            weightIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getWeightIndicator()));
+        }
+        if(tempIndicatorNum.getText().toString().isEmpty()){
+            tempIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getTempIndicator()));
+        }
+
         logic.getHive(getArguments().getInt("ID")).setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
         logic.getHive(getArguments().getInt("ID")).setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
         logic.getHive(getArguments().getInt("ID")).setHasBeenConfigured(true);
 
         logic.calculateHiveStatus(logic.getHive(getArguments().getInt("ID")));
+
+
 
     }
 
