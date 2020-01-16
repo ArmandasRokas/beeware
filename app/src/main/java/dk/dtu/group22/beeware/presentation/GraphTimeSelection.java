@@ -26,8 +26,7 @@ import dk.dtu.group22.beeware.R;
 public class GraphTimeSelection extends DialogFragment implements View.OnClickListener {
 
     private Fragment calendarFragment;
-    private TextView fromDate, toDate;
-    private Button viewPeriod;
+    private TextView fromDate, toDate, viewPeriod;
     private ImageView settingsButton;
     private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();

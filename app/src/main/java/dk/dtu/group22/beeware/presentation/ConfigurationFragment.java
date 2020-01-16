@@ -21,11 +21,10 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
 
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV;
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private GraphViewModel listener;
     private Logic logic = Logic.getSingleton();
-    private Button saveButton;
 
     public ConfigurationFragment() {
         // Required empty public constructor

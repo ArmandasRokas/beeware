@@ -19,9 +19,8 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 
 public class OnSubscriptionConfigurationFragment extends DialogFragment implements View.OnClickListener {
 
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV;
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, doneButton;
     private EditText weightIndicatorNum, tempIndicatorNum;
-    private Button doneButton;
     private Logic logic = Logic.getSingleton();
     private OverviewAdapter listener;
 
