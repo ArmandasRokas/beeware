@@ -62,7 +62,7 @@ public class ConfigurePromptFragment extends DialogFragment implements View.OnCl
     public void onClick(View v) {
         if(v == waitBtn){
             for(Hive hive: hives){
-                hive.setHasBeenConfigured(true);
+                logic.setIsConfigured(hive.getId(), true);
             }
             this.dismiss();
         } else if (v == nowBtn){
@@ -86,6 +86,9 @@ public class ConfigurePromptFragment extends DialogFragment implements View.OnCl
                     oscf.show(getFragmentManager(), "configurationDialog");
                 }
             }
+        }
+        for(Hive hive : hives){
+            System.out.println(hive.getName() + ": " + hive.getHasBeenConfigured());
         }
         ((Overview) getActivity()).setConfigureNow(false);
         configureNow = false;

@@ -185,7 +185,7 @@ public class CachingManager {
         return hive;
     }
 
-    private void writeToFile(Hive hive) {
+    public void writeToFile(Hive hive) {
         File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
         try {
             FileOutputStream fos = new FileOutputStream(file, false);

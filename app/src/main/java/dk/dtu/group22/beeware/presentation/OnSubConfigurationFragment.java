@@ -75,7 +75,7 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
 
         logic.getHive(getArguments().getInt("ID")).setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
         logic.getHive(getArguments().getInt("ID")).setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
-        logic.getHive(getArguments().getInt("ID")).setHasBeenConfigured(true);
+        logic.setIsConfigured(getArguments().getInt("ID"), true);
 
         logic.calculateHiveStatus(logic.getHive(getArguments().getInt("ID")));
     }

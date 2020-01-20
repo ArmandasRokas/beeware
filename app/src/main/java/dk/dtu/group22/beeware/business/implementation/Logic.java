@@ -434,5 +434,12 @@ public class Logic {
         }
     }
 
+    public void setIsConfigured(int id, boolean conf ){
+       Hive hive = cachingManager.getHive(id);
+       hive.setHasBeenConfigured(conf);
+
+       cachingManager.writeToFile(hive);
+
+    }
 
 }

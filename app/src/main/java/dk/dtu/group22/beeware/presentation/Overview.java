@@ -73,6 +73,8 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                 listEmptyTv.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
+
+
             }
             @Override
             protected Object doInBackground(Object... arg0) {
@@ -100,6 +102,10 @@ public class Overview extends CustomActivity implements View.OnClickListener {
 
             @Override
             protected void onPostExecute(Object titler) {
+                for(Hive hive : hives){
+                    System.out.println(hive.getName() + ": " + hive.getHasBeenConfigured());
+                }
+
                 progressBar.setVisibility(View.INVISIBLE);
                 for(Hive hive: hives){
                     if(!hive.getHasBeenConfigured()){

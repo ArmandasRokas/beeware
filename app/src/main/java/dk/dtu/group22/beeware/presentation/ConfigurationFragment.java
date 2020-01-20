@@ -87,7 +87,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         System.out.println( "temp indicator : " + listener.getHive().getTempIndicator() );
 
         if(listener.getHive().getHasBeenConfigured() == false){
-            listener.getHive().setHasBeenConfigured(true);
+            logic.setIsConfigured(listener.getHive().getId(), true);
         }
 
 
