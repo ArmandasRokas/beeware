@@ -52,7 +52,7 @@ public class GraphActivity extends CustomActivity {
     private List<LineDataSet> lineDataSetWeight, lineDataSetTemperature,
             lineDataSetSunlight, lineDataSetHumidity;
     private YAxis rightYAxis, leftYAxis;
-    private TextView leftAxisUnit, rightAxisUnit;
+    private TextView leftAxisUnit, rightAxisUnit, noGraphSelectedText;
 
     private int hiveId;
     private String hiveName;
@@ -83,7 +83,7 @@ public class GraphActivity extends CustomActivity {
         graphMenuButton = findViewById(R.id.graphMenuButton);
         leftAxisUnit = findViewById(R.id.axisLeftLegend);
         rightAxisUnit = findViewById(R.id.axisRightLegend);
-
+        noGraphSelectedText = findViewById(R.id.noGraphShownTextV);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -381,6 +381,7 @@ public class GraphActivity extends CustomActivity {
         // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
         showYAxisDetails(graphViewModel.isWeightLineVisible(), 'l');
         weightSwitch.setChecked(!shown);
+        handleNoSwitchesChecked();
         lineChart.invalidate();
     }
 
@@ -392,6 +393,7 @@ public class GraphActivity extends CustomActivity {
         // Toggle y value visibility
         showYAxisDetails(graphViewModel.isTemperatureLineVisible(), 'r');
         tempSwitch.setChecked(!shown);
+        handleNoSwitchesChecked();
         lineChart.invalidate();
     }
 
@@ -401,6 +403,7 @@ public class GraphActivity extends CustomActivity {
         }
         graphViewModel.setSunlightLineVisible(!shown);
         lightSwitch.setChecked(!shown);
+        handleNoSwitchesChecked();
         lineChart.invalidate();
     }
 
@@ -410,6 +413,7 @@ public class GraphActivity extends CustomActivity {
         }
         graphViewModel.setHumidityLineVisible(!shown);
         humidSwitch.setChecked(!shown);
+        handleNoSwitchesChecked();
         lineChart.invalidate();
     }
 
@@ -464,6 +468,17 @@ public class GraphActivity extends CustomActivity {
 
     public void hideProgressBar() {
         progressBarLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void handleNoSwitchesChecked() {
+        if (!weightSwitch.isChecked()
+                && !tempSwitch.isChecked()
+                && !humidSwitch.isChecked()
+                && !lightSwitch.isChecked()) {
+            noGraphSelectedText.setVisibility(View.VISIBLE);
+        } else {
+            noGraphSelectedText.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setSwitchListeners() {

@@ -15,14 +15,12 @@ public class App extends Application {
 
     SharedPreferences sharedPreferences;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
         //Initializes language
         Lingver.init(this, "en");
     }
-    public void onResumeHelper(){
-    }
+
 }
 
