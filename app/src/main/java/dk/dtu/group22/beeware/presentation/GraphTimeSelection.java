@@ -26,7 +26,7 @@ import dk.dtu.group22.beeware.R;
 public class GraphTimeSelection extends DialogFragment implements View.OnClickListener {
 
     private Fragment calendarFragment;
-    private TextView fromDate, toDate, viewPeriod;
+    private TextView fromDate, toDate, viewPeriod, resetButton;
     private ImageView settingsButton;
     private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
@@ -62,10 +62,12 @@ public class GraphTimeSelection extends DialogFragment implements View.OnClickLi
         spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         settingsButton = view.findViewById(R.id.newTime_settings);
+        resetButton = view.findViewById(R.id.newTimeResetButton);
 
         fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
+        resetButton.setOnClickListener(this);
 
         // Set starting from and to date or just to date
         long givenFromDate = this.getArguments().getLong("selected1");
@@ -158,6 +160,12 @@ public class GraphTimeSelection extends DialogFragment implements View.OnClickLi
             this.dismiss();
         } else if (v == settingsButton) {
             new ConfigurationFragment().show(getFragmentManager(), "configurationDialog");
+        } else if (v == resetButton) {
+            spinnerSelection = 0;
+            selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
+            spinnerItem = 0;
+            skipTwice = 3;
+            spinnerHandler();
         }
     }
 
@@ -190,6 +198,9 @@ public class GraphTimeSelection extends DialogFragment implements View.OnClickLi
                         spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 3; // 3 months
                         break;
                     case 3:
+                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 6; // 6 months
+                        break;
+                    case 4:
                         spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
                         break;
                 }

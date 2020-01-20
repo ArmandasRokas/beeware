@@ -23,10 +23,12 @@
 
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">VIEW PERIOD</string>
+    <string name="ResetButton">RESET</string>
     <string-array name="time_period">
         <item>1 week</item>
         <item>1 month</item>
         <item>3 months</item>
+        <item>6 months</item>
         <item>A year</item>
     </string-array>
 
@@ -80,7 +82,7 @@
 
     <!-- Configuration xml -->
     <string name="ConfiguringHive">Configuring:</string>
-    <string name="ConfigInformation">This number indicates, at which value the Hive\'s icon will change from green to yellow.</string>
+    <string name="ConfigInformation">These numbers indicate at which value the Hive\'s icon will change from green to yellow.</string>
     <string name="ConfigWeight">Weight (kg)</string>
     <string name="ConfigTemp">Temperature (\u2103) </string>
     <string name="ConfigSave">SAVE</string>
