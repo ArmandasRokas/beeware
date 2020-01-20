@@ -45,7 +45,7 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     *Gets a hive object from Logic
+     * Gets a hive object from Logic
      */
     public void downloadHiveData(int id) {
         fromDate = roundDateToMidnight(fromDate);
@@ -55,7 +55,7 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     *  Downloads hive data for one year back in background
+     * Downloads hive data for one year back in background
      */
     public void downloadOldDataInBackground(int id) {
 
@@ -93,7 +93,7 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     *Sets max and min values based on the data's max and min in selected period
+     * Sets max and min values based on the data's max and min in selected period
      */
     private void checkMaxMin(float v, char axis) {
         if (axis == 'l' && v != 0.0) {
@@ -125,6 +125,7 @@ public class GraphViewModel extends ViewModel {
     /**
      * Calculates period length. This can be used to make an
      * average of n data points, or make a decision to keep only data from midnight.
+     *
      * @return true if midnight data should be used
      */
     public boolean useMidnightData() {
@@ -140,6 +141,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extracts weight from midnight.
+     *
      * @return List of weight values as Entries
      */
     public List<Entry> extractMidnightWeight() {
@@ -166,6 +168,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extracts midday temperature.
+     *
      * @return A list of Temperature values as Entries
      */
     public List<Entry> extractMiddayTemperature() {
@@ -192,6 +195,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extracts illuminance from three daily points
+     *
      * @return A list of logarithmic illuminance values as Entries
      */
     public List<Entry> extractThreeDailyPointsIlluminance() {
@@ -233,6 +237,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extracts humidity from midday
+     *
      * @return A list of humidity values as Entries
      */
     public List<Entry> extractMiddayHumidity() {
@@ -254,6 +259,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extract weight, all data points
+     *
      * @return A list of weight values as Entries
      */
     public List<Entry> extractWeight() {
@@ -274,6 +280,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extract temperature, all data points
+     *
      * @return A list of temperature values as Entries
      */
     public List<Entry> extractTemperature() {
@@ -297,6 +304,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extract illuminance, all data points
+     *
      * @return A list of illuminance values as Entries
      */
     public List<Entry> extractIlluminance() {
@@ -330,6 +338,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Extract humidity, all data points
+     *
      * @return A list of humidity values as Entries
      */
     public List<Entry> extractHumidity() {

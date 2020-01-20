@@ -35,7 +35,7 @@
             android:parentActivityName=".presentation.Overview"
             android:screenOrientation="landscape" />
 
-        <activity android:name=".presentation.GraphViewModel" />
+        <activity android:name=".dal.dao.implementation.GraphViewModel" />
 
         <activity android:name=".presentation.TesterHiveTool" />
 

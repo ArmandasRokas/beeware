@@ -33,7 +33,8 @@ public class Measurement implements Serializable {
 
     private double humidity;
     private double illuminance;
-    public Measurement(Timestamp timestamp, double weight, double tempIn, double humidity, double illuminance){
+
+    public Measurement(Timestamp timestamp, double weight, double tempIn, double humidity, double illuminance) {
         this.timestamp = timestamp;
         this.weight = weight;
         this.tempIn = tempIn;
