@@ -61,9 +61,7 @@ public class ConfigurePromptFragment extends DialogFragment implements View.OnCl
 
     public void onClick(View v) {
         if(v == waitBtn){
-            for(Hive hive: hives){
-                logic.setIsConfigured(hive.getId(), true);
-            }
+
             this.dismiss();
         } else if (v == nowBtn){
             ((Overview) getActivity()).setConfigureNow(true);
@@ -88,7 +86,7 @@ public class ConfigurePromptFragment extends DialogFragment implements View.OnCl
             }
         }
         for(Hive hive : hives){
-            System.out.println(hive.getName() + ": " + hive.getHasBeenConfigured());
+                logic.setIsConfigured(hive.getId(), true);
         }
         ((Overview) getActivity()).setConfigureNow(false);
         configureNow = false;
