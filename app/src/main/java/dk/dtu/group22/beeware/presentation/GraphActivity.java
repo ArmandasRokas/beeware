@@ -297,7 +297,7 @@ public class GraphActivity extends CustomActivity {
             list.setDrawCircles(false);
 
             // Style the light and humidity graphs
-            if (rightYAxis.getAxisMinimum() >= 0) {
+            if (rightYAxis.getAxisMinimum() > 0) {
                 list.setDrawFilled(true);
                 list.setFillColor(Color.YELLOW);
             }

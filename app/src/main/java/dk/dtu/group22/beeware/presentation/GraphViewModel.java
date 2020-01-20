@@ -17,7 +17,6 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public class GraphViewModel extends ViewModel {
-    //private final int useOnlyNth = 4;
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxisMax, rightAxisMin, rightAxisMax, illumMax, illumMin;
@@ -207,24 +206,28 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
+        // Find max and min
         for (Measurement measure : hive.getMeasurements()) {
             if (isInInterval(measure.getTimestamp())) {
-                float illum = (float) measure.getIlluminance();
+                float illum = (float) (measure.getIlluminance() + 1.2);
                 if (illum > 0) {
                     illum = (float) Math.log(illum);
                     checkMaxMin(illum, 'i');
                 }
             }
         }
+        float range = rightAxisMax - rightAxisMin;
+        // Populate list
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float illum = (float) (measure.getIlluminance() + 1.1);
                 if (illum > 0) {
                     illum = (float) Math.log(illum);
-                    res.add(new Entry(time, (float) 0.98 * (illum / illumMax) * (rightAxisMax - rightAxisMin) + rightAxisMin));
+                    res.add(new Entry(time, (float) (illum / illumMax) * (range) + rightAxisMin));
                 } else {
                     res.add(new Entry(time, 0));
                 }
