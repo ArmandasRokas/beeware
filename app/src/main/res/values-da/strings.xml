@@ -6,10 +6,12 @@
 
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">SE PERIODE</string>
+    <string name="ResetButton">NULSTIL</string>
     <string-array name="time_period">
         <item>1 uge</item>
         <item>1 måned</item>
         <item>3 måneder</item>
+        <item>6 måneder</item>
         <item>Et år</item>
     </string-array>
 
@@ -64,7 +66,7 @@
     <string name="ConfigTemp">Temperatur (\u2103)</string>
     <string name="ConfigWeight">Vægt (kg)</string>
     <string name="ConfiguringHive">Konfigurerer:</string>
-    <string name="ConfigInformation">Dette nummer indikerer den værdi, hvor bistadets ikon vil skifte fra grøn til gul.</string>
+    <string name="ConfigInformation">Disse numre indikerer værdien hvor bistadets ikon vil skifte fra grøn til gul.</string>
     <string name="SettingsButtonDescription">Knap til indstillinger</string>
 
 </resources>
