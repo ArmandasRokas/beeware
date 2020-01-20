@@ -26,7 +26,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Timestamp;
@@ -38,6 +37,7 @@ import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
+import dk.dtu.group22.beeware.dal.dao.implementation.GraphViewModel;
 
 import static java.util.Arrays.asList;
 
@@ -132,14 +132,13 @@ public class GraphActivity extends CustomActivity {
         lineChart.setDragEnabled(true);
         lineChart.setScaleYEnabled(true);
         lineChart.setScaleXEnabled(true);
-        //lineChart.setPinchZoom(true); // Y zooms together with X, not separately.
-
         lineChart.setNoDataText(getString(R.string.noChartDataText));
 
         // Y-axis
         rightYAxis = lineChart.getAxisRight();
         leftYAxis = lineChart.getAxisLeft();
 
+        // Extract data from Hive to
         try {
             lineDataSetWeight = new ArrayList<>();
             lineDataSetTemperature = new ArrayList<>();
@@ -148,22 +147,25 @@ public class GraphActivity extends CustomActivity {
             long acceptedDelta;
             List<List<Entry>> tmpWeight;
             List<List<Entry>> tmpTemp = new ArrayList<>();
-            // Weight has to be split when delta is greater than thirty minutes
+            List<List<Entry>> tmpLight = new ArrayList<>();
+            List<List<Entry>> tmpHumid = new ArrayList<>();
+
             if (!graphViewModel.useMidnightData()) {
-                acceptedDelta = 30 * 60 * 1000;
+                // Split weight dataset to show gaps in data correctly
+                acceptedDelta = 30 * 60 * 1000; // 30 minutes
                 tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
                 tmpTemp.add(graphViewModel.extractTemperature());
+                tmpLight.add(graphViewModel.extractIlluminance());
+                tmpHumid.add(graphViewModel.extractHumidity());
             } else {
-                acceptedDelta = 3 * 24 * 60 * 60 * 1000;
+                acceptedDelta = 3 * 24 * 60 * 60 * 1000; // Three days
                 tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractMidnightWeight(), acceptedDelta);
                 tmpTemp.add(graphViewModel.extractMiddayTemperature());
+                tmpLight.add(graphViewModel.extractThreeDailyPointsIlluminance());
+                tmpHumid.add(graphViewModel.extractMiddayHumidity());
             }
 
-            List<List<Entry>> tmpLight = new ArrayList<>();
-            tmpLight.add(graphViewModel.extractIlluminance());
-            List<List<Entry>> tmpHumid = new ArrayList<>();
-            tmpHumid.add(graphViewModel.extractHumidity());
-
+            // Collect the lists of weight datasets
             for (int i = 0; i < tmpWeight.size(); ++i) {
                 List<Entry> list = tmpWeight.get(i);
                 if (i == 0) {
@@ -175,6 +177,7 @@ public class GraphActivity extends CustomActivity {
                 }
             }
 
+            // Populate datasets other than weight
             for (List<Entry> list : tmpTemp) {
                 lineDataSetTemperature.add(new LineDataSet(list, getString(R.string.Temp)));
             }
@@ -186,47 +189,45 @@ public class GraphActivity extends CustomActivity {
             for (List<Entry> list : tmpHumid) {
                 lineDataSetHumidity.add(new LineDataSet(list, getString(R.string.Humidity)));
             }
-            //Log.d(TAG, "onCreate: TEST: " + graphViewModel.extractTemperature().toString());
+
         } catch (Exception e) {
             e.printStackTrace();
             showEmptyDataSets();
         }
 
-        // Format X- Axis to time string
+        // Format X- Axis values to strings displaying date and time
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setGranularity(900000f); // minimum axis-step (interval) is 15 minutes
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
         xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+        // Set text size for dates on x axis
+        lineChart.getXAxis().setTextSize(11);
 
-
-        //Set Y Axis dependency
+        //Set Y Axis dependencies, left or right
         for (LineDataSet list : lineDataSetWeight) {
             list.setAxisDependency(YAxis.AxisDependency.LEFT);
         }
-
         for (LineDataSet list : lineDataSetTemperature) {
             list.setAxisDependency(YAxis.AxisDependency.RIGHT);
         }
-
         for (LineDataSet list : lineDataSetSunlight) {
             list.setAxisDependency(YAxis.AxisDependency.RIGHT);
         }
-
         for (LineDataSet list : lineDataSetHumidity) {
             list.setAxisDependency(YAxis.AxisDependency.RIGHT);
         }
 
-        // Scale axises
+        // Scale axises based on data max and min
         leftYAxis.setAxisMaximum(graphViewModel.getLeftAxisMax());
         leftYAxis.setAxisMinimum(graphViewModel.getLeftAxisMin());
         rightYAxis.setAxisMaximum(graphViewModel.getRightAxisMax());
         rightYAxis.setAxisMinimum(graphViewModel.getRightAxisMin());
 
-        // Temp transparent on load if not visible
+        // Show temperature unit and values if graph visible
         showYAxisDetails(graphViewModel.isTemperatureLineVisible(), 'r');
 
-        // Weight
+        // Style weight
         for (LineDataSet list : lineDataSetWeight) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphWeight}, this);
@@ -245,7 +246,7 @@ public class GraphActivity extends CustomActivity {
             }
         }
 
-        // Temperature
+        // Style temperature
         for (LineDataSet list : lineDataSetTemperature) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphTemperature}, this);
@@ -262,7 +263,7 @@ public class GraphActivity extends CustomActivity {
             list.setDrawCircles(false);
         }
 
-        // Humidity
+        // Style humidity
         for (LineDataSet list : lineDataSetHumidity) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphHumidity}, this);
@@ -274,16 +275,12 @@ public class GraphActivity extends CustomActivity {
             // Removing values and circle points from light and humidity graphs
             list.setDrawValues(false);
             list.setDrawCircles(false);
-
-            // Style the light and humidity graphs
             list.setDrawFilled(true);
             list.setFillColor(Color.BLUE);
-
-            //set the transparency of light and humidity
-            list.setFillAlpha(20);
+            list.setFillAlpha(20); // Transparency of "fill"
         }
 
-        // Illuminance
+        // Style illuminance
         for (LineDataSet list : lineDataSetSunlight) {
             // Set colors and line width
             list.setColors(new int[]{R.color.BEE_graphSunlight}, this);
@@ -295,21 +292,12 @@ public class GraphActivity extends CustomActivity {
             // Removing values and circle points from light and humidity graphs
             list.setDrawValues(false);
             list.setDrawCircles(false);
-
-            // Style the light and humidity graphs
-            if (rightYAxis.getAxisMinimum() > 0) {
-                list.setDrawFilled(true);
-                list.setFillColor(Color.YELLOW);
-            }
-
-            //set the transparency of light and humidity
-            list.setFillAlpha(30);
+            list.setDrawFilled(true);
+            list.setFillColor(Color.YELLOW);
+            list.setFillAlpha(30); // traparency
         }
 
-        // Set text size
-        lineChart.getXAxis().setTextSize(11);
-
-        // Collect LineDataSets in a List
+        // Collect all LineDataSets in a superlist
         List<ILineDataSet> lineDataSetList = new ArrayList<>();
         lineDataSetList.addAll(lineDataSetTemperature);
         lineDataSetList.addAll(lineDataSetHumidity);
@@ -319,15 +307,15 @@ public class GraphActivity extends CustomActivity {
         // Feed list of LineDataSets into a LineData object
         LineData lineData = new LineData(lineDataSetList);
 
-        // Set description text for LineChart
+        // Remove description text for LineChart
         Description description = new Description();
-        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[4]);
         description.setText("");
 
         // Fill chart with data
         lineChart.setData(lineData);
         // Remove yellow crosshairs
         lineChart.getData().setHighlightEnabled(false);
+
         lineChart.getLegend().setEnabled(false);
         lineChart.setDescription(description);
         lineChart.invalidate(); // refresh
@@ -336,21 +324,18 @@ public class GraphActivity extends CustomActivity {
         for (LineDataSet list : lineDataSetWeight) {
             list.setVisible(graphViewModel.isWeightLineVisible());
         }
-
         for (LineDataSet list : lineDataSetTemperature) {
             list.setVisible(graphViewModel.isTemperatureLineVisible());
         }
-
         for (LineDataSet list : lineDataSetSunlight) {
             list.setVisible(graphViewModel.isSunlightLineVisible());
         }
-
         for (LineDataSet list : lineDataSetHumidity) {
             list.setVisible(graphViewModel.isHumidityLineVisible());
         }
     }
 
-    // Show and hide y axis info like values, units and grid lines
+    // Show and hide y axis info like values, units and grid lines, right and left
     private void showYAxisDetails(boolean show, char yAxis) {
         if (show && yAxis == 'r') {
             rightYAxis.setTextColor(Color.BLACK);
@@ -378,8 +363,7 @@ public class GraphActivity extends CustomActivity {
             list.setVisible(!shown);
         }
         graphViewModel.setWeightLineVisible(!shown);
-        // Toggle y value visibility (Uses alpha, so that the text still occupies space.)
-        showYAxisDetails(graphViewModel.isWeightLineVisible(), 'l');
+        showYAxisDetails(graphViewModel.isWeightLineVisible(), 'l'); // Datails = unit and values
         weightSwitch.setChecked(!shown);
         handleNoSwitchesChecked();
         lineChart.invalidate();
@@ -495,6 +479,7 @@ public class GraphActivity extends CustomActivity {
         humidSwitch.setOnClickListener(v -> {
             toggleHumidity(lineDataSetHumidity.get(0).isVisible());
         });
+        // Sync toggle switches
         weightSwitch.setChecked(graphViewModel.isWeightLineVisible());
         tempSwitch.setChecked(graphViewModel.isTemperatureLineVisible());
         lightSwitch.setChecked(graphViewModel.isSunlightLineVisible());
@@ -542,6 +527,7 @@ public class GraphActivity extends CustomActivity {
     }
 
     private class DownloadBGHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
+        // This class controls download of the data not immadiately shown when a graph view is opened.
 
         @Override
         protected String doInBackground(Integer... id) {

@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,19 +31,18 @@ public class SubscriptionHivetool implements ISubscription {
         Element content = doc.getElementById("green"); //Selects the first table to read from.
         //   System.out.println(table.toString());
         ArrayList<NameIdPair> hivesToSub = new ArrayList<>();
-
-
         ArrayList<String> locations = new ArrayList<>();
 
         Elements table = doc.select("table");
         Elements rows = table.select("tr");
+
         //Gets locations from HTML doc
         for (int i = 3; i < rows.size(); i++) { //first row is the column names, so it is skipped
             Element row = rows.get(i);
             Elements cols = row.select("td");
-
-                locations.add(cols.get(2).text());
+            locations.add(cols.get(2).text());
         }
+
         int counter = 0;
         while(content != null){
             Elements links = content.getElementsByTag("a");

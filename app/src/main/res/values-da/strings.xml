@@ -68,5 +68,6 @@
     <string name="ConfiguringHive">Konfigurerer:</string>
     <string name="ConfigInformation">Disse numre indikerer værdien hvor bistadets ikon vil skifte fra grøn til gul.</string>
     <string name="SettingsButtonDescription">Knap til indstillinger</string>
+    <string name="no_graphs_selected">Ingen graf valgt.</string>
 
 </resources>

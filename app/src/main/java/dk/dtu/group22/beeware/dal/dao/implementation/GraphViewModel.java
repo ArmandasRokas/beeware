@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.presentation;
+package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import android.util.Log;
 
@@ -17,6 +17,8 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public class GraphViewModel extends ViewModel {
+    // This class handles all logic for displaying the graph in GraphActivity
+
     private final String TAG = "GraphViewModel";
     private Logic logic = Logic.getSingleton();
     private float leftAxisMin, leftAxisMax, rightAxisMin, rightAxisMax, illumMax, illumMin;
@@ -26,7 +28,7 @@ public class GraphViewModel extends ViewModel {
     private Timestamp fromDate = new Timestamp(toDate.getTime() - timeDelta);
     private boolean backgroundDownloadInProgress = false;
 
-    // State
+    // State of visibility
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
@@ -42,7 +44,9 @@ public class GraphViewModel extends ViewModel {
         return result;
     }
 
-    // Data handling for graph
+    /**
+     *Gets a hive object from Logic
+     */
     public void downloadHiveData(int id) {
         fromDate = roundDateToMidnight(fromDate);
         hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
@@ -50,7 +54,11 @@ public class GraphViewModel extends ViewModel {
                 id + " from" + fromDate + " to " + toDate + ".");
     }
 
+    /**
+     *  Downloads hive data for one year back in background
+     */
     public void downloadOldDataInBackground(int id) {
+
         backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
 
@@ -84,7 +92,9 @@ public class GraphViewModel extends ViewModel {
         Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
     }
 
-    // Set max and min values based on data
+    /**
+     *Sets max and min values based on the data's max and min in selected period
+     */
     private void checkMaxMin(float v, char axis) {
         if (axis == 'l' && v != 0.0) {
             if (v > leftAxisMax) {
@@ -95,7 +105,7 @@ public class GraphViewModel extends ViewModel {
         } else if (axis == 'r' && v != 0) {
             if (v > rightAxisMax) {
                 rightAxisMax = v + 1;
-            } else if (v < rightAxisMin) {
+            } else if (v < rightAxisMin && v >= 0) {
                 rightAxisMin = v - 1;
             }
         } else if (axis == 'i' && v != 0) {
@@ -115,6 +125,7 @@ public class GraphViewModel extends ViewModel {
     /**
      * Calculates period length. This can be used to make an
      * average of n data points, or make a decision to keep only data from midnight.
+     * @return true if midnight data should be used
      */
     public boolean useMidnightData() {
         double days = (toDate.getTime() - fromDate.getTime()) / 86400000; // Millis in a day
@@ -127,6 +138,10 @@ public class GraphViewModel extends ViewModel {
         return false;
     }
 
+    /**
+     * Extracts weight from midnight.
+     * @return List of weight values as Entries
+     */
     public List<Entry> extractMidnightWeight() {
         boolean foundMidnight = false;
         List<Entry> res = new ArrayList<>();
@@ -149,6 +164,10 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    /**
+     * Extracts midday temperature.
+     * @return A list of Temperature values as Entries
+     */
     public List<Entry> extractMiddayTemperature() {
         List<Entry> res = new ArrayList<>();
         rightAxisMin = 99;
@@ -171,6 +190,72 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    /**
+     * Extracts illuminance from three daily points
+     * @return A list of logarithmic illuminance values as Entries
+     */
+    public List<Entry> extractThreeDailyPointsIlluminance() {
+        List<Entry> res = new ArrayList<>();
+        // Find max and min
+        for (Measurement measure : hive.getMeasurements()) {
+            if (isInInterval(measure.getTimestamp())) {
+                float illum = (float) (measure.getIlluminance() + 1.2);
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+                    checkMaxMin(illum, 'i');
+                }
+            }
+        }
+        float range = rightAxisMax - rightAxisMin;
+        // Populate list
+        boolean foundPoint = false;
+        Calendar cal = Calendar.getInstance();
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            cal.setTimeInMillis((long) time);
+            if (isInInterval(measure.getTimestamp())
+                    && cal.get(Calendar.HOUR_OF_DAY) == 12 || cal.get(Calendar.HOUR_OF_DAY) == 15 || cal.get(Calendar.HOUR) == 9
+                    && !foundPoint) {
+                float illum = (float) (measure.getIlluminance() + 1.1);
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+                    res.add(new Entry(time, (float) (illum / illumMax) * (range) + rightAxisMin));
+                } else {
+                    res.add(new Entry(time, 0));
+                }
+                foundPoint = true;
+            } else if (foundPoint && cal.get(Calendar.HOUR_OF_DAY) != 12) {
+                foundPoint = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extracts humidity from midday
+     * @return A list of humidity values as Entries
+     */
+    public List<Entry> extractMiddayHumidity() {
+        List<Entry> res = new ArrayList<>();
+        boolean foundMidday = false;
+        Calendar cal = Calendar.getInstance();
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            cal.setTimeInMillis((long) time);
+            if (isInInterval(measure.getTimestamp()) && cal.get(Calendar.HOUR_OF_DAY) == 12 && !foundMidday) {
+                float humid = (float) measure.getHumidity();
+                res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height
+            } else if (foundMidday && cal.get(Calendar.HOUR_OF_DAY) != 12) {
+                foundMidday = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extract weight, all data points
+     * @return A list of weight values as Entries
+     */
     public List<Entry> extractWeight() {
         List<Entry> res = new ArrayList<>();
         leftAxisMin = 99;
@@ -187,6 +272,10 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    /**
+     * Extract temperature, all data points
+     * @return A list of temperature values as Entries
+     */
     public List<Entry> extractTemperature() {
         List<Entry> res = new ArrayList<>();
         rightAxisMin = 99;
@@ -206,7 +295,10 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-
+    /**
+     * Extract illuminance, all data points
+     * @return A list of illuminance values as Entries
+     */
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
         // Find max and min
@@ -236,6 +328,10 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+    /**
+     * Extract humidity, all data points
+     * @return A list of humidity values as Entries
+     */
     public List<Entry> extractHumidity() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {

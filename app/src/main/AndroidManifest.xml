@@ -7,8 +7,6 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="com.android.permission.SET_ALARM"/>
 
-
-
     <application
         android:name=".business.implementation.App"
         android:allowBackup="true"
@@ -33,7 +31,7 @@
             android:name=".presentation.GraphActivity"
             android:parentActivityName=".presentation.Overview"
             android:screenOrientation="landscape" />
-        <activity android:name=".presentation.GraphViewModel" />
+        <activity android:name=".dal.dao.implementation.GraphViewModel" />
         <activity android:name=".presentation.SubscribeRecycler"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
