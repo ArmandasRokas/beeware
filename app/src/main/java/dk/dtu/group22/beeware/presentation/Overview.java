@@ -1,6 +1,5 @@
 package dk.dtu.group22.beeware.presentation;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,17 +12,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.work.Constraints;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.dal.dao.implementation.DownloadWorker;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 
@@ -50,8 +56,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         ctx = this;
         logic = Logic.getSingleton();
         logic.setContext(ctx);
-        //TODO Insert in App-class.
-        logic.setNotificationManager((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
 
         // Boilerplate code to set Context to the CachingManager
         cachingManager = CachingManager.getSingleton();
@@ -62,8 +66,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         progressBar = findViewById(R.id.progressBarOverview);
         subHiveButton = findViewById(R.id.subHiveBtn);
         subHiveButton.setOnClickListener(this);
-
-
 
     }
 

@@ -34,7 +34,6 @@ public class Logic {
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
     private final static Logic logic = new Logic();
-    private NotificationManager notificationManager;
 
 
     public static Logic getSingleton() {
@@ -44,17 +43,11 @@ public class Logic {
     public Logic() {
         this.cachingManager = CachingManager.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
-
-
     }
 
     public void setContext(Context context) {
         this.ctx = context;
         this.subscriptionManager = new SubscriptionManager(context);
-    }
-
-    public void setNotificationManager(NotificationManager notificationManager){
-        this.notificationManager = notificationManager;
     }
 
     public void subscribeHive(int id) {
@@ -399,30 +392,31 @@ public class Logic {
      */
     public void createNotification(String details){
 
-        createNotificationChannel();
+        PendingIntent pending = PendingIntent.getActivity(ctx, 1, new Intent(ctx, Overview.class), 0);
 
         NotificationCompat.Builder notificationBuilder;
 
         notificationBuilder = new NotificationCompat.Builder(ctx, "Beeware");
         notificationBuilder.setSmallIcon(R.drawable.img_beehive);
         notificationBuilder.setContentTitle("BEEWARE");
-        notificationBuilder.setContentText(details);
+        notificationBuilder.setContentText("Dangers detected");
+        notificationBuilder.setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(details));
         notificationBuilder.setAutoCancel(true);
 
-        Intent intent = new Intent(ctx, Overview.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notificationBuilder.setContentIntent(pending);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationBuilder.setContentIntent(pendingIntent);
+        createNotificationChannel(notificationManager);
 
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
     /**
      * Method to set up a channel for the notifications.
      */
-    private void createNotificationChannel() {
+    private void createNotificationChannel(NotificationManager not) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String name = "Beeware";
             String description = "Notifications from Beeware";
@@ -430,7 +424,7 @@ public class Logic {
             NotificationChannel channel = new NotificationChannel("Beeware", name, importance);
             channel.setDescription(description);
 
-            notificationManager.createNotificationChannel(channel);
+            not.createNotificationChannel(channel);
         }
     }
 
@@ -441,5 +435,4 @@ public class Logic {
        cachingManager.writeToFile(hive);
 
     }
-
 }
