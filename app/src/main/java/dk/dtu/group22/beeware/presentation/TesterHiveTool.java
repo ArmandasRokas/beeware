@@ -14,12 +14,13 @@ import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
-public class TestingHiveTool extends CustomActivity {
+public class TesterHiveTool extends CustomActivity {
     private Logic logic = Logic.getSingleton();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.unused_graph_prototype);
+        setContentView(R.layout.activity_graph);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date dateSince = null;
@@ -39,10 +40,12 @@ public class TestingHiveTool extends CustomActivity {
         new AsyncTask() {
             String errorMsg = null;
             Hive hive;
+
             @Override
             protected void onPreExecute() {
                 //progressBar.setVisibility(View.VISIBLE);
             }
+
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
@@ -58,18 +61,19 @@ public class TestingHiveTool extends CustomActivity {
             @Override
             protected void onPostExecute(Object titler) {
                 System.out.println(hive);
-          //      progressBar.setVisibility(View.INVISIBLE);
-                if (errorMsg != null){
+                //      progressBar.setVisibility(View.INVISIBLE);
+                if (errorMsg != null) {
                     hive.toString();
                     //errorTv.setText(errorMsg);
-                } else{
-                //TODO call method that produces graph with hive.
+                } else {
+                    //TODO call method that produces graph with hive.
                 }
             }
         }.execute();
 
     }
-    private void updateText(Hive hive){
 
+    private void updateText(Hive hive) {
     }
+
 }

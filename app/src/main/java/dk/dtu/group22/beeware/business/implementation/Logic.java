@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
-import com.yariksoffice.lingver.Lingver;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -16,17 +15,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.dal.dto.Hive;
-import dk.dtu.group22.beeware.dal.dto.Measurement;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
+import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionHivetool;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
-import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
+import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
 import dk.dtu.group22.beeware.presentation.Overview;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Logic {
     private CachingManager cachingManager;
@@ -92,11 +89,10 @@ public class Logic {
         return hive;
     }
 
-    public Hive getHive(int id){
+    public Hive getHive(int id) {
         Hive hive = cachingManager.getHive(id);
         return hive;
     }
-
 
     public List<NameIdPair> getNamesAndIDs() {
         try {
@@ -111,12 +107,10 @@ public class Logic {
         }
     }
 
-
     /**
      * Calculates status for the hive, and stores all the reasons in the hives statusIntrospection.
      * It sets the status of each variable to the worst it could find according to the different use-cases.
      * One lambda is one use-case, which affect the status in some way.
-     *
      *
      * @param hive The hive to calculate statuses for.
      *             Pre-condition: Hive must contain newest data
@@ -167,9 +161,9 @@ public class Logic {
             double configuredWeightThreshold = inputHive.getWeightIndicator();
             if (inputHive.getCurrWeight() > configuredWeightThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else if(inputHive.getCurrWeight() < configuredWeightThreshold - 5){
+            } else if (inputHive.getCurrWeight() < configuredWeightThreshold - 5) {
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else{
+            } else {
                 return new Hive.StatusIntrospection(Hive.Variables.WEIGHT, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
 
@@ -182,9 +176,9 @@ public class Logic {
             double configuredTempThreshold = inputHive.getTempIndicator();
             if (inputHive.getCurrTemp() > configuredTempThreshold) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.OK, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else if( inputHive.getCurrTemp() < configuredTempThreshold - 10) {
+            } else if (inputHive.getCurrTemp() < configuredTempThreshold - 10) {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.DANGER, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
-            } else{
+            } else {
                 return new Hive.StatusIntrospection(Hive.Variables.TEMPERATURE, Hive.Status.WARNING, Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD);
             }
         };
@@ -315,7 +309,6 @@ public class Logic {
         hive.setCurrHum(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getHumidity());
     }
 
-
     private boolean isAroundMidnight(Timestamp time, Calendar day) {
         Calendar idealMidnight = getMidnightInstanceOfDay(day);
         int hourInMillis = 60 * 60 * 1000;
@@ -368,13 +361,6 @@ public class Logic {
         return midnight;
     }
 
-
-    class HiveNotFound extends RuntimeException {
-        public HiveNotFound(String msg) {
-            super(msg);
-        }
-    }
-
     class HivesToSubscribeNoFound extends RuntimeException {
         public HivesToSubscribeNoFound(String msg) {
             super(msg);
@@ -390,7 +376,7 @@ public class Logic {
      *
      * @param details The info the notification should provide.
      */
-    public void createNotification(String details){
+    public void createNotification(String details) {
 
         PendingIntent pending = PendingIntent.getActivity(ctx, 1, new Intent(ctx, Overview.class), 0);
 
@@ -401,7 +387,7 @@ public class Logic {
         notificationBuilder.setContentTitle("BEEWARE");
         notificationBuilder.setContentText("Dangers detected");
         notificationBuilder.setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(details));
+                .bigText(details));
         notificationBuilder.setAutoCancel(true);
 
         notificationBuilder.setContentIntent(pending);
@@ -428,11 +414,10 @@ public class Logic {
         }
     }
 
-    public void setIsConfigured(int id, boolean conf ){
-       Hive hive = cachingManager.getHive(id);
-       hive.setHasBeenConfigured(conf);
+    public void setIsConfigured(int id, boolean conf) {
+        Hive hive = cachingManager.getHive(id);
+        hive.setHasBeenConfigured(conf);
 
-       cachingManager.writeToFile(hive);
-
+        cachingManager.writeToFile(hive);
     }
 }

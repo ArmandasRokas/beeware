@@ -3,7 +3,6 @@ package dk.dtu.group22.beeware.business.implementation;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.Constraints;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -11,19 +10,19 @@ import com.yariksoffice.lingver.Lingver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import dk.dtu.group22.beeware.dal.dao.implementation.DownloadWorker;
 
 public abstract class CustomActivity extends AppCompatActivity {
 
-    boolean langIsSupported(String lang){
+    boolean langIsSupported(String lang) {
         List<String> supportedLangs = new ArrayList<>();
         supportedLangs.add("en");
         supportedLangs.add("da");
         return supportedLangs.contains(lang);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -33,9 +32,9 @@ public abstract class CustomActivity extends AppCompatActivity {
         String pickedLang = sharedPreferences.getString("default", getResources().getSystem().getConfiguration().getLocales().get(0).toString().split("_")[0]);
         System.out.println("###### " + pickedLang);
         // Language changes depending on user settings
-        if(langIsSupported(pickedLang)) {
+        if (langIsSupported(pickedLang)) {
             Lingver.getInstance().setLocale(this, pickedLang);
-        }else{
+        } else {
             Lingver.getInstance().setLocale(this, "en");
         }
 
@@ -44,7 +43,7 @@ public abstract class CustomActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
 
         PeriodicWorkRequest saveRequest =

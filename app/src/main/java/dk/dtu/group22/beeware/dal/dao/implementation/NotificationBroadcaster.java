@@ -9,9 +9,7 @@ public class NotificationBroadcaster extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Toast.makeText(context, "Recieved something", Toast.LENGTH_LONG).show();
-
     }
 
 }

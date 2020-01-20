@@ -25,8 +25,6 @@ public class Hive implements Serializable, Comparable<Hive> {
     private int tempIndicator = 30;
     private boolean hasBeenConfigured = false;
 
-
-
     public void setId(int id) {
         this.id = id;
     }
@@ -54,10 +52,11 @@ public class Hive implements Serializable, Comparable<Hive> {
                 ", illumStatus=" + illumStatus +
                 '}';
     }
-    public String statusToString(){
-               return ", weightStatus=" + weightStatus + "\n"+
-                ", tempStatus=" + tempStatus + "\n"+
-                ", humidStatus=" + humidStatus +"\n"+
+
+    public String statusToString() {
+        return ", weightStatus=" + weightStatus + "\n" +
+                ", tempStatus=" + tempStatus + "\n" +
+                ", humidStatus=" + humidStatus + "\n" +
                 ", illumStatus=" + illumStatus;
     }
 
@@ -66,13 +65,13 @@ public class Hive implements Serializable, Comparable<Hive> {
     }
 
     //Gets the time, at which the hive was last updated
-    public String getLastUpdated(){
-        long lastUpdatedTime = measurements.get(measurements.size()-1).getTimestamp().getTime();
-        long day = 60*60*1000*24;
+    public String getLastUpdated() {
+        long lastUpdatedTime = measurements.get(measurements.size() - 1).getTimestamp().getTime();
+        long day = 60 * 60 * 1000 * 24;
         DateFormat dateFormatter;
         DateFormat timeFormatter;
 
-        dateFormatter = new SimpleDateFormat( "dd-MM-y");
+        dateFormatter = new SimpleDateFormat("dd-MM-y");
         timeFormatter = new SimpleDateFormat("HH:mm");
 
         String dateFormatted = dateFormatter.format(lastUpdatedTime) + " kl. ".concat(timeFormatter.format(lastUpdatedTime % day));
@@ -95,7 +94,7 @@ public class Hive implements Serializable, Comparable<Hive> {
         this.weightIndicator = weightIndicator;
     }
 
-    public void resetStatuses(){
+    public void resetStatuses() {
         this.illumStatus = Status.UNDEFINED;
         this.humidStatus = Status.UNDEFINED;
         this.tempStatus = Status.UNDEFINED;
@@ -195,7 +194,7 @@ public class Hive implements Serializable, Comparable<Hive> {
     }
 
     public List<StatusIntrospection> getStatusIntrospection() {
-        return new ArrayList<StatusIntrospection>(this.statusIntrospection);
+        return new ArrayList<>(this.statusIntrospection);
     }
 
     public void setStatusIntrospection(List<StatusIntrospection> statusIntrospection) {

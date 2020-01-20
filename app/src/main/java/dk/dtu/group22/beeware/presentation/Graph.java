@@ -41,8 +41,7 @@ import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 
 import static java.util.Arrays.asList;
 
-public class GraphActivity extends CustomActivity {
-
+public class Graph extends CustomActivity {
     private long fromDate = 0L, toDate = 0L;
     private int spinnerItem;
     private GraphViewModel graphViewModel;
@@ -60,7 +59,7 @@ public class GraphActivity extends CustomActivity {
     private DownloadHiveAsyncTask downloadAsyncTask;
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
-    private final String TAG = "GraphActivity";
+    private final String TAG = "Graph";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class GraphActivity extends CustomActivity {
         graphMenuButton = findViewById(R.id.graphMenuButton);
         leftAxisUnit = findViewById(R.id.axisLeftLegend);
         rightAxisUnit = findViewById(R.id.axisRightLegend);
-        noGraphSelectedText = findViewById(R.id.noGraphShownTextV);
+        noGraphSelectedText = findViewById(R.id.noGraphShownTV);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -94,7 +93,7 @@ public class GraphActivity extends CustomActivity {
         graphMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GraphTimeSelection gts = new GraphTimeSelection();
+                GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
                 Bundle bundle = new Bundle();
                 if (fromDate != 0L && toDate != 0L) {
                     bundle.putLong("selected1", fromDate);
@@ -198,7 +197,6 @@ public class GraphActivity extends CustomActivity {
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
         xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
-
 
         //Set Y Axis dependency
         for (LineDataSet list : lineDataSetWeight) {
@@ -554,11 +552,11 @@ public class GraphActivity extends CustomActivity {
             super.onPostExecute(s);
             hideProgressBar();
         }
+
     }
 
     public GraphViewModel getGraphViewModel() {
         return graphViewModel;
     }
+
 }
-
-

@@ -2,29 +2,26 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 
-public class OnSubConfigurationFragment extends DialogFragment implements View.OnClickListener {
-
+public class ConfigOnsubFragment extends DialogFragment implements View.OnClickListener {
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, doneButton;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private OverviewAdapter listener;
 
-    public OnSubConfigurationFragment() {
+    public ConfigOnsubFragment() {
         // Required empty public constructor
     }
 
@@ -38,12 +35,12 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_onsub_configuration, container, false);
+        return inflater.inflate(R.layout.fragment_config_onsub, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
 
         hiveNameTV = view.findViewById(R.id.hiveNameTV);
 
@@ -66,10 +63,10 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        if(weightIndicatorNum.getText().toString().isEmpty()){
+        if (weightIndicatorNum.getText().toString().isEmpty()) {
             weightIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getWeightIndicator()));
         }
-        if(tempIndicatorNum.getText().toString().isEmpty()){
+        if (tempIndicatorNum.getText().toString().isEmpty()) {
             tempIndicatorNum.setText(Integer.toString(logic.getHive(getArguments().getInt("ID")).getTempIndicator()));
         }
 
@@ -82,8 +79,9 @@ public class OnSubConfigurationFragment extends DialogFragment implements View.O
 
     @Override
     public void onClick(View v) {
-        if(v == doneButton){
+        if (v == doneButton) {
             this.dismiss();
         }
     }
+
 }

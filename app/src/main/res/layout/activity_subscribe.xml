@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/img_background"
-    tools:context=".presentation.SubscribeRecycler">
+    tools:context=".presentation.Subscribe">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_area"
@@ -27,13 +27,13 @@
             android:drawableStart="@drawable/ic_search"
             android:ems="10"
             android:hint="@string/search"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:importantForAutofill="no" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/subscribe_active_textbutton"

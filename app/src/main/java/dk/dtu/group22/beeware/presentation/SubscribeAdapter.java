@@ -63,14 +63,12 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        /*
         //Alternates the background colors of the list elements
         if (position % 2 == 0) {
-            holder.background.setBackgroundColor(Color.parseColor("#E6A487"));
+            holder.background.setBackgroundColor(Color.parseColor("#40FFFFFF"));
         } else {
-            holder.background.setBackgroundColor(Color.parseColor("#FFB596"));
+            holder.background.setBackgroundColor(Color.parseColor("#26FFFFFF"));
         }
-        */
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
@@ -87,7 +85,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
         // Changes the text color of the hive name to red if it is inactive
         if (!mDataset.get(position).isActive()) {
-            holder.subHiveName.setTextColor(Color.argb(255,175,0,0));
+            holder.subHiveName.setTextColor(Color.argb(255, 175, 0, 0));
         } else {
             holder.subHiveName.setTextColor(Color.BLACK);
         }
@@ -138,4 +136,5 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     public int getItemCount() {
         return mDataset.size();
     }
+
 }

@@ -206,7 +206,6 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
-
     public List<Entry> extractIlluminance() {
         List<Entry> res = new ArrayList<>();
         // Find max and min
@@ -379,7 +378,6 @@ public class GraphViewModel extends ViewModel {
     public Timestamp getToDate() {
         return toDate;
     }
-
 
     public boolean isBackgroundDownloadInProgress() {
         return backgroundDownloadInProgress;

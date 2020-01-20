@@ -36,7 +36,6 @@ public class WebScraper {
         return new Pair<List<Measurement>, String>(extractDataFromCSVLines(lines), name);
     }
 
-
     /**
      * @param lines an array of lines, where each indice is a CSV line.
      * @return a list of measurements based on lines
@@ -50,7 +49,6 @@ public class WebScraper {
 
         List<Measurement> data_measure = new ArrayList<>();
 
-
         for (int i = 2; i < lines.length; i++) {
             if (i % everyNth == 0) {
                 String[] raw_data = lines[i].split(",");
@@ -59,7 +57,6 @@ public class WebScraper {
                 if (raw_data.length < 16) {
                     continue;
                 }
-
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -125,10 +122,8 @@ public class WebScraper {
         Element e = elements.get(2);
         String[] lines = e.wholeText().split("\n");
 
-
         return new Pair<String[], String>(lines, name);
     }
-
 
     /**
      * @param string
@@ -141,4 +136,5 @@ public class WebScraper {
             return -1.0;
         }
     }
+
 }

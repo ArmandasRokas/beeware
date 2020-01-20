@@ -17,14 +17,12 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class OverviewAdapter extends BaseAdapter {
-
-    Context ctx;
-    List<Hive> hives;
+    private Context ctx;
+    private List<Hive> hives;
 
     OverviewAdapter(Context ctx, List<Hive> hives) {
         this.ctx = ctx;
         this.hives = hives;
-
     }
 
     @Override
@@ -86,7 +84,7 @@ public class OverviewAdapter extends BaseAdapter {
         gridView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent ID = new Intent(ctx, GraphActivity.class);
+                Intent ID = new Intent(ctx, Graph.class);
                 Hive clickedHiveHive = hives.get(position);
                 ID.putExtra("hiveid", clickedHiveHive.getId());
                 ID.putExtra("hivename", clickedHiveHive.getName());
@@ -112,4 +110,5 @@ public class OverviewAdapter extends BaseAdapter {
 
         return gridView;
     }
+
 }

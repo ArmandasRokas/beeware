@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,8 +27,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
-public class SubscribeRecycler extends AppCompatActivity implements View.OnClickListener {
-
+public class Subscribe extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Logic logic;
@@ -52,11 +50,22 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         logic = Logic.getSingleton();
         logic.setContext(this);
 
+        // Finding xml resources and setting listeners
         status = findViewById(R.id.statusText);
         progressBar = findViewById(R.id.indeterminateBar);
         recyclerView = findViewById(R.id.hivesToSubRV);
+        searchField = findViewById(R.id.subscribe_search_field);
+        searchField.addTextChangedListener(textWatcher);
+        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
+        activeTextbutton.setOnClickListener(this);
+        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
+        subscriptionsTextbutton.setOnClickListener(this);
+        inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
+        inactiveTextbutton.setOnClickListener(this);
+        underlineOne = findViewById(R.id.subscribe_underline1);
+        underlineTwo = findViewById(R.id.subscribe_underline2);
+        underlineThree = findViewById(R.id.subscribe_underline3);
 
-        //recyclerView.setHasFixedSize(true);
         // Linear layout manager for the recycler view
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -70,20 +79,6 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 return false;
             }
         });
-
-        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
-        activeTextbutton.setOnClickListener(this);
-        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
-        subscriptionsTextbutton.setOnClickListener(this);
-        inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
-        inactiveTextbutton.setOnClickListener(this);
-        underlineOne = findViewById(R.id.subscribe_underline1);
-        underlineTwo = findViewById(R.id.subscribe_underline2);
-        underlineThree = findViewById(R.id.subscribe_underline3);
-
-        searchField = findViewById(R.id.subscribe_search_field);
-        searchField.addTextChangedListener(textWatcher);
-
     }
 
     @Override
@@ -130,7 +125,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 progressBar.setVisibility(View.INVISIBLE);
                 if (errorMsg != null) {
                     status.setText(errorMsg);
-                } else{
+                } else {
                     splitSubscriptions();
                 }
             }
@@ -171,7 +166,6 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                 }
             }
         }
-
 
         activeTextbutton.setEnabled(true);
         subscriptionsTextbutton.setEnabled(true);
@@ -222,7 +216,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // Takes the user back to the list of active hives
-                            SubscribeRecycler.this.onClick(activeTextbutton);
+                            Subscribe.this.onClick(activeTextbutton);
                         }
                     })
                     .setPositiveButton(getString(R.string.Continue), null)
@@ -232,7 +226,7 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff8624"));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTypeface(null, Typeface.BOLD);
 
-        } else if(view == subscriptionsTextbutton) {
+        } else if (view == subscriptionsTextbutton) {
             // If the user wants to see the hives the user has subscribed to
             if (subscriptions.size() == 0) {
                 status.setVisibility(View.VISIBLE);
@@ -249,7 +243,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
     // A textwather to see if anything is being written in the edittext that applies it
     TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -277,9 +272,8 @@ public class SubscribeRecycler extends AppCompatActivity implements View.OnClick
         }
 
         @Override
-        public void afterTextChanged(Editable editable) {}
+        public void afterTextChanged(Editable editable) {
+        }
     };
-
-
 
 }

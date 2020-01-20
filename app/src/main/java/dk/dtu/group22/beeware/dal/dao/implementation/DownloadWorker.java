@@ -31,29 +31,27 @@ public class DownloadWorker extends Worker {
 
         List<Hive> hives = logic.getSubscribedHives(2);
 
-        for (Hive hive : hives){
+        for (Hive hive : hives) {
             logic.calculateHiveStatus(hive);
 
             List<Hive.StatusIntrospection> statuses = hive.getStatusIntrospection();
 
-            for (Hive.StatusIntrospection status : statuses){
+            for (Hive.StatusIntrospection status : statuses) {
 
-                if (status.getStatus() == Hive.Status.DANGER){
+                if (status.getStatus() == Hive.Status.DANGER) {
 
-                    notificationDetails += "Your hive "+ hive.getName() + " is ";
+                    notificationDetails += "Your hive " + hive.getName() + " is ";
 
-                    if (status.getReasoning() == Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD){
+                    if (status.getReasoning() == Hive.DataAnalysis.CASE_CRITICAL_THRESHOLD) {
 
                         notificationDetails += "having trouble with ";
 
-                        if (status.getVariable() == Hive.Variables.WEIGHT){
+                        if (status.getVariable() == Hive.Variables.WEIGHT) {
                             notificationDetails += "weight, reaching a critical threshold.\n\n";
-                        }
-                        else{
+                        } else {
                             notificationDetails += "temperature, reaching a critical threshold.\n\n";
                         }
-                    }
-                    else if (status.getReasoning() == Hive.DataAnalysis.CASE_SUDDEN_CHANGE){
+                    } else if (status.getReasoning() == Hive.DataAnalysis.CASE_SUDDEN_CHANGE) {
 
                         notificationDetails += "experiencing a sudden change in weight.\n\n";
 
@@ -63,7 +61,7 @@ public class DownloadWorker extends Worker {
 
             }
 
-            if (!notificationDetails.equals("")){
+            if (!notificationDetails.equals("")) {
                 logic.createNotification(notificationDetails);
             }
 
@@ -72,7 +70,5 @@ public class DownloadWorker extends Worker {
         // Indicate whether the task finished successfully with the Result
         return Result.success();
     }
-
-
 
 }

@@ -8,7 +8,9 @@ public interface ISubscription {
     List<NameIdPair> getHivesToSubscribe();
 
     class UnableToFetchData extends RuntimeException {
-        public UnableToFetchData(String msg) {super(msg);}
+        public UnableToFetchData(String msg) {
+            super(msg);
+        }
     }
-}
 
+}

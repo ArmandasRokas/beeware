@@ -12,29 +12,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.work.Constraints;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.implementation.DownloadWorker;
-import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class Overview extends CustomActivity implements View.OnClickListener {
-
     GridView gridView;
     private Logic logic;
     private ImageButton subHiveButton;
@@ -51,7 +43,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
 
-
         // Initialising variables
         ctx = this;
         logic = Logic.getSingleton();
@@ -66,7 +57,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         progressBar = findViewById(R.id.progressBarOverview);
         subHiveButton = findViewById(R.id.subHiveBtn);
         subHiveButton.setOnClickListener(this);
-
     }
 
     // Shouldnt do-in-background check if it is cancelled?
@@ -74,28 +64,28 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         AsyncTask asyncTask = new AsyncTask() {
             List<Hive> hives = new ArrayList<>();
             String errorMsg = null;
+
             @Override
             protected void onPreExecute() {
                 listEmptyTv.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
 
-
             }
+
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
                     hives = logic.getSubscribedHives(2);
                     Collections.sort(hives);
-                    for(Integer i: logic.getSubscriptionIDs()){
+                    for (Integer i : logic.getSubscriptionIDs()) {
 
                         subscribedHiveIDs.add(i);
 
                     }
                     return null;
-                }
-                catch (Exception e) {
-                //    errorMsg = e.getMessage();
+                } catch (Exception e) {
+                    //    errorMsg = e.getMessage();
                     e.printStackTrace();
                     return e;
                 }
@@ -108,30 +98,29 @@ public class Overview extends CustomActivity implements View.OnClickListener {
 
             @Override
             protected void onPostExecute(Object titler) {
-                for(Hive hive : hives){
+                for (Hive hive : hives) {
                     System.out.println(hive.getName() + ": " + hive.getHasBeenConfigured());
                 }
 
                 progressBar.setVisibility(View.INVISIBLE);
-                for(Hive hive: hives){
-                    if(!hive.getHasBeenConfigured()){
-                        ConfigurePromptFragment cpf = new ConfigurePromptFragment();
-                        cpf.show(getSupportFragmentManager(),"ConfigurationPromptDialog");
+                for (Hive hive : hives) {
+                    if (!hive.getHasBeenConfigured()) {
+                        ConfigPromptFragment cpf = new ConfigPromptFragment();
+                        cpf.show(getSupportFragmentManager(), "ConfigurationPromptDialog");
                         break;
                     }
                 }
 
-
-                if(cachingManager.isConnectionFailed()){
+                if (cachingManager.isConnectionFailed()) {
                     Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
-                if(logic.getSubscriptionIDs().size() == 0){
+                if (logic.getSubscriptionIDs().size() == 0) {
                     listEmptyTv.setText(R.string.YouHaveNotSubscribedToAnyHives);
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
-                } else if(hives.size() == 0){
+                } else if (hives.size() == 0) {
                     listEmptyTv.setText(R.string.ErrorDataCouldNotBeFetched);
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
@@ -142,14 +131,10 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                     gridView.setVisibility(View.VISIBLE);
                 }
 
-                for(Hive hive: hives){
+                for (Hive hive : hives) {
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
-
-
-
-
             }
         };
 
@@ -158,7 +143,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         } else {
             asyncTask.cancel(true);
         }
-
     }
 
     @Override
@@ -177,7 +161,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == subHiveButton) {
-            Intent ID = new Intent(this, SubscribeRecycler.class);
+            Intent ID = new Intent(this, Subscribe.class);
             startActivity(ID);
         }
     }
@@ -216,4 +200,5 @@ public class Overview extends CustomActivity implements View.OnClickListener {
             }
         }.execute();
     }
+
 }

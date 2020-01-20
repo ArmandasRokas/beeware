@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.GraphActivity">
+    tools:context=".presentation.Graph">
 
     <LinearLayout
         android:id="@+id/toggleDecoration"
@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/BEE_graphHumidity" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -53,7 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toggleDecoration"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <Switch
             android:id="@+id/weightSwitch"
@@ -84,6 +84,7 @@
             android:layout_weight="2"
             android:buttonTintMode="src_atop"
             android:thumb="@drawable/switch_thumb" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -125,12 +126,10 @@
         app:layout_constraintBottom_toTopOf="@+id/labels"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toggleBox"
-        app:layout_constraintTop_toBottomOf="@id/unitBox">
-
-    </com.github.mikephil.charting.charts.LineChart>
+        app:layout_constraintTop_toBottomOf="@id/unitBox" />
 
     <TextView
-        android:id="@+id/noGraphShownTextV"
+        android:id="@+id/noGraphShownTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No graphs selected."
@@ -169,7 +168,7 @@
         <View
             android:layout_width="15dp"
             android:layout_height="match_parent"
-            android:background="@color/BEE_graphWeight"></View>
+            android:background="@color/BEE_graphWeight" />
 
         <TextView
             android:id="@+id/textView4"
@@ -186,7 +185,7 @@
             android:id="@+id/view2"
             android:layout_width="15dp"
             android:layout_height="match_parent"
-            android:background="@color/BEE_graphTemperature"></View>
+            android:background="@color/BEE_graphTemperature" />
 
         <TextView
             android:id="@+id/textView5"
@@ -203,7 +202,7 @@
             android:id="@+id/view4"
             android:layout_width="15dp"
             android:layout_height="match_parent"
-            android:background="@color/BEE_graphSunlight"></View>
+            android:background="@color/BEE_graphSunlight" />
 
         <TextView
             android:id="@+id/textView7"
@@ -220,7 +219,7 @@
             android:id="@+id/view3"
             android:layout_width="15dp"
             android:layout_height="match_parent"
-            android:background="@color/BEE_graphHumidity"></View>
+            android:background="@color/BEE_graphHumidity" />
 
         <TextView
             android:id="@+id/textView6"
@@ -253,6 +252,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

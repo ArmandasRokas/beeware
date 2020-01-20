@@ -15,10 +15,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
-import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
-
 
 /**
  * This class checks whether a hive is cached within the given
@@ -27,30 +26,29 @@ import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
  * If the hive still not found in the file system then create a new hive from HiveTool.
  * If the hive exists, but some measurements missing for given time,
  * so only the missing data fetches.
- *
+ * <p>
  * IMPORTANT:
  * Must be careful calling this function for a time period very
  * long time ago, because it will fetch all data between that period and
  * existing data in order to avoid gaps between data.
- *
+ * <p>
  * USER MANUAL:
  * In order to use file caching ctx should be set by using setCtx(Context ctx) method
  * To Turn OFF file caching, just do not set ctx.
  * To Turn OFF caching totally use HiveHiveTool class directly in the caller.
- *
+ * <p>
  * TESTS:
  * JUnit tests are written in LogicTest class. Tests must be run every time if
  * there are made any modifications in caching.
  */
 public class CachingManager {
-
     private List<Hive> cachedHives;
     private WebScraper webScraper;
     private Context ctx;
     private final static CachingManager CACHING_MANAGER = new CachingManager();
     private boolean isConnectionFailed = false;
 
-    private CachingManager(){
+    private CachingManager() {
         cachedHives = Collections.synchronizedList(new ArrayList<>());
         webScraper = new WebScraper();
     }
@@ -63,13 +61,11 @@ public class CachingManager {
         return isConnectionFailed;
     }
 
-
     public static CachingManager getSingleton() {
         return CACHING_MANAGER;
     }
 
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime){
-
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
         Hive hive = findCachedHive(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
@@ -80,39 +76,38 @@ public class CachingManager {
         return hive;
     }
 
-    public Hive getHive(int id){
-
-
-        for(Hive hive: cachedHives ){
-            if(id == hive.getId()){
+    public Hive getHive(int id) {
+        for (Hive hive : cachedHives) {
+            if (id == hive.getId()) {
                 return hive;
             }
         }
         return null;
     }
+
     private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
-        Timestamp sinceTimeDelta= new Timestamp(sinceTime.getTime() + 300000*2);
-        Timestamp untilTimeDelta= new Timestamp(untilTime.getTime() - 300000*2);
+        Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
+        Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
 
         boolean isWithinSince = sinceTimeDelta.after(hive.getMeasurements().get(0).getTimestamp());
         boolean isWithinUntil = untilTimeDelta.before(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp());
         boolean isUpdated = false;
-        if(!isWithinSince){
+        if (!isWithinSince) {
             List<Measurement> list = fetchFromHiveTool(hive, sinceTime,
-                    new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()) );
+                    new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()));
             if (list != null) {
                 hive.getMeasurements().addAll(0, list);
                 isUpdated = true;
             }
         }
-        if(!isWithinUntil){
+        if (!isWithinUntil) {
             List<Measurement> list = fetchFromHiveTool(hive, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime);
             if (list != null) {
                 hive.getMeasurements().addAll(list);
                 isUpdated = true;
             }
         }
-        if(isUpdated && ctx != null){
+        if (isUpdated && ctx != null) {
             writeToFile(hive);
         }
     }
@@ -122,8 +117,7 @@ public class CachingManager {
             List<Measurement> mList = webScraper.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
             isConnectionFailed = false;
             return mList;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -134,14 +128,14 @@ public class CachingManager {
         foundHive = retrieveHiveFromList(id);
 
         // If hive was not found in List<Hive> cachedHives, try to look in cached files
-        if(foundHive == null && ctx != null){
+        if (foundHive == null && ctx != null) {
             foundHive = retrieveHiveFromFile(id);
         }
         return foundHive;
     }
 
     private Hive retrieveHiveFromList(int id) {
-        synchronized (cachedHives){
+        synchronized (cachedHives) {
             for (Hive hive : cachedHives) {
                 if (hive.getId() == id) {
                     return hive;
@@ -151,9 +145,9 @@ public class CachingManager {
         return null;
     }
 
-    private Hive retrieveHiveFromFile(int id){
+    private Hive retrieveHiveFromFile(int id) {
         File file = new File(ctx.getCacheDir(), String.valueOf(id));
-        if(file.exists()){
+        if (file.exists()) {
             try {
                 FileInputStream fis = new FileInputStream(file);
                 BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
@@ -176,7 +170,7 @@ public class CachingManager {
         Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
-        if(ctx != null){
+        if (ctx != null) {
             writeToFile(hive);
         }
 
@@ -189,7 +183,7 @@ public class CachingManager {
         File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
         try {
             FileOutputStream fos = new FileOutputStream(file, false);
-            BufferedOutputStream bufferedOutputStream= new BufferedOutputStream(fos);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
             ObjectOutputStream os = new ObjectOutputStream(bufferedOutputStream);
             os.writeObject(hive);
             os.close();
@@ -203,7 +197,7 @@ public class CachingManager {
     /**
      * Should be used only for testing purposes
      */
-    public void cleanCachedHives(){
+    public void cleanCachedHives() {
         cachedHives = new ArrayList<>();
     }
 }

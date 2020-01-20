@@ -14,8 +14,7 @@ import java.text.SimpleDateFormat;
 
 import dk.dtu.group22.beeware.R;
 
-public class GraphTimeCalendar extends Fragment {
-
+public class GraphTimeCalendarFragment extends Fragment {
     private CalendarView calendar;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,9 +42,9 @@ public class GraphTimeCalendar extends Fragment {
                     }
                     selectedDate = dateFormat.parse(i2 + "-" + i1 + "-" + i).getTime();
                 } catch (Exception e) {
-                    System.out.println("Parse error in GraphTimeCalendar!");
+                    System.out.println("Parse error in GraphTimeCalendarFragment!");
                 }
-                ((GraphTimeSelection) getParentFragment()).setSelectedDate(selectedDate);
+                ((GraphTimeSelectionFragment) getParentFragment()).setSelectedDate(selectedDate);
             }
         });
 

@@ -23,14 +23,13 @@ public class SubscriptionHivetool implements ISubscription {
             e.printStackTrace();
         }
 
-        if(doc == null){
+        if (doc == null) {
             throw new UnableToFetchData("SubscriptionHivetool class error.\nCheck device internet connection.");
         }
 
         Element content = doc.getElementById("green"); //Selects the first table to read from.
         //   System.out.println(table.toString());
         ArrayList<NameIdPair> hivesToSub = new ArrayList<>();
-
 
         ArrayList<String> locations = new ArrayList<>();
 
@@ -41,20 +40,20 @@ public class SubscriptionHivetool implements ISubscription {
             Element row = rows.get(i);
             Elements cols = row.select("td");
 
-                locations.add(cols.get(2).text());
+            locations.add(cols.get(2).text());
         }
         int counter = 0;
-        while(content != null){
+        while (content != null) {
             Elements links = content.getElementsByTag("a");
             boolean active;
-            if(content.id().equals("green")){
-                active=true;
+            if (content.id().equals("green")) {
+                active = true;
             } else {
-                active=false;
+                active = false;
             }
 
             String[] arrOfStr = links.get(0).attr("href").split("=", 2);
-            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]),active, locations.get(counter));
+            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]), active, locations.get(counter));
             content = content.nextElementSibling();
             hivesToSub.add(tmp);
             counter++;
@@ -63,5 +62,5 @@ public class SubscriptionHivetool implements ISubscription {
 
         return hivesToSub;
     }
-}
 
+}

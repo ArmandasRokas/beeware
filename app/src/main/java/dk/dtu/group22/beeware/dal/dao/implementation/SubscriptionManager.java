@@ -10,7 +10,6 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
 
 public class SubscriptionManager implements ISubscriptionManager {
-
     private SharedPreferences sharedPreferences;
 
     public SubscriptionManager(Context ctx) {

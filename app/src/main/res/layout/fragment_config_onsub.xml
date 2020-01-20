@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".presentation.ConfigurationFragment">
+    tools:context=".presentation.ConfigOnsubFragment">
 
     <TextView
         android:id="@+id/textView"
@@ -87,7 +87,7 @@
         app:layout_constraintTop_toTopOf="@+id/weightIndicatorNum" />
 
     <TextView
-        android:id="@+id/config_save"
+        android:id="@+id/onsub_config_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
