@@ -1,4 +1,4 @@
-package dk.dtu.group22.beeware.dal.dao.implementation;
+package dk.dtu.group22.beeware.business.implementation;
 
 import android.util.Log;
 
@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
@@ -32,6 +31,12 @@ public class GraphViewModel extends ViewModel {
     private boolean weightLineVisible = true, temperatureLineVisible = false,
             sunlightLineVisible = false, humidityLineVisible = false, zoomEnabled = true;
 
+    /**
+     * Resets the clock on a Timestamp
+     *
+     * @param stamp
+     * @return A TimeStamp with time set to 00:00
+     */
     private Timestamp roundDateToMidnight(Timestamp stamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(stamp.getTime());
@@ -45,7 +50,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Gets a hive object from Logic
+     * Gets a hive object from Logic, updates local object to this value.
+     * @param id
      */
     public void downloadHiveData(int id) {
         fromDate = roundDateToMidnight(fromDate);
@@ -55,7 +61,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Downloads hive data for one year back in background
+     * Downloads hive data for one year back in background, updates local object
+     * @param id
      */
     public void downloadOldDataInBackground(int id) {
 
@@ -93,7 +100,9 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Sets max and min values based on the data's max and min in selected period
+     * Sets local max or min values based on the data's max and min value (v) in selected period.
+     * @param axis
+     * @param v
      */
     private void checkMaxMin(float v, char axis) {
         if (axis == 'l' && v != 0.0) {
@@ -118,14 +127,19 @@ public class GraphViewModel extends ViewModel {
         }
     }
 
-    private boolean isInInterval(Timestamp t) {
-        return t.getTime() >= fromDate.getTime() && t.getTime() <= toDate.getTime();
+    /**
+     * Checks if a timestamp is between fromDate and toDate
+     *
+     * @param timeStamp
+     * @return True if time is in period
+     */
+    private boolean isInInterval(Timestamp timeStamp) {
+        return timeStamp.getTime() >= fromDate.getTime() && timeStamp.getTime() <= toDate.getTime();
     }
 
     /**
-     * Calculates period length. This can be used to make an
-     * average of n data points, or make a decision to keep only data from midnight.
-     *
+     * Calculates period length. This can be used to make an average of n data points, or make a
+     * decision to keep only data from midnight.
      * @return true if midnight data should be used
      */
     public boolean useMidnightData() {
@@ -142,7 +156,7 @@ public class GraphViewModel extends ViewModel {
     /**
      * Extracts weight from midnight.
      *
-     * @return List of weight values as Entries
+     * @return List of weight values as MPAndroidChart Entries
      */
     public List<Entry> extractMidnightWeight() {
         boolean foundMidnight = false;
@@ -223,7 +237,7 @@ public class GraphViewModel extends ViewModel {
                 float illum = (float) (measure.getIlluminance() + 1.1);
                 if (illum > 0) {
                     illum = (float) Math.log(illum);
-                    res.add(new Entry(time, (float) (illum / illumMax) * (range) + rightAxisMin));
+                    res.add(new Entry(time, (illum / illumMax) * (range) + rightAxisMin));
                 } else {
                     res.add(new Entry(time, 0));
                 }
@@ -327,7 +341,7 @@ public class GraphViewModel extends ViewModel {
                 float illum = (float) (measure.getIlluminance() + 1.1);
                 if (illum > 0) {
                     illum = (float) Math.log(illum);
-                    res.add(new Entry(time, (float) (illum / illumMax) * (range) + rightAxisMin));
+                    res.add(new Entry(time, (illum / illumMax) * (range) + rightAxisMin));
                 } else {
                     res.add(new Entry(time, 0));
                 }
@@ -476,7 +490,7 @@ public class GraphViewModel extends ViewModel {
         this.toDate = to;
     }
 
-    // Used to set lower and upper X vale visible
+    // Used to set lower and upper X value visible
     public Timestamp getFromDate() {
         return fromDate;
     }

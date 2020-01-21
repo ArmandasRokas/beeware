@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.implementation.GraphViewModel;
 
 public class ConfigNewtimeFragment extends DialogFragment implements View.OnClickListener {
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton;

@@ -33,7 +33,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     private int spinnerItem = 0;
     private int skipTwice = 3;
 
-    // Apparently needed
+    // Default empty constructor
     public GraphTimeSelectionFragment() {
     }
 

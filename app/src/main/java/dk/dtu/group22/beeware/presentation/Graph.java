@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
-import dk.dtu.group22.beeware.dal.dao.implementation.GraphViewModel;
+import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 
 import static java.util.Arrays.asList;
 
@@ -121,7 +121,14 @@ public class Graph extends CustomActivity {
         this.spinnerItem = spinnerItem;
     }
 
-    // Renders the graph and sets listeners. Called in DownloadHiveAsyncTask
+    /**
+     * This method is called in DownloadHiveAsyncTask every time the view is updated.
+     * Responsibilities:
+     * 1. Set all GraphView settings
+     * 2. Initiate importing data from Web
+     * 3. Set listeners for switches.
+     * 4. Render the GraphView
+     */
     public void renderGraph() {
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
@@ -137,7 +144,7 @@ public class Graph extends CustomActivity {
         rightYAxis = lineChart.getAxisRight();
         leftYAxis = lineChart.getAxisLeft();
 
-        // Extract data from Hive to
+        // Extract data from Hive
         try {
             lineDataSetWeight = new ArrayList<>();
             lineDataSetTemperature = new ArrayList<>();
@@ -334,7 +341,13 @@ public class Graph extends CustomActivity {
         }
     }
 
-    // Show and hide y axis info like values, units and grid lines, right and left
+    /**
+     * Show and hide y axis info (values, units and grid lines), based on y-axis specified (left,
+     * right or luminocity).
+     *
+     * @param show
+     * @param yAxis
+     */
     private void showYAxisDetails(boolean show, char yAxis) {
         if (show && yAxis == 'r') {
             rightYAxis.setTextColor(Color.BLACK);
@@ -356,7 +369,10 @@ public class Graph extends CustomActivity {
         }
     }
 
-    // Graph switch listeners use these methods
+    /**
+     * Updates the view based on switches for weight graph.
+     * @param shown
+     */
     public void toggleWeight(boolean shown) {
         for (LineDataSet list : lineDataSetWeight) {
             list.setVisible(!shown);
@@ -368,6 +384,10 @@ public class Graph extends CustomActivity {
         lineChart.invalidate();
     }
 
+    /**
+     * Updates the view based on toggle buttons for temperature graph.
+     * @param shown
+     */
     public void toggleTemperature(boolean shown) {
         for (LineDataSet list : lineDataSetTemperature) {
             list.setVisible(!shown);
@@ -380,6 +400,10 @@ public class Graph extends CustomActivity {
         lineChart.invalidate();
     }
 
+    /**
+     * Updates the view based on toggle buttons for luminocity graph.
+     * @param shown
+     */
     public void toggleSunlight(boolean shown) {
         for (LineDataSet list : lineDataSetSunlight) {
             list.setVisible(!shown);
@@ -390,6 +414,10 @@ public class Graph extends CustomActivity {
         lineChart.invalidate();
     }
 
+    /**
+     * Updates the view based on toggle buttons for humidity graph.
+     * @param shown
+     */
     public void toggleHumidity(boolean shown) {
         for (LineDataSet list : lineDataSetHumidity) {
             list.setVisible(!shown);
@@ -400,7 +428,9 @@ public class Graph extends CustomActivity {
         lineChart.invalidate();
     }
 
-    // Showing empty graph if downloading fails
+    /**
+     * Populate empty datasets for graph if download fails.
+     */
     void showEmptyDataSets() {
         Log.d(TAG, "onCreate: Could not load hive data.");
         Toast.makeText(this, R.string.CouldNotLoadHiveData, Toast.LENGTH_SHORT).show();
@@ -412,17 +442,11 @@ public class Graph extends CustomActivity {
         lineDataSetHumidity = new ArrayList<>(asList(new LineDataSet(nullEntries, getString(R.string.Humidity))));
     }
 
-    // Format dates for graph X axis
-    private class DateFormatter extends ValueFormatter {
-        @Override
-        public String getAxisLabel(float value, AxisBase axis) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
-            String date = simpleDateFormat.format(new Date((long) value));
-            return date; //.substring(0, 5);
-        }
-    }
-
-    // Update the graph with the new interval
+    /**
+     * Updates the graph view with a new selected time interval.
+     * @param from
+     * @param to
+     */
     public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
         graphViewModel.updateTimePeriod(from, to);
         // Get hive and render with new from- and to-dates.
@@ -449,10 +473,9 @@ public class Graph extends CustomActivity {
         }
     }
 
-    public void hideProgressBar() {
-        progressBarLayout.setVisibility(View.INVISIBLE);
-    }
-
+    /**
+     * Shows an info text in the graph view if no switches are checked.
+     */
     private void handleNoSwitchesChecked() {
         if (!weightSwitch.isChecked()
                 && !tempSwitch.isChecked()
@@ -464,6 +487,13 @@ public class Graph extends CustomActivity {
         }
     }
 
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Sets listeners for the graph switches (and automatically toggles them based on current state).
+     */
     private void setSwitchListeners() {
         // Set listener for small switches after download of Hive.
         weightSwitch.setOnClickListener(v -> {
@@ -485,7 +515,21 @@ public class Graph extends CustomActivity {
         humidSwitch.setChecked(graphViewModel.isHumidityLineVisible());
     }
 
-    // This task downloads data and initializes drawing of graphs.
+    /**
+     * Format dates locally for graph X axis
+     */
+    private class DateFormatter extends ValueFormatter {
+        @Override
+        public String getAxisLabel(float value, AxisBase axis) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
+            String date = simpleDateFormat.format(new Date((long) value));
+            return date; //.substring(0, 5);
+        }
+    }
+
+    /**
+     * This Class downloads data and initializes drawing of graphs.
+     */
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
         protected void onPreExecute() {
@@ -525,8 +569,10 @@ public class Graph extends CustomActivity {
         }
     }
 
+    /**
+     * This class controls download of the data not immediately shown when a graph view is opened.
+     */
     private class DownloadBGHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
-        // This class controls download of the data not immadiately shown when a graph view is opened.
 
         @Override
         protected String doInBackground(Integer... id) {
