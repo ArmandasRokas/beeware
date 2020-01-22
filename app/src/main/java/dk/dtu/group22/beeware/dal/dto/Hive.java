@@ -1,11 +1,9 @@
 package dk.dtu.group22.beeware.dal.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class Hive implements Serializable, Comparable<Hive> {
@@ -164,7 +162,6 @@ public class Hive implements Serializable, Comparable<Hive> {
     }
 
     public List<Measurement> getMeasurements() {
-        trimMeasurements();
         return measurements;
     }
 
@@ -202,18 +199,6 @@ public class Hive implements Serializable, Comparable<Hive> {
 
     public void setStatusIntrospection(List<StatusIntrospection> statusIntrospection) {
         this.statusIntrospection = statusIntrospection;
-    }
-
-    // Clean out old dates.
-    private void trimMeasurements() {
-        System.out.println("Deleting old data from Hive: " + id + " " + name);
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.MONTH, -13);
-        Timestamp oneYearAgo = new Timestamp(cal.getTimeInMillis());
-        while (measurements.get(0).getTimestamp().before(oneYearAgo)) {
-            measurements.remove(0);
-        }
     }
 
     @Override

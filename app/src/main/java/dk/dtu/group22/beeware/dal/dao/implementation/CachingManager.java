@@ -201,9 +201,10 @@ public class CachingManager {
      * Clean out old dates automatically on the first and fifteenth of the month.
      * If more than 16 month are saved, the arraylist is shortened to 14 months.
      *
-     * @param hive A hive to check for old data
-     * @pre The the hive object has measurements
-     * @post The hive object is guaranteed to have no old measurements.
+     * @param hive
+     * A hive to check for old data
+     * @pre The hive object has measurements
+     * @post The hive object is guaranteed to have no older measurements than 16 months.
      */
     private void trimMeasurements(Hive hive) {
         Calendar cal = Calendar.getInstance();
@@ -226,6 +227,7 @@ public class CachingManager {
                 measurements.remove(0);
 
             }
+            System.out.println("Oldest date: " + measurements.get(0).getTimestamp().toString());
             hive.setMeasurements(measurements);
         }
     }
