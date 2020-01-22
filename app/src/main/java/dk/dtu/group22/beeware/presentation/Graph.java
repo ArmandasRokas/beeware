@@ -89,7 +89,6 @@ public class Graph extends CustomActivity {
         graphViewModel.setZoomEnabled(true);
 
         // Button for changing period
-
         graphMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +114,13 @@ public class Graph extends CustomActivity {
         downloadAsyncTask.execute(hiveId);
     }
 
+    /**
+     * Setter called from the GraphTimeSelctionFragment to update local fromDate and toDate.
+     *
+     * @param fromDate
+     * @param toDate
+     * @param spinnerItem
+     */
     public void setPeriod(long fromDate, long toDate, int spinnerItem) {
         this.fromDate = fromDate;
         this.toDate = toDate;
@@ -370,7 +376,7 @@ public class Graph extends CustomActivity {
     }
 
     /**
-     * Updates the view based on switches for weight graph.
+     * Updates the view based on the switch for weight graph.
      * @param shown
      */
     public void toggleWeight(boolean shown) {
@@ -385,7 +391,7 @@ public class Graph extends CustomActivity {
     }
 
     /**
-     * Updates the view based on toggle buttons for temperature graph.
+     * Updates the view based on switch for temperature graph.
      * @param shown
      */
     public void toggleTemperature(boolean shown) {
@@ -401,8 +407,9 @@ public class Graph extends CustomActivity {
     }
 
     /**
-     * Updates the view based on toggle buttons for luminocity graph.
+     * Updates the view based on switch for luminocity graph.
      * @param shown
+     * Is the graph currently shown?
      */
     public void toggleSunlight(boolean shown) {
         for (LineDataSet list : lineDataSetSunlight) {
@@ -415,7 +422,7 @@ public class Graph extends CustomActivity {
     }
 
     /**
-     * Updates the view based on toggle buttons for humidity graph.
+     * Updates the view based on switch for humidity graph.
      * @param shown
      */
     public void toggleHumidity(boolean shown) {

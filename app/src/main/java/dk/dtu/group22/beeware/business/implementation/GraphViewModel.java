@@ -33,8 +33,8 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Resets the clock on a Timestamp
-     *
      * @param stamp
+     * A TimeStamp to set to time 00:00
      * @return A TimeStamp with time set to 00:00
      */
     private Timestamp roundDateToMidnight(Timestamp stamp) {
@@ -61,8 +61,12 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Downloads hive data for one year back in background, updates local object
+     * Downloads hive data for one year back in background, updates local object.
+     * Uses network, and is cancelled when the activity is closed.
      * @param id
+     * A hive ID
+     * @pre A hive ID is aquired
+     * @post The hive is updated with one year's data.
      */
     public void downloadOldDataInBackground(int id) {
 
@@ -101,8 +105,11 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Sets local max or min values based on the data's max and min value (v) in selected period.
+     * Runs in constant time.
      * @param axis
+     * The axis to set max and/or minimum for. 'l' for left, 'r' for right or 'i' for illuminance.
      * @param v
+     * A value to check if is maximum or minimum.
      */
     private void checkMaxMin(float v, char axis) {
         if (axis == 'l' && v != 0.0) {
@@ -128,19 +135,19 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Checks if a timestamp is between fromDate and toDate
-     *
+     * Checks if a timestamp is between fromDate and toDate. Runs in constant time.
      * @param timeStamp
-     * @return True if time is in period
+     * A timestamp to check.
+     * @return Returns true if timestamp is within period, else false.
+     * Checks if a timestamp is between fromDate and toDate
      */
     private boolean isInInterval(Timestamp timeStamp) {
         return timeStamp.getTime() >= fromDate.getTime() && timeStamp.getTime() <= toDate.getTime();
     }
 
     /**
-     * Calculates period length. This can be used to make an average of n data points, or make a
-     * decision to keep only data from midnight.
-     * @return true if midnight data should be used
+     * Calculates period length. This is used to select level of detail for the graph.
+     * @return Returns true if the period is longer than 32 days, else false. Runs in constant time.
      */
     public boolean useMidnightData() {
         double days = (toDate.getTime() - fromDate.getTime()) / 86400000; // Millis in a day
@@ -154,9 +161,9 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extracts weight from midnight.
-     *
-     * @return List of weight values as MPAndroidChart Entries
+     * Extracts weight data from the hive from fromDate to toDate. Filters weight values, keeps the
+     * first registered value after midnight. This is for longer periods. Runs in linear time.
+     * @return Returns a list of weight values as MPAndroidChart Entries, midnight data only.
      */
     public List<Entry> extractMidnightWeight() {
         boolean foundMidnight = false;
@@ -181,9 +188,9 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extracts midday temperature.
-     *
-     * @return A list of Temperature values as Entries
+     * Extracts temperature data from the hive from fromDate to toDate. Filters temperature values,
+     * keeps the first registered value after midday. This is for longer periods. Runs in linear time.
+     * @return A list of Temperature values as Entries, midday only.
      */
     public List<Entry> extractMiddayTemperature() {
         List<Entry> res = new ArrayList<>();
@@ -208,8 +215,10 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
+     * Extracts illuminance from the hive from fromDate to toDate. Three daily points.
+     * This is for longer periods. Runs in linear time.
+     * @return A list of logarithmic illuminance values as Entries, filtered by three datapoints per day.
      * Extracts illuminance from three daily points
-     *
      * @return A list of logarithmic illuminance values as Entries
      */
     public List<Entry> extractThreeDailyPointsIlluminance() {
@@ -250,8 +259,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extracts humidity from midday
-     *
+     * Extracts humidity from fromDate to toDate. Midday only, for longer periods. Runs in linear
+     * time.
      * @return A list of humidity values as Entries
      */
     public List<Entry> extractMiddayHumidity() {
@@ -272,8 +281,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extract weight, all data points
-     *
+     * Extract weight, all data points from fromDate to toDate. Used for shorter periods. Runs in
+     * linear time.
      * @return A list of weight values as Entries
      */
     public List<Entry> extractWeight() {
@@ -293,8 +302,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extract temperature, all data points
-     *
+     * Extract temperature, all data points from fromDAte to toDate. For shorter periods. Runs in
+     * linear time.
      * @return A list of temperature values as Entries
      */
     public List<Entry> extractTemperature() {
@@ -317,8 +326,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extract illuminance, all data points
-     *
+     * Extract illuminance, all data points from fromDate to toDate. For shorter periods.
+     * Runs in linear time.
      * @return A list of illuminance values as Entries
      */
     public List<Entry> extractIlluminance() {
@@ -351,8 +360,8 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Extract humidity, all data points
-     *
+     * Extract humidity, all data points from fromDate to toDate. For shorter periods. Runs in
+     * linear time.
      * @return A list of humidity values as Entries
      */
     public List<Entry> extractHumidity() {
@@ -367,6 +376,7 @@ public class GraphViewModel extends ViewModel {
         return res;
     }
 
+  // TODO: remove?
     /**
      * @param hive
      * @param start
@@ -415,9 +425,13 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
+     * Helper method to deep copy a sublist of Entries.
      * @param data
+     * The list to copy
      * @param start
+     * Index to copy from
      * @param end
+     * Index to copy to (not including)
      * @return a list of entries, which is a deep copy of the interval specified by start and end.
      * Of course following Dijkstra indexing intervals [start; end[.
      */

@@ -84,6 +84,9 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         spinnerHandler();
     }
 
+    /**
+     * Updates the fromDate based on the time period selected in the spinner.
+     */
     public void setFromDate() {
         if (calendarFragment != null) {
         } else {
@@ -99,6 +102,11 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         }
     }
 
+    /**
+     * Creates the CalendarFragment after moving the selected date to the last possible date. A
+     * legal date is any date before now minus the time period selected in the spinner. On close,
+     * it sends a bundle to the parent Activity with a start date and a period length.
+     */
     public void refreshCalendar() {
         if (calendarFragment != null) {
             // If the calendar was already open, then it needs to be closed so when it opens
@@ -129,6 +137,10 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                 calendarFragment).commit();
     }
 
+    /**
+     * Handles input from the calendar TextView and the time selection Spinner.
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if (v == fromDate) {
@@ -168,7 +180,11 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         }
     }
 
-    // Needed for class to know what is selected in the spinner
+    /**
+     * Creates an ArrayAdapter for the spinner, to register what is selected in the spinner.
+     * @pre A new date is selected by the user.
+     * @post fromDate is updated, and view is updated with the new date.
+     */
     public void spinnerHandler() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.time_period, android.R.layout.simple_spinner_item);
@@ -215,12 +231,15 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         });
     }
 
-    // This is set by the calendar fragment and at spinner changes
+    /**
+     * Set by the calendar fragment, and when the spinner changes. Updates the fromDate and toDate
+     * according to period and start date.
+     * @param  selectedDate
+     */
     public void setSelectedDate(long selectedDate) {
         this.selectedDate = selectedDate;
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
         fromDate.setText(dateFormat.format(selectedDate));
         toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
     }
-
 }

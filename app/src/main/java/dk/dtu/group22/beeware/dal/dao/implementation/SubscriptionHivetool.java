@@ -27,39 +27,33 @@ public class SubscriptionHivetool implements ISubscription {
             throw new UnableToFetchData("SubscriptionHivetool class error.\nCheck device internet connection.");
         }
 
-        Element content = doc.getElementById("green"); //Selects the first table to read from.
-        //   System.out.println(table.toString());
+        Element currentTableRow = doc.getElementById("green"); // Selects the first TABLE ROW <tr> to read from.
         ArrayList<NameIdPair> hivesToSub = new ArrayList<>();
-        ArrayList<String> locations = new ArrayList<>();
 
-        Elements table = doc.select("table");
-        Elements rows = table.select("tr");
+        while (currentTableRow != null) {
 
-        //Gets locations from HTML doc
-        for (int i = 3; i < rows.size(); i++) { //first row is the column names, so it is skipped
-            Element row = rows.get(i);
-            Elements cols = row.select("td");
-            locations.add(cols.get(2).text());
-        }
+            // Get name
+            String hiveName = currentTableRow.select("td").get(0).text();
 
-        int counter = 0;
-        while (content != null) {
-            Elements links = content.getElementsByTag("a");
-            boolean active;
-            if (content.id().equals("green")) {
+            // The id of the hive is parsed from a Link
+            Elements links = currentTableRow.getElementsByTag("a");
+            String[] arrOfStr = links.get(0).attr("href").split("=", 2);
+            int id = Integer.valueOf(arrOfStr[1]);
+
+            // Get location
+            String loc = currentTableRow.select("td").get(2).text();
+
+            // Get active / inactive
+            boolean active = false;
+            if (currentTableRow.id().equals("green")) {
                 active = true;
-            } else {
-                active = false;
             }
 
-            String[] arrOfStr = links.get(0).attr("href").split("=", 2);
-            NameIdPair tmp = new NameIdPair(links.get(0).text(), Integer.valueOf(arrOfStr[1]), active, locations.get(counter));
-            content = content.nextElementSibling();
+            // Create a named pair
+            NameIdPair tmp = new NameIdPair(hiveName, id, active, loc);
+            currentTableRow = currentTableRow.nextElementSibling();
             hivesToSub.add(tmp);
-            counter++;
-            tmp.toString();
         }
-
         return hivesToSub;
     }
 
