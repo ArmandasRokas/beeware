@@ -40,6 +40,8 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private List<NameIdPair> inactive = new ArrayList<>();
     private List<NameIdPair> subscriptions = new ArrayList<>();
     private EditText searchField;
+    private int prevTab = 0, tab = 1; // tab 1 = active, 2 = inactive, 3 = subscriptions
+    private SubscribeAdapter currentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,22 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         loadListElements(false);
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
+        View view = this.getCurrentFocus();
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private int getSessionSubs() {
+        if (currentAdapter != null) {
+            return currentAdapter.getSessionSubs();
+        }
+        return 0;
+    }
+
     // Gets the names and ids that is possible to subscribe to,
     // and adds them to the list via the 'SubscribeAdapter' class
     private void loadListElements(boolean run) {
@@ -143,8 +161,11 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private void splitSubscriptions() {
         List<Integer> subbedIds = logic.getSubscriptionIDs();
 
+        active = new ArrayList<>();
+        inactive = new ArrayList<>();
+        subscriptions = new ArrayList<>();
+
         boolean wasSubscribed;
-        long twoDaysAgo = System.currentTimeMillis() - 172800000; // The big number is two days in millis
 
         // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
@@ -172,41 +193,41 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         inactiveTextbutton.setEnabled(true);
         searchField.setEnabled(true);
 
-        // Setting the list (recyclerview) to the active hives
-        recyclerView.setAdapter(new SubscribeAdapter(active));
+        changeTab(tab);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == activeTextbutton) {
-            // If the user wants to see the active hives
+    private void changeTab(int tab) {
+        this.tab = tab;
+        if (tab == 1) {
+            // User wants to see the active hives
             if (active.size() == 0) {
                 status.setVisibility(View.VISIBLE);
                 status.setText(getString(R.string.EmptyList));
             } else {
                 status.setVisibility(View.INVISIBLE);
-                status.setText("");
             }
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);
-            recyclerView.setAdapter(new SubscribeAdapter(active));
+            currentAdapter = new SubscribeAdapter(active, this, getSessionSubs(), tab);
+            recyclerView.setAdapter(currentAdapter);
 
-        } else if (view == inactiveTextbutton) {
-            // If the user wants to see the inactive hives
-            if (active.size() == 0) {
+            prevTab = 0;
+        } else if (tab == 2) {
+            // User wants to see the inactive hives
+            if (inactive.size() == 0) {
                 status.setVisibility(View.VISIBLE);
                 status.setText(getString(R.string.EmptyList));
             } else {
                 status.setVisibility(View.INVISIBLE);
-                status.setText("");
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
             underlineTwo.setVisibility(View.VISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);
-            recyclerView.setAdapter(new SubscribeAdapter(inactive));
+            currentAdapter = new SubscribeAdapter(inactive, this, getSessionSubs(), tab);
+            recyclerView.setAdapter(currentAdapter);
 
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_warning)
@@ -216,7 +237,12 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // Takes the user back to the list of active hives
-                            Subscribe.this.onClick(activeTextbutton);
+                            if (prevTab == 0) {
+                                // Do nothing
+                            } else if (prevTab != 2) {
+                                changeTab(prevTab);
+                                prevTab = 0;
+                            }
                         }
                     })
                     .setPositiveButton(getString(R.string.Continue), null)
@@ -225,23 +251,45 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTypeface(null, Typeface.BOLD);
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff8624"));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTypeface(null, Typeface.BOLD);
-
-        } else if (view == subscriptionsTextbutton) {
-            // If the user wants to see the hives the user has subscribed to
+        } else if (tab == 3){
+            // User wants to view their subscriptions
             if (subscriptions.size() == 0) {
                 status.setVisibility(View.VISIBLE);
                 status.setText(getString(R.string.NoSubscriptions));
+            } else {
+                status.setVisibility(View.INVISIBLE);
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.VISIBLE);
-            recyclerView.setAdapter(new SubscribeAdapter(subscriptions));
+            currentAdapter = new SubscribeAdapter(subscriptions, this, getSessionSubs(), tab);
+            recyclerView.setAdapter(currentAdapter);
+
+            prevTab = 0;
+        } else {
+            // The user is searching
+            underlineOne.setVisibility(View.INVISIBLE);
+            underlineTwo.setVisibility(View.INVISIBLE);
+            underlineThree.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        hideKeyboard();
+        prevTab = tab;
+        if (view == activeTextbutton) {
+            changeTab(1);
+        } else if (view == inactiveTextbutton) {
+            changeTab(2);
+        } else if (view == subscriptionsTextbutton) {
+            changeTab(3);
         }
     }
 
     // A textwather to see if anything is being written in the edittext that applies it
-    TextWatcher textWatcher = new TextWatcher() {
+    private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
@@ -250,24 +298,30 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (charSequence.toString().equals("")) {
                 // If the user has deleted the letters to search through hives for
-                underlineOne.setVisibility(View.VISIBLE);
-                underlineTwo.setVisibility(View.INVISIBLE);
-                underlineThree.setVisibility(View.INVISIBLE);
-                recyclerView.setAdapter(new SubscribeAdapter(active));
+                if (tab == 0) {
+                    changeTab(prevTab);
+                    prevTab = 0;
+                }
             } else {
                 // if the user has written something in the search field
-                underlineOne.setVisibility(View.INVISIBLE);
-                underlineTwo.setVisibility(View.INVISIBLE);
-                underlineThree.setVisibility(View.INVISIBLE);
+                status.setVisibility(View.INVISIBLE);
+                if (prevTab == 0) {
+                    prevTab = tab;
+                }
+                changeTab(0);
                 List<NameIdPair> searchResults = new ArrayList<>();
-                for (int j = 0; j < allHives.size(); j++) {
-                    if (allHives.get(j).getName().toLowerCase()
-                            .startsWith(charSequence.toString().toLowerCase())) {
-                        // The given hive started with the searched term, so add it to a list
-                        searchResults.add(allHives.get(j));
+                for (int j = 0; j < active.size(); j++) {
+                    if (active.get(j).getName().toLowerCase().startsWith(charSequence.toString().toLowerCase())) {
+                        searchResults.add(active.get(j));
                     }
                 }
-                recyclerView.setAdapter(new SubscribeAdapter(searchResults));
+                for (int j = 0; j < inactive.size(); j++) {
+                    if (inactive.get(j).getName().toLowerCase().startsWith(charSequence.toString().toLowerCase())) {
+                        searchResults.add(inactive.get(j));
+                    }
+                }
+                currentAdapter = new SubscribeAdapter(searchResults, Subscribe.this, getSessionSubs(), 0);
+                recyclerView.setAdapter(currentAdapter);
             }
         }
 

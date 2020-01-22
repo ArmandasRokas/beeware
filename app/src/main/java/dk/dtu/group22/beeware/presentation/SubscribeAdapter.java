@@ -1,11 +1,13 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,12 +22,22 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     private List<Integer> subbedIds;
     private List<NameIdPair> mDataset;
     private Logic logic;
+    private int sessionSubs, tabNumber;
+    private Context context;
+    private Toast toast;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SubscribeAdapter(List<NameIdPair> myDataset) {
+    public SubscribeAdapter(List<NameIdPair> myDataset, Context context, int sessionSubs, int tabNumber) {
         mDataset = myDataset;
         logic = Logic.getSingleton();
         subbedIds = logic.getSubscriptionIDs();
+        this.context = context;
+        this.sessionSubs = sessionSubs;
+        this.tabNumber = tabNumber;
+    }
+
+    public int getSessionSubs() {
+        return sessionSubs;
     }
 
     // Provide a reference to the views for each data item
@@ -105,30 +117,29 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             @Override
             public void onClick(View view) {
                 if (holder.subHiveSwitch.isChecked()) {
+                    if (tabNumber != 3) {
+                        --sessionSubs;
+                    }
                     logic.unsubscribeHive(mDataset.get(position).getID());
                     holder.subHiveSwitch.setChecked(false);
                 } else {
-                    logic.subscribeHive(mDataset.get(position).getID());
-                    holder.subHiveSwitch.setChecked(true);
+                    if (sessionSubs < 10) {
+                        if (tabNumber != 3) {
+                            sessionSubs++;
+                        }
+                        logic.subscribeHive(mDataset.get(position).getID());
+                        holder.subHiveSwitch.setChecked(true);
+                    } else {
+                        if (toast != null) {
+                            toast.cancel();
+                        }
+                        toast = Toast.makeText(context, "Save subscriptions before adding more", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
                 subbedIds = logic.getSubscriptionIDs();
             }
         });
-
-        // Runs when the subscribe switch is being switched on/off
-        holder.subHiveSwitch.setOnClickListener(
-                v -> {
-                    if (holder.subHiveSwitch.isChecked()) {
-                        // Calls the DAL to save the id in preferenceManager
-                        logic.subscribeHive(mDataset.get(position).getID());
-                    } else {
-                        // Deletes the hive id from the preferenceManager of saved subs in DAL
-                        logic.unsubscribeHive(mDataset.get(position).getID());
-                    }
-                    subbedIds = logic.getSubscriptionIDs();
-                }
-        );
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
