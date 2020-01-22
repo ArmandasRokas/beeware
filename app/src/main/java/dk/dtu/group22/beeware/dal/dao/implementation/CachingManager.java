@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,6 +97,7 @@ public class CachingManager {
             List<Measurement> list = fetchFromHiveTool(hive, sinceTime,
                     new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()));
             if (list != null) {
+
                 hive.getMeasurements().addAll(0, list);
                 isUpdated = true;
             }
@@ -108,6 +110,7 @@ public class CachingManager {
             }
         }
         if (isUpdated && ctx != null) {
+            trimMeasurements(hive); // Remove older measurements
             writeToFile(hive);
         }
     }
@@ -191,6 +194,39 @@ public class CachingManager {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Clean out old dates automatically on the first and fifteenth of the month.
+     * If more than 16 month are saved, the arraylist is shortened to 14 months.
+     *
+     * @param hive A hive to check for old data
+     * @pre The the hive object has measurements
+     * @post The hive object is guaranteed to have no old measurements.
+     */
+    private void trimMeasurements(Hive hive) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.add(Calendar.YEAR, -1);
+        cal.add(Calendar.MONTH, -4);
+
+        List<Measurement> measurements = hive.getMeasurements();
+        Timestamp sixteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
+
+        if (measurements.get(0).getTimestamp().before(sixteenMonthsAgo)) {
+
+            System.out.println("HiveObject: Cleaning up old data from hive " + hive.getId() + ", " + hive.getName() + ".");
+
+            cal.add(Calendar.MONTH, 2);
+            Timestamp fourteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
+
+            while (measurements.get(0).getTimestamp().before(fourteenMonthsAgo)) {
+
+                measurements.remove(0);
+
+            }
+            hive.setMeasurements(measurements);
         }
     }
 

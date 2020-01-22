@@ -81,7 +81,7 @@ public class GraphViewModel extends ViewModel {
         Timestamp startDate = new Timestamp(cal.getTimeInMillis());
         startDate = roundDateToMidnight(startDate);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
 
             Timestamp a = new Timestamp(startDate.getTime());
             Timestamp b = new Timestamp(endDate.getTime());
