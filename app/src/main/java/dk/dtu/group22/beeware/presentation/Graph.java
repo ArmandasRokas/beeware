@@ -116,10 +116,6 @@ public class Graph extends CustomActivity {
 
     /**
      * Setter called from the GraphTimeSelctionFragment to update local fromDate and toDate.
-     *
-     * @param fromDate
-     * @param toDate
-     * @param spinnerItem
      */
     public void setPeriod(long fromDate, long toDate, int spinnerItem) {
         this.fromDate = fromDate;
@@ -134,6 +130,8 @@ public class Graph extends CustomActivity {
      * 2. Initiate importing data from Web
      * 3. Set listeners for switches.
      * 4. Render the GraphView
+     * @pre A valid ID is aquired, and connection to hive tool is working
+     * @post The graphs are shown
      */
     public void renderGraph() {
         // Find chart in xml
@@ -350,9 +348,10 @@ public class Graph extends CustomActivity {
     /**
      * Show and hide y axis info (values, units and grid lines), based on y-axis specified (left,
      * right or luminocity).
-     *
      * @param show
+     * Should the axis be shown after running this method.
      * @param yAxis
+     * Axis to show or hide.
      */
     private void showYAxisDetails(boolean show, char yAxis) {
         if (show && yAxis == 'r') {
@@ -378,6 +377,7 @@ public class Graph extends CustomActivity {
     /**
      * Updates the view based on the switch for weight graph.
      * @param shown
+     * Is the graph already shown.
      */
     public void toggleWeight(boolean shown) {
         for (LineDataSet list : lineDataSetWeight) {
@@ -393,6 +393,7 @@ public class Graph extends CustomActivity {
     /**
      * Updates the view based on switch for temperature graph.
      * @param shown
+     * * Is the graph already shown.
      */
     public void toggleTemperature(boolean shown) {
         for (LineDataSet list : lineDataSetTemperature) {
@@ -409,7 +410,7 @@ public class Graph extends CustomActivity {
     /**
      * Updates the view based on switch for luminocity graph.
      * @param shown
-     * Is the graph currently shown?
+     * Is the graph already shown.
      */
     public void toggleSunlight(boolean shown) {
         for (LineDataSet list : lineDataSetSunlight) {
@@ -424,6 +425,7 @@ public class Graph extends CustomActivity {
     /**
      * Updates the view based on switch for humidity graph.
      * @param shown
+     * Is the graph already shown.
      */
     public void toggleHumidity(boolean shown) {
         for (LineDataSet list : lineDataSetHumidity) {
@@ -452,7 +454,9 @@ public class Graph extends CustomActivity {
     /**
      * Updates the graph view with a new selected time interval.
      * @param from
+     * Start of period.
      * @param to
+     * End of period.
      */
     public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
         graphViewModel.updateTimePeriod(from, to);
@@ -536,6 +540,10 @@ public class Graph extends CustomActivity {
 
     /**
      * This Class downloads data and initializes drawing of graphs.
+     * @pre
+     * The Activity has a valid hive ID and connection to Hive tool.
+     * @post
+     * First week of data is downloaded, and rendergraph() is called.
      */
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override

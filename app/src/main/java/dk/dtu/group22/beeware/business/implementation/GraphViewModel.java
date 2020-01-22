@@ -52,6 +52,7 @@ public class GraphViewModel extends ViewModel {
     /**
      * Gets a hive object from Logic, updates local object to this value.
      * @param id
+     * ID of hive to download
      */
     public void downloadHiveData(int id) {
         fromDate = roundDateToMidnight(fromDate);
@@ -62,7 +63,7 @@ public class GraphViewModel extends ViewModel {
 
     /**
      * Downloads hive data for one year back in background, updates local object.
-     * Uses network, and is cancelled when the activity is closed.
+     * Uses network.
      * @param id
      * A hive ID
      * @pre A hive ID is aquired
@@ -371,28 +372,6 @@ public class GraphViewModel extends ViewModel {
             if (isInInterval(measure.getTimestamp())) {
                 float humid = (float) measure.getHumidity();
                 res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height
-            }
-        }
-        return res;
-    }
-
-  // TODO: remove?
-    /**
-     * @param hive
-     * @param start
-     * @param end
-     * @return A list containing measurements, in correct order, from start to end.
-     */
-    // Filters time intervals from a list,
-    // Only picks midnight when time interval is greater than 24hours
-    public List<Measurement> filterTimeInterval(Hive hive, Timestamp start, Timestamp end) {
-        //TODO: Optimize with binary search.
-        List<Measurement> res = new ArrayList<>();
-        for (Measurement measure : hive.getMeasurements()) {
-            Timestamp t = measure.getTimestamp();
-            // start <= t <= end
-            if (start.compareTo(t) <= 0 && t.compareTo(end) <= 0) {
-                res.add(measure);
             }
         }
         return res;
