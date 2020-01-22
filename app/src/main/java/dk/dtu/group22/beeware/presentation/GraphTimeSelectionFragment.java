@@ -176,7 +176,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFromGraph", false);
             bundle.putInt("hiveID", hiveid);
-            ConfigNewtimeFragment fragment = new ConfigNewtimeFragment();
+            ConfigurationFragment fragment = new ConfigurationFragment();
             fragment.setArguments(bundle);
             fragment.show(getFragmentManager(), "configurationDialog");
         } else if (v == resetButton) {

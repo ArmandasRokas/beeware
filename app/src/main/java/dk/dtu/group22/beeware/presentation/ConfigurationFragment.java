@@ -13,18 +13,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import dk.dtu.group22.beeware.R;
-import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
-public class ConfigNewtimeFragment extends DialogFragment implements View.OnClickListener {
+public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, configTV, configInfo;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
     private boolean cameFromGraphAct;
 
-    public ConfigNewtimeFragment() {
+    public ConfigurationFragment() {
         // Required empty public constructor
     }
 
@@ -38,7 +37,7 @@ public class ConfigNewtimeFragment extends DialogFragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_config_newtime, container, false);
+        return inflater.inflate(R.layout.fragment_configuration, container, false);
     }
 
     @Override

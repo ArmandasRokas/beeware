@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -41,7 +39,6 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dto.Hive;
 
 import static java.util.Arrays.asList;
 
@@ -123,7 +120,7 @@ public class Graph extends CustomActivity {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFromGraph", true);
             bundle.putInt("hiveID", hiveId);
-            ConfigNewtimeFragment fragment = new ConfigNewtimeFragment();
+            ConfigurationFragment fragment = new ConfigurationFragment();
             fragment.setArguments(bundle);
             fragment.show(getSupportFragmentManager(), "configurationDialog");
         }
