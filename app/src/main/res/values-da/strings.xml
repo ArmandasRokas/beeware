@@ -55,18 +55,14 @@
     <string name="period_label">Periode</string>
     <string name="select_data_period_button">Vælg en periode</string>
 
-    <!-- Configure prompt xml -->
-    <string name="PromptTitle">Konfigurering</string>
-    <string name="PromptMessage">Du har abonneret på bistader der ikke er konfigureret endnu.\nVil du konfigurere dem nu?</string>
-    <string name="SetDefaults">SÆT STANDARDER</string>
-    <string name="ConfigureNow">KONFIGURER</string>
-
     <!-- Configuration xml -->
     <string name="ConfigSave">GEM</string>
     <string name="ConfigTemp">Temperatur (\u2103)</string>
     <string name="ConfigWeight">Vægt (kg)</string>
-    <string name="ConfiguringHive">Konfigurerer:</string>
-    <string name="ConfigInformation">Disse numre indikerer værdien hvor bistadets ikon vil skifte fra grøn til gul.</string>
+    <string name="FromFragConfigTitle">Konfigurerer:</string>
+    <string name="FromGraphConfigTitle">Konfigurer det nye bistade:</string>
+    <string name="FromFragConfigInfo">Numrene herunder indikerer værdien hvor bistadets ikon på oversigten vil skifte fra grøn til gul.</string>
+    <string name="FromGraphConfigInfo">Dette bistade er et nyt abonnement, som ikke er blevet konfigureret endnu.\nNumrene herunder indikerer værdien hvor bistadets ikon på oversigten vil skifte fra grøn til gul.\nDette kan til enhver tid blive indstillet under indstillinger i den nedre højre redigeringsmenu</string>
     <string name="SettingsButtonDescription">Knap til indstillinger</string>
     <string name="no_graphs_selected">Ingen graf valgt.</string>
 

@@ -15,12 +15,14 @@ import androidx.fragment.app.DialogFragment;
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigNewtimeFragment extends DialogFragment implements View.OnClickListener {
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton;
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, configTV, configInfo;
     private EditText weightIndicatorNum, tempIndicatorNum;
-    private GraphViewModel listener;
     private Logic logic = Logic.getSingleton();
+    private Hive hive;
+    private boolean cameFromGraphAct;
 
     public ConfigNewtimeFragment() {
         // Required empty public constructor
@@ -54,15 +56,23 @@ public class ConfigNewtimeFragment extends DialogFragment implements View.OnClic
         weightIndicatorNum = view.findViewById(R.id.weightIndicatorNum);
         tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
 
-        //weightIndicatorNum.setInputType(InputType.TYPE_NULL);
-        //tempIndicatorNum.setInputType(InputType.TYPE);
+        configTV = view.findViewById(R.id.config_tv);
+        configInfo = view.findViewById(R.id.config_info);
 
-        listener = ((Graph) getActivity()).getGraphViewModel();
+        cameFromGraphAct = getArguments().getBoolean("isFromGraph", false);
+        if (cameFromGraphAct) {
+            configTV.setText(getString(R.string.FromGraphConfigTitle));
+            configInfo.setText(getString(R.string.FromGraphConfigInfo));
+        }
+        int hiveid = getArguments().getInt("hiveID", 0);
+        if (hiveid != 0) {
+            hive = logic.getHive(hiveid);
+        }
 
-        hiveNameTV.setText(listener.getHive().getName());
+        hiveNameTV.setText(hive.getName());
 
-        weightIndicatorNum.setText(Integer.toString(listener.getHive().getWeightIndicator()));
-        tempIndicatorNum.setText(Integer.toString(listener.getHive().getTempIndicator()));
+        weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
+        tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
     }
 
     @Override
@@ -70,21 +80,22 @@ public class ConfigNewtimeFragment extends DialogFragment implements View.OnClic
         super.onDismiss(dialog);
 
         if (weightIndicatorNum.getText().toString().isEmpty()) {
-            weightIndicatorNum.setText(Integer.toString(listener.getHive().getWeightIndicator()));
+            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
         }
         if (tempIndicatorNum.getText().toString().isEmpty()) {
-            tempIndicatorNum.setText(Integer.toString(listener.getHive().getTempIndicator()));
+            tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
         }
 
-        listener.getHive().setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
-        listener.getHive().setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+        hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
+        hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
 
-        System.out.println("weight indicator : " + listener.getHive().getWeightIndicator());
-        System.out.println("temp indicator : " + listener.getHive().getTempIndicator());
+        System.out.println("weight indicator : " + hive.getWeightIndicator());
+        System.out.println("temp indicator : " + hive.getTempIndicator());
 
-        if (listener.getHive().getHasBeenConfigured() == false) {
-            logic.setIsConfigured(listener.getHive().getId(), true);
+        if (hive.getHasBeenConfigured() == false) {
+            logic.setIsConfigured(hive.getId(), true);
         }
+
     }
 
     @Override

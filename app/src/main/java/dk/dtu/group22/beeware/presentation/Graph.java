@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -38,6 +40,8 @@ import java.util.Locale;
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
+import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
 import static java.util.Arrays.asList;
 
@@ -94,6 +98,7 @@ public class Graph extends CustomActivity {
             public void onClick(View v) {
                 GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
                 Bundle bundle = new Bundle();
+                bundle.putInt("hiveID", hiveId);
                 if (fromDate != 0L && toDate != 0L) {
                     bundle.putLong("selected1", fromDate);
                     bundle.putLong("selected2", toDate);
@@ -112,6 +117,16 @@ public class Graph extends CustomActivity {
         downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
         downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
         downloadAsyncTask.execute(hiveId);
+
+
+        if (!Logic.getSingleton().getHive(hiveId).getHasBeenConfigured()) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFromGraph", true);
+            bundle.putInt("hiveID", hiveId);
+            ConfigNewtimeFragment fragment = new ConfigNewtimeFragment();
+            fragment.setArguments(bundle);
+            fragment.show(getSupportFragmentManager(), "configurationDialog");
+        }
     }
 
     /**

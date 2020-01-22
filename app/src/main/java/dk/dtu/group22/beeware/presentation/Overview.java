@@ -109,13 +109,6 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                 }
 
                 progressBar.setVisibility(View.INVISIBLE);
-                for (Hive hive : hives) {
-                    if (!hive.getHasBeenConfigured()) {
-                        ConfigPromptFragment cpf = new ConfigPromptFragment();
-                        cpf.show(getSupportFragmentManager(), "ConfigurationPromptDialog");
-                        break;
-                    }
-                }
 
                 if (cachingManager.isConnectionFailed()) {
                     Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);

@@ -74,15 +74,11 @@
     <string name="select_data_period_button">Select data period</string>
     <string name="SettingsButtonDescription">Button for settings</string>
 
-    <!-- Configure prompt xml -->
-    <string name="PromptTitle">Configuration</string>
-    <string name="PromptMessage">You have subscribed to hives that are not yet configured.\nWould you like to configure them now?</string>
-    <string name="SetDefaults">SET DEFAULTS</string>
-    <string name="ConfigureNow">CONFIGURE</string>
-
     <!-- Configuration xml -->
-    <string name="ConfiguringHive">Configuring:</string>
-    <string name="ConfigInformation">These numbers indicate at which value the Hive\'s icon will change from green to yellow.</string>
+    <string name="FromFragConfigTitle">Configuring:</string>
+    <string name="FromGraphConfigTitle">Configure the new hive:</string>
+    <string name="FromFragConfigInfo">The numbers below indicate at which value the Hive\'s icon on the overview will change from green to yellow.</string>
+    <string name="FromGraphConfigInfo">This is a newly subscribed hive that is not yet configured.\nThe numbers below indicate at which value the Hive\'s icon on the overview will change from green to yellow.\nThis can always be adjusted under settings in the bottom left edit menu.</string>
     <string name="ConfigWeight">Weight (kg)</string>
     <string name="ConfigTemp">Temperature (\u2103) </string>
     <string name="ConfigSave">SAVE</string>

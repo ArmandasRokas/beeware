@@ -32,6 +32,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     private long selectedDate = 0L;
     private int spinnerItem = 0;
     private int skipTwice = 3;
+    private int hiveid;
 
     // Default empty constructor
     public GraphTimeSelectionFragment() {
@@ -67,6 +68,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
         resetButton.setOnClickListener(this);
+
+        hiveid = getArguments().getInt("hiveID", 0);
 
         // Set starting from and to date or just to date
         long givenFromDate = this.getArguments().getLong("selected1");
@@ -170,7 +173,12 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                     new Timestamp(selectedDate + spinnerSelection));
             this.dismiss();
         } else if (v == settingsButton) {
-            new ConfigNewtimeFragment().show(getFragmentManager(), "configurationDialog");
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFromGraph", false);
+            bundle.putInt("hiveID", hiveid);
+            ConfigNewtimeFragment fragment = new ConfigNewtimeFragment();
+            fragment.setArguments(bundle);
+            fragment.show(getFragmentManager(), "configurationDialog");
         } else if (v == resetButton) {
             spinnerSelection = 0;
             selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
