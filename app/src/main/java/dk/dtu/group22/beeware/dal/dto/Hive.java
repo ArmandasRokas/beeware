@@ -98,9 +98,9 @@ public class Hive implements Serializable, Comparable<Hive> {
 
     public void resetStatuses() {
         this.illumStatus = Status.UNDEFINED;
-        this.humidStatus = Status.UNDEFINED;
-        this.tempStatus = Status.UNDEFINED;
-        this.weightStatus = Status.UNDEFINED;
+        this.humidStatus = Status.OK;
+        this.tempStatus = Status.OK;
+        this.weightStatus = Status.OK;
     }
 
     public int getTempIndicator() {

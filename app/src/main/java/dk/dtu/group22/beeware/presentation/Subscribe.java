@@ -95,6 +95,8 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         loadListElements(false);
     }
 
+ 
+
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
         View view = this.getCurrentFocus();
@@ -111,8 +113,11 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         return 0;
     }
 
-    // Gets the names and ids that is possible to subscribe to,
-    // and adds them to the list via the 'SubscribeAdapter' class
+   /**
+     * Gets all hive names and ids
+     * @param run
+     * A boolean of whether to run the code or cancel it
+     */
     private void loadListElements(boolean run) {
         AsyncTask asyncTask = new AsyncTask() {
             String errorMsg = null;
@@ -157,7 +162,9 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    // Splits all the hives into the ones that has been subscribed and the ones that has not
+    /**
+     * Splits the hive array into three: active, inactive and subscribed ones
+     */
     private void splitSubscriptions() {
         List<Integer> subbedIds = logic.getSubscriptionIDs();
 
@@ -288,7 +295,9 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    // A textwather to see if anything is being written in the edittext that applies it
+    /**
+     * Searches through hives when something is being written in the search bar
+     */
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

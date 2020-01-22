@@ -52,6 +52,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         cachingManager = CachingManager.getSingleton();
         cachingManager.setCtx(ctx);
 
+        // Finding views
         gridView = findViewById(R.id.gridView);
         listEmptyTv = findViewById(R.id.emptyListTV);
         progressBar = findViewById(R.id.progressBarOverview);
@@ -59,6 +60,11 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         subHiveButton.setOnClickListener(this);
     }
 
+    /***
+     * Sets up the overviews list of hives
+     * @param run
+     * A boolean of whether to run the async task or cancel it
+     */
     // Shouldnt do-in-background check if it is cancelled?
     void setupSubscribedHives(boolean run) {
         AsyncTask asyncTask = new AsyncTask() {
@@ -146,7 +152,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
     }
 
     @Override
-    public void onResume() {  // After a pause OR at startup
+    public void onResume() {
         super.onResume();
         checkInternetConnection();
         setupSubscribedHives(true);
@@ -170,8 +176,11 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         this.configureNow = configureNow;
     }
 
-    // This code is from an answer on stackoverflow.com by Levite Dec 5 '14 - it checks whether device has an internet connection
-    // Link to thread: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out?page=1&tab=votes#tab-top
+    /***
+     * Checks the devices internet connection
+     * This code is from an answer on stackoverflow.com by Levite Dec 5 '14 - it checks whether device has an internet connection
+     * Link to thread: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out?page=1&tab=votes#tab-top
+     */
     public void checkInternetConnection() {
         new AsyncTask<String, String, String>() {
             @Override

@@ -25,6 +25,10 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 import dk.dtu.group22.beeware.presentation.Overview;
 
+/**
+ * The logic class, which is intended to do the bulk of the work in regards to managing and caching
+ * hive data, and interacting with the HiveTool database.
+ */
 public class Logic {
     private CachingManager cachingManager;
     private ISubscription subscriptionHivetool;
@@ -33,32 +37,83 @@ public class Logic {
     private final static Logic logic = new Logic();
 
 
+    /**
+     * @pre logic must be constructed
+     * @post does the return
+     * @inv Does not modify anything
+     * @return The logic singleton stored in the class itself
+     */
     public static Logic getSingleton() {
         return logic;
     }
 
-    public Logic() {
+    /**
+     * Logic constructor which initializes the subsystems used to managing cache and subscriptions.
+     */
+    private Logic() {
         this.cachingManager = CachingManager.getSingleton();
         this.subscriptionHivetool = new SubscriptionHivetool();
     }
 
+    /**
+     * Call context in order to access and modify preferenceManager
+     * @param context
+     * An Android Framework context
+     */
     public void setContext(Context context) {
         this.ctx = context;
         this.subscriptionManager = new SubscriptionManager(context);
     }
 
+    /**
+     * Subscribes a hive
+     * @param id
+     * An id of a specific hive on HiveTools
+     * @pre context of the application is given by setContext, where sharedPreferences
+     * is set up according to the needs of the subscriptionManager (look there)
+     * @post Saves the id persistently in the application
+     * @inv It only modifies sharedPreferences
+     */
     public void subscribeHive(int id) {
         subscriptionManager.saveSubscription(id);
     }
 
+    /**
+     * Returns the hives that have been subscribed to
+     * @pre context of the application is given by setContext, where sharedPreferences
+     * is set up according to the needs of the subscriptionManager (look there)
+     * @post Returns a list
+     * @inv Does not modify any data
+     * @return a list of ids, of each hive subscribed to.
+     */
     public List<Integer> getSubscriptionIDs() {
         return subscriptionManager.getSubscriptions();
     }
 
+    /**
+     * Removes a hive that was previously subscribed to
+     * @param id
+     * An id of a hive that was, before the call, subscribed to.
+     * @pre the id is among of the hives previously subscribed to. Context of the application is given by setContext, where sharedPreferences
+     *       is set up according to the needs of the subscriptionManager (look there)
+     * @post the list of hives have been modified to not contain 'id'
+     * @inv it only modifies sharedPreferences, see subscriptionManager (look there)
+     */
     public void unsubscribeHive(int id) {
         subscriptionManager.deleteSubscription(id);
     }
 
+    /**
+     * Get hives that have been subscribed to, and guarantee that we have the most current data for daysDelta number of days
+     * @param daysDelta
+     * The number of days we want to have data for. In short we will have data for 24 hours times daysDelta
+     *
+     * @pre setContext have been called.
+     * @post All hives are guaranteed to have the number of days of data.
+     * @inv Can only risk modifying hives, if the number of days of data is not present.
+     * @return
+     * A list of hives that have been subscribed to.
+     */
     public List<Hive> getSubscribedHives(int daysDelta) {
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
@@ -81,6 +136,18 @@ public class Logic {
         return hivesWithMeasurements;
     }
 
+    /**
+     * Returns a hive of a specific ID. The hive is guaranteed to have data from sinceTime till untilTime
+     * @param id
+     * The id of a specific hive
+     * @param sinceTime
+     * @param untilTime
+     * @pre the id must exist in the hivetool database.
+     * @post All hives are guaranteed to have the number of days of data.
+     * @inv Can only risk modifying hives, if the number of days of data is not present.
+     * @return
+     * A hive, with data specified by the parameters.
+     */
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
 
         Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
@@ -89,6 +156,16 @@ public class Logic {
         return hive;
     }
 
+    /**
+     *
+     * @param id
+     * The identifier of a specific hive in the database.
+     * @pre The hive with identifier 'id' must have been cached.
+     * @post Returns a cached hive.
+     * @inv It does not modify any data
+     * @return Hive with the identifier id, if it has been cached. Otherwise returns null.
+     * The time complexity is linear with the number of hives that have been cached.
+     */
     public Hive getHive(int id) {
         Hive hive = cachingManager.getHive(id);
         return hive;
@@ -122,6 +199,13 @@ public class Logic {
      *             That means that if it has two statuses for Weight, but one is of  level Ok,
      *             and another is of level Danger, then it will set the weight
      *             status of the hive to Danger
+     */
+    /**
+     * Calculates various statuses on the hive and stores it in the hive parameter
+     * @pre Hive has at least two days of data
+     * @post Hive will be modified to have various statuses calculated. Statuses will remain
+     * undefined if hive is less than two days old.
+      * @param hive
      */
     public void calculateHiveStatus(Hive hive) {
         hive.resetStatuses();
@@ -277,29 +361,36 @@ public class Logic {
                 Hive.Status worst = worst(tmp.getStatus(), hive.getTempStatus());
                 hive.setTempStatus(worst);
             } else if (tmp.getVariable() == Hive.Variables.OTHER) {
-                // Do nothing
+                if(tmp.getReasoning() == Hive.DataAnalysis.CASE_DELTA_CALCULATIONS && tmp.getStatus() == Hive.Status.UNDEFINED){
+                    hive.setTempStatus(Hive.Status.UNDEFINED);
+                    hive.setWeightStatus(Hive.Status.UNDEFINED);
+                    hive.setHumidStatus(Hive.Status.UNDEFINED);
+                    hive.setIllumStatus(Hive.Status.UNDEFINED);
+                }
             }
         }
         hive.setStatusIntrospection(statusReasonings);
     }
 
     private Hive.Status worst(Hive.Status a, Hive.Status b) {
-        if (a == Hive.Status.UNDEFINED) {
+
+        if (a == Hive.Status.OK) {
             return b;
         }
-        if (b == Hive.Status.UNDEFINED) {
+
+        if (b == Hive.Status.OK) {
             return a;
+        }
+
+        if (a == Hive.Status.UNDEFINED || b == Hive.Status.UNDEFINED) {
+            return Hive.Status.UNDEFINED;
         }
 
         if (a == Hive.Status.DANGER || b == Hive.Status.DANGER) {
             return Hive.Status.DANGER;
         }
 
-        if (b == Hive.Status.WARNING || a == Hive.Status.WARNING) {
-            return Hive.Status.WARNING;
-        }
-
-        return Hive.Status.OK;
+        return Hive.Status.WARNING;
     }
 
     private void setCurrValues(Hive hive) {

@@ -41,6 +41,9 @@ public class OverviewAdapter extends BaseAdapter {
         return R.drawable.img_beehive;
     }
 
+    /***
+     * Sets up the individual overview hives with names and measurement values
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
