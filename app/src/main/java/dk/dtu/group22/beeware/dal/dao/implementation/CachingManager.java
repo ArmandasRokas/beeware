@@ -209,8 +209,7 @@ public class CachingManager {
     private void trimMeasurements(Hive hive) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.YEAR, -1);
-        cal.add(Calendar.MONTH, -4);
+        cal.add(Calendar.MONTH, -16);
 
         List<Measurement> measurements = hive.getMeasurements();
         Timestamp sixteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
@@ -222,13 +221,15 @@ public class CachingManager {
             cal.add(Calendar.MONTH, 2);
             Timestamp fourteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
 
-            while (measurements.get(0).getTimestamp().before(fourteenMonthsAgo)) {
-
-                measurements.remove(0);
-
+            List<Measurement> temp = new ArrayList<Measurement>();
+            for (Measurement mes : measurements){
+                if (mes.getTimestamp().after(fourteenMonthsAgo)){
+                    temp.add(mes);
+                }
             }
-            System.out.println("Oldest date: " + measurements.get(0).getTimestamp().toString());
-            hive.setMeasurements(measurements);
+
+            System.out.println("Oldest date: " + temp.get(0).getTimestamp().toString());
+            hive.setMeasurements(temp);
         }
     }
 
