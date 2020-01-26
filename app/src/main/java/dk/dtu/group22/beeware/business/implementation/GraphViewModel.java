@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.github.mikephil.charting.data.Entry;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +55,7 @@ public class GraphViewModel extends ViewModel {
      * @param id
      * ID of hive to download
      */
-    public void downloadHiveData(int id) {
+    public void downloadHiveData(int id) throws IOException {
         fromDate = roundDateToMidnight(fromDate);
         hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
         Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
@@ -81,7 +82,7 @@ public class GraphViewModel extends ViewModel {
         Timestamp startDate = new Timestamp(cal.getTimeInMillis());
         startDate = roundDateToMidnight(startDate);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) try {
 
             Timestamp a = new Timestamp(startDate.getTime());
             Timestamp b = new Timestamp(endDate.getTime());
@@ -99,6 +100,8 @@ public class GraphViewModel extends ViewModel {
             cal.setTimeInMillis(endDate.getTime());
             cal.add(Calendar.MONTH, -2);
             startDate = new Timestamp(cal.getTimeInMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         backgroundDownloadInProgress = false;
         Log.d(TAG, "downloadOldDataInBackground: Background download Done.");

@@ -9,6 +9,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,7 +122,13 @@ public class Logic {
         List<Hive> hivesWithMeasurements = new ArrayList<>();
         List<Thread> threads = new ArrayList<>();
         for (int id : subscribedHives) {
-            Runnable runnable = () -> hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
+            Runnable runnable = () -> {
+                try {
+                    hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
             Thread thread = new Thread(runnable);
             threads.add(thread);
             thread.start();
@@ -148,7 +155,7 @@ public class Logic {
      * @return
      * A hive, with data specified by the parameters.
      */
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
 
         Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
         setCurrValues(hive);

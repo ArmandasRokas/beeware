@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
@@ -66,7 +67,7 @@ public class CachingManager {
         return CACHING_MANAGER;
     }
 
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
         Hive hive = findCachedHive(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
@@ -168,7 +169,7 @@ public class CachingManager {
         return null;
     }
 
-    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) {
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
 
         Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);

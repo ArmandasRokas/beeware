@@ -22,7 +22,7 @@ import dk.dtu.group22.beeware.dal.dto.Measurement;
 public class WebScraper {
     final int everyNth = 3; // Keep every everyNth measurement (extractDataFromCsv).
 
-    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) {
+    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
@@ -88,7 +88,7 @@ public class WebScraper {
      * @param hiveID
      * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
-    private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) {
+    private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
         // Calculates number of days
         double milliseconds = (untilTime.getTime() - sinceTime.getTime()) / 1000;
         //double numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
@@ -98,13 +98,16 @@ public class WebScraper {
         String untilHours = untilTime.toString().split(" ")[1].split(":")[0];
         String untilMins = untilTime.toString().split(" ")[1].split(":")[1];
         Document doc = null;
-        try {
-            doc = Jsoup.connect("http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
+            String url = "http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
                     hiveID + "&start_time=" +
                     sinceStr + "+23%3A59%3A59&end_time=" +
                     untilStr + "+" + untilHours + "%3A" + untilMins + "%3A59&hive_id=" + hiveID + "&number_of_days=" +
-                    numOfDays + "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv")
+                    numOfDays + "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
+        System.out.println("Henter URL: "+url);
+            doc = Jsoup.connect(url)
                     .timeout(100 * 1000).maxBodySize(4000000).get();
+            /* Catch-blokke fjernet af Jacob:
+            Send de exceptions der opstår videre til rette modtager i stedet for at æde som og få følgefejl
         } catch (UnknownHostException u) {
             //u.printStackTrace();
             System.out.println("Unknown host.");
@@ -115,7 +118,8 @@ public class WebScraper {
             //e.printStackTrace();
             System.out.println("IO Exception");
         }
-        Elements nameElement = doc.getElementsByTag("title");
+             */
+        Elements nameElement = doc.getElementsByTag("title"); // her kom en nullpointerexception som følgefejl af problemer med at hente data
         String name = nameElement.get(0).wholeText().split(": ")[1];
 
         Elements elements = doc.getElementsByTag("div");
