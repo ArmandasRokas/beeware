@@ -150,6 +150,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                     status.setText(errorMsg);
                 } else {
                     splitSubscriptions();
+                    changeTab(tab);
                 }
             }
         };
@@ -172,26 +173,17 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         inactive = new ArrayList<>();
         subscriptions = new ArrayList<>();
 
-        boolean wasSubscribed;
-
         // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
-            wasSubscribed = false;
-            for (int id : subbedIds) {
-                if (allHives.get(i).getID() == id) {
+            if (subbedIds.contains(allHives.get(i).getID())) {
                     // The hive is in the list of subbed ids, so it adds it to
                     // the list of subscribed hives and removes it from the active
                     subscriptions.add(allHives.get(i));
-                    wasSubscribed = true;
-                    break;
-                }
             }
-            if (!wasSubscribed) {
-                if (allHives.get(i).isActive()) {
-                    active.add(allHives.get(i));
-                } else {
-                    inactive.add(allHives.get(i));
-                }
+            if (allHives.get(i).isActive()) {
+                active.add(allHives.get(i));
+            } else {
+                inactive.add(allHives.get(i));
             }
         }
 
@@ -199,8 +191,6 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         subscriptionsTextbutton.setEnabled(true);
         inactiveTextbutton.setEnabled(true);
         searchField.setEnabled(true);
-
-        changeTab(tab);
     }
 
     private void changeTab(int tab) {
@@ -291,6 +281,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         } else if (view == inactiveTextbutton) {
             changeTab(2);
         } else if (view == subscriptionsTextbutton) {
+            splitSubscriptions(); // Indlæs igen, i fald man har tilføjet nogle fra de andre faner
             changeTab(3);
         }
     }
