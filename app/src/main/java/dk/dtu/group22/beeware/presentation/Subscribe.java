@@ -176,14 +176,15 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         // Checks each hive if it is in the list of subbeds ids
         for (int i = 0; i < allHives.size(); i++) {
             if (subbedIds.contains(allHives.get(i).getID())) {
-                    // The hive is in the list of subbed ids, so it adds it to
-                    // the list of subscribed hives and removes it from the active
-                    subscriptions.add(allHives.get(i));
-            }
-            if (allHives.get(i).isActive()) {
-                active.add(allHives.get(i));
+                // The hive is in the list of subbed ids, so it adds it to
+                // the list of subscribed hives and removes it from the active
+                subscriptions.add(allHives.get(i));
             } else {
-                inactive.add(allHives.get(i));
+                if (allHives.get(i).isActive()) {
+                    active.add(allHives.get(i));
+                } else {
+                    inactive.add(allHives.get(i));
+                }
             }
         }
 
