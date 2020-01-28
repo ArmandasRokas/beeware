@@ -95,7 +95,6 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         loadListElements(false);
     }
 
- 
 
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
@@ -113,10 +112,10 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         return 0;
     }
 
-   /**
+    /**
      * Gets all hive names and ids
-     * @param run
-     * A boolean of whether to run the code or cancel it
+     *
+     * @param run A boolean of whether to run the code or cancel it
      */
     private void loadListElements(boolean run) {
         AsyncTask asyncTask = new AsyncTask() {
@@ -179,12 +178,12 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                 // The hive is in the list of subbed ids, so it adds it to
                 // the list of subscribed hives and removes it from the active
                 subscriptions.add(allHives.get(i));
+            }
+
+            if (allHives.get(i).isActive()) {
+                active.add(allHives.get(i));
             } else {
-                if (allHives.get(i).isActive()) {
-                    active.add(allHives.get(i));
-                } else {
-                    inactive.add(allHives.get(i));
-                }
+                inactive.add(allHives.get(i));
             }
         }
 
@@ -249,7 +248,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTypeface(null, Typeface.BOLD);
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff8624"));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTypeface(null, Typeface.BOLD);
-        } else if (tab == 3){
+        } else if (tab == 3) {
             // User wants to view their subscriptions
             if (subscriptions.size() == 0) {
                 status.setVisibility(View.VISIBLE);
