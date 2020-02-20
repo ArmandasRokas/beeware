@@ -6,6 +6,7 @@ import android.graphics.DashPathEffect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Switch;
@@ -26,6 +27,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Timestamp;
@@ -42,7 +46,7 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 
 import static java.util.Arrays.asList;
 
-public class Graph extends CustomActivity {
+public class Graph extends CustomActivity implements OnChartGestureListener {
     private long fromDate = 0L, toDate = 0L;
     private int spinnerItem;
     private GraphViewModel graphViewModel;
@@ -61,6 +65,7 @@ public class Graph extends CustomActivity {
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
     private final String TAG = "Graph";
+    private List<List<Entry>> weightEntries, weightEntriesEveryFifth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +160,7 @@ public class Graph extends CustomActivity {
         lineChart.setScaleYEnabled(true);
         lineChart.setScaleXEnabled(true);
         lineChart.setNoDataText(getString(R.string.noChartDataText));
-
+        lineChart.setOnChartGestureListener(this);
         // Y-axis
         rightYAxis = lineChart.getAxisRight();
         leftYAxis = lineChart.getAxisLeft();
@@ -167,7 +172,7 @@ public class Graph extends CustomActivity {
             lineDataSetHumidity = new ArrayList<>();
             lineDataSetSunlight = new ArrayList<>();
             long acceptedDelta;
-            List<List<Entry>> tmpWeight;
+            //List<List<Entry>> tmpWeight;
             List<List<Entry>> tmpTemp = new ArrayList<>();
             List<List<Entry>> tmpLight = new ArrayList<>();
             List<List<Entry>> tmpHumid = new ArrayList<>();
@@ -175,21 +180,23 @@ public class Graph extends CustomActivity {
             if (!graphViewModel.useMidnightData()) {
                 // Split weight dataset to show gaps in data correctly
                 acceptedDelta = 30 * 60 * 1000; // 30 minutes
-                tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
+                //tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
+                weightEntries = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
                 tmpTemp.add(graphViewModel.extractTemperature());
                 tmpLight.add(graphViewModel.extractIlluminance());
                 tmpHumid.add(graphViewModel.extractHumidity());
             } else {
                 acceptedDelta = 3 * 24 * 60 * 60 * 1000; // Three days
-                tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractMidnightWeight(), acceptedDelta);
+                //tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractMidnightWeight(), acceptedDelta);
+                weightEntries = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractMidnightWeight(), acceptedDelta);
                 tmpTemp.add(graphViewModel.extractMiddayTemperature());
                 tmpLight.add(graphViewModel.extractThreeDailyPointsIlluminance());
                 tmpHumid.add(graphViewModel.extractMiddayHumidity());
             }
 
             // Collect the lists of weight datasets
-            for (int i = 0; i < tmpWeight.size(); ++i) {
-                List<Entry> list = tmpWeight.get(i);
+            for (int i = 0; i < weightEntries.size(); ++i) {
+                List<Entry> list = weightEntries.get(i);
                 if (i == 0) {
                     lineDataSetWeight.add(new LineDataSet(list, getString(R.string.Weight)));
                 } else {
@@ -198,6 +205,8 @@ public class Graph extends CustomActivity {
                     lineDataSetWeight.add(tmp);
                 }
             }
+
+            generateWeightEntriesEveryFifth();
 
             // Populate datasets other than weight
             for (List<Entry> list : tmpTemp) {
@@ -354,6 +363,28 @@ public class Graph extends CustomActivity {
         }
         for (LineDataSet list : lineDataSetHumidity) {
             list.setVisible(graphViewModel.isHumidityLineVisible());
+        }
+    }
+
+    /**
+     * Generate weightEntriesEveryFifth list property which is used when
+     * a graph is zoomed out in order to minimize the amount of data points.
+     */
+    private void generateWeightEntriesEveryFifth() {
+        weightEntriesEveryFifth = new ArrayList<>();
+        for(int i = 0; i <  lineDataSetWeight.size(); i++){
+            List<Entry> weightEntriesTemp =  lineDataSetWeight.get(i).getValues();
+            List<Entry> tempWeightEntriesEveryFifth = new ArrayList<>();
+            for(int y = 0; y < weightEntriesTemp.size() ; y++){
+                if(y % 5 == 0){
+                    tempWeightEntriesEveryFifth.add(weightEntriesTemp.get(y));
+                }
+            }
+            // Add last element
+            if(weightEntries.size()-1 % 5 != 0 ){
+                tempWeightEntriesEveryFifth.add(weightEntriesTemp.get(weightEntriesTemp.size()-1));
+            }
+            weightEntriesEveryFifth.add(tempWeightEntriesEveryFifth);
         }
     }
 
@@ -616,6 +647,65 @@ public class Graph extends CustomActivity {
 
     public GraphViewModel getGraphViewModel() {
         return graphViewModel;
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+        ViewPortHandler viewPortHandler = lineChart.getViewPortHandler();
+        float currScaleX = viewPortHandler.getScaleX();
+        float currScaleY = viewPortHandler.getScaleY();
+        //System.out.println("Zoom level " + currScaleX +  " " + currScaleY);
+        if(currScaleX < 3.0){
+            setWeightEntriesEveryFifth();
+        } else{
+            setWeightEntriesAll();
+        }
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+    }
+    private void setWeightEntriesAll() {
+        for(int i = 0; i < lineDataSetWeight.size(); i++){
+            lineDataSetWeight.get(i).setValues(weightEntries.get(i));
+        }
+    }
+
+    private void setWeightEntriesEveryFifth() {
+        for(int i = 0; i < lineDataSetWeight.size(); i++){
+            lineDataSetWeight.get(i).setValues(weightEntriesEveryFifth.get(i));
+        }
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
     }
 
 }
