@@ -207,6 +207,7 @@ public class Graph extends CustomActivity implements OnChartGestureListener {
             }
 
             generateWeightEntriesEveryFifth();
+            setWeightEntriesEveryFifth();
 
             // Populate datasets other than weight
             for (List<Entry> list : tmpTemp) {
