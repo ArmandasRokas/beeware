@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -120,6 +123,14 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                     listEmptyTv.setText(R.string.YouHaveNotSubscribedToAnyHives);
                     listEmptyTv.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.INVISIBLE);
+
+                    // Adds flashing effect to the edit button
+                    final Animation animation = new AlphaAnimation(1, 0.2f); // Change alpha from fully visible to invisible
+                    animation.setDuration(500); // duration - half a second
+                    animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+                    animation.setRepeatCount(8);
+                    animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+                    subHiveButton.startAnimation(animation);
                 } else if (hives.size() == 0) {
                     listEmptyTv.setText(R.string.ErrorDataCouldNotBeFetched);
                     listEmptyTv.setVisibility(View.VISIBLE);
