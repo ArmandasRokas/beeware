@@ -10,8 +10,7 @@
     <item>
 
         <bitmap
-            android:src="@drawable/img_beehive"
+            android:src="@drawable/img_beehive_launch"
             android:gravity="center" />
-
     </item>
 </layer-list>
