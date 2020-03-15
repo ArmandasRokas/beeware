@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">A7 Beeware</string>
+    <string name="app_name" translatable="false">BeeWare</string>
 
     <!-- Preferences -->
     <string name="subscriptions" translatable="false">subscriptions</string>
