@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.business.implementation;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.PeriodicWorkRequest;
@@ -10,6 +11,7 @@ import com.yariksoffice.lingver.Lingver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import dk.dtu.group22.beeware.dal.dao.implementation.DownloadWorker;
@@ -29,7 +31,7 @@ public abstract class CustomActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("Language", MODE_PRIVATE);
 
         // Language setup
-        String pickedLang = sharedPreferences.getString("default", getResources().getSystem().getConfiguration().getLocales().get(0).toString().split("_")[0]);
+        String pickedLang = sharedPreferences.getString("default", getCurrentLocale().toString().split("_")[0]);
         System.out.println("###### " + pickedLang);
         // Language changes depending on user settings
         if (langIsSupported(pickedLang)) {
@@ -41,6 +43,16 @@ public abstract class CustomActivity extends AppCompatActivity {
         WorkManager.getInstance(getApplicationContext()).cancelAllWork();
 
     }
+
+    private Locale getCurrentLocale(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return getResources().getConfiguration().getLocales().get(0);
+        } else{
+            //noinspection deprecation
+            return getResources().getConfiguration().locale;
+        }
+    }
+
 
     @Override
     protected void onPause() {
