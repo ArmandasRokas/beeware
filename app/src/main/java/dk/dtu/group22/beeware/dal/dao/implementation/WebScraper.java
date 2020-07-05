@@ -105,7 +105,7 @@ public class WebScraper {
                     numOfDays + "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
         System.out.println("Henter URL: "+url);
             doc = Jsoup.connect(url)
-                    .timeout(100 * 1000).maxBodySize(4000000).get();
+                    .timeout(1000 * 1000).maxBodySize(4000000).get();
             /* Catch-blokke fjernet af Jacob:
             Send de exceptions der opstår videre til rette modtager i stedet for at æde som og få følgefejl
         } catch (UnknownHostException u) {
