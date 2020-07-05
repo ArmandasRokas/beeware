@@ -173,13 +173,14 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                     new Timestamp(selectedDate + spinnerSelection));
             this.dismiss();
         } else if (v == settingsButton) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFromGraph", false);
-            bundle.putInt("hiveID", hiveid);
-            ConfigurationFragment fragment = new ConfigurationFragment();
-            fragment.setArguments(bundle);
-            fragment.show(getFragmentManager(), "configurationDialog");
-        } else if (v == resetButton) {
+//            Bundle bundle = new Bundle();
+//            bundle.putBoolean("isFromGraph", false);
+//            bundle.putInt("hiveID", hiveid);
+//            ConfigurationFragment fragment = new ConfigurationFragment();
+//            fragment.setArguments(bundle);
+//            fragment.show(getFragmentManager(), "configurationDialog");
+        }
+        else if (v == resetButton) {
             spinnerSelection = 0;
             selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
             spinnerItem = 0;
