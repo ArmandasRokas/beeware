@@ -87,7 +87,7 @@ public class CachingManager {
         return null;
     }
 
-    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
+    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException {
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
         Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
 
@@ -116,15 +116,15 @@ public class CachingManager {
         }
     }
 
-    private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) {
-        try {
+    private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+//        try {
             List<Measurement> mList = webScraper.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
-            isConnectionFailed = false;
+  //          isConnectionFailed = false;
             return mList;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+ //       } catch (Exception e) { // Commented because The exception is handled further up.
+ //           e.printStackTrace();
+ //       }
+ //       return null;
     }
 
     private Hive findCachedHive(int id) {

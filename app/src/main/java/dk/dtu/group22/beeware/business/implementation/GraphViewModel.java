@@ -57,9 +57,15 @@ public class GraphViewModel extends ViewModel {
      */
     public void downloadHiveData(int id) throws IOException {
         fromDate = roundDateToMidnight(fromDate);
-        hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
-        Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
-                id + " from" + fromDate + " to " + toDate + ".");
+        try{
+            hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
+                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
+                        id + " from" + fromDate + " to " + toDate + ".");
+        } catch (IOException e){
+                Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
+                        id + " from" + fromDate + " to " + toDate + ".");
+                throw new IOException(e.getMessage());
+        }
     }
 
     /**
@@ -70,7 +76,7 @@ public class GraphViewModel extends ViewModel {
      * @pre A hive ID is aquired
      * @post The hive is updated with one year's data.
      */
-    public void downloadOldDataInBackground(int id) {
+    public void downloadOldDataInBackground(int id) throws IOException {
 
         backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
@@ -81,27 +87,36 @@ public class GraphViewModel extends ViewModel {
         cal.add(Calendar.MONTH, -3);
         Timestamp startDate = new Timestamp(cal.getTimeInMillis());
         startDate = roundDateToMidnight(startDate);
+        Timestamp a = new Timestamp(startDate.getTime());
+        Timestamp b = new Timestamp(endDate.getTime());
 
-        for (int i = 0; i < 6; i++) try {
+        for (int i = 0; i < 6; i++) {
+            try {
 
-            Timestamp a = new Timestamp(startDate.getTime());
-            Timestamp b = new Timestamp(endDate.getTime());
-            Hive junk = null;
+                a = new Timestamp(startDate.getTime());
+                b = new Timestamp(endDate.getTime());
+                Hive junk = null;
 
-            while (junk == null) {
-                junk = logic.getHive(id, a, b);
+                while (junk == null) {
+                    junk = logic.getHive(id, a, b);
+                }
+                System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
+                        "from " + a.toString().substring(0, 10) + " " +
+                        "to " + b.toString().substring(0, 10) + ".");
+
+                // Iterate backwards
+                endDate = new Timestamp(startDate.getTime());
+                cal.setTimeInMillis(endDate.getTime());
+                cal.add(Calendar.MONTH, -2);
+                startDate = new Timestamp(cal.getTimeInMillis());
+            } catch (IOException e) {
+                backgroundDownloadInProgress = false;
+                System.out.println("downloadOldDataInBackground: FAILED to download Hive " + id + ", " +
+                        "from " + a.toString().substring(0, 10) + " " +
+                        "to " + b.toString().substring(0, 10) + ".");
+                e.printStackTrace();
+                throw new IOException(e.getMessage());
             }
-            System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
-                    "from " + a.toString().substring(0, 10) + " " +
-                    "to " + b.toString().substring(0, 10) + ".");
-
-            // Iterate backwards
-            endDate = new Timestamp(startDate.getTime());
-            cal.setTimeInMillis(endDate.getTime());
-            cal.add(Calendar.MONTH, -2);
-            startDate = new Timestamp(cal.getTimeInMillis());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         backgroundDownloadInProgress = false;
         Log.d(TAG, "downloadOldDataInBackground: Background download Done.");

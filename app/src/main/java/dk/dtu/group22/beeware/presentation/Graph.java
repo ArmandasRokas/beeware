@@ -28,6 +28,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -485,12 +486,16 @@ public class Graph extends CustomActivity {
                 Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show();
             }
             // Try another download just in case.
-            try {
-                graphViewModel.downloadHiveData(hiveId);
-            } catch (Exception e) {
-                Log.d(TAG, "showWithNewTimeDelta: Failed to get new data for rendering.");
-                e.printStackTrace();
-            }
+            DownloadBGHiveAsyncTask bg2 = new DownloadBGHiveAsyncTask();
+            bg2.execute(hiveId);
+//            try {  // Commented out because of:  NetworkOnMainThreadException. Creating new Async task resolves problem
+//                graphViewModel.downloadHiveData(hiveId);
+//                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
+//                        hiveId + " from" + fromDate + " to " + toDate + "."); //  check if fromDate and toDate is correct values. If it makes sense that the data is downloaded between these two dates (that time interval)
+//                } catch (Exception e) {
+//                Log.d(TAG, "showWithNewTimeDelta: Failed to get new data for rendering.");
+//                e.printStackTrace();
+//            }
             renderGraph();
             System.out.println("Rendered graph from " + graphViewModel.getFromDate() + " to " + to + ".");
         }
@@ -572,6 +577,8 @@ public class Graph extends CustomActivity {
                     graphViewModel.downloadHiveData(hiveId);
                 }
             } catch (Exception e) {
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
+                runOnUiThread(r2);
                 e.printStackTrace();
             }
             return null;
@@ -601,9 +608,16 @@ public class Graph extends CustomActivity {
      */
     private class DownloadBGHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
 
+
         @Override
         protected String doInBackground(Integer... id) {
-            graphViewModel.downloadOldDataInBackground(hiveId);
+            try {
+                graphViewModel.downloadOldDataInBackground(hiveId);
+            } catch (IOException e) {
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
+                runOnUiThread(r2);
+                e.printStackTrace();
+            }
             return null;
         }
 
