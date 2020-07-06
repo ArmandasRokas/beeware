@@ -40,6 +40,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
 
 import static java.util.Arrays.asList;
 
@@ -576,7 +577,11 @@ public class Graph extends CustomActivity {
                     // Downloads recent data.
                     graphViewModel.downloadHiveData(hiveId);
                 }
-            } catch (Exception e) {
+            } catch (NoDataAvailableOnHivetoolException e){
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.NoDataAvailableOnHivetool, Toast.LENGTH_LONG).show();
+                runOnUiThread(r2);
+                e.printStackTrace();
+            } catch (IOException e) {
                 Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();
@@ -618,7 +623,11 @@ public class Graph extends CustomActivity {
         protected String doInBackground(Integer... id) {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
-            } catch (IOException e) {
+            }catch (NoDataAvailableOnHivetoolException e){
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.NoDataAvailableOnHivetool, Toast.LENGTH_LONG).show();
+                runOnUiThread(r2);
+                e.printStackTrace();
+            }catch (IOException e) {
                 Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();

@@ -22,7 +22,7 @@ import dk.dtu.group22.beeware.dal.dto.Measurement;
 public class WebScraper {
     final int everyNth = 3; // Keep every everyNth measurement (extractDataFromCsv).
 
-    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    public Pair<List<Measurement>, String> getHiveMeasurements(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
         /**
          * It gives RequestTimeout exception, if there is requesting more
          * than two months data. The solution could be to allow see a graph for instance for every month,
@@ -88,9 +88,9 @@ public class WebScraper {
      * @param hiveID
      * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
-    private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
+    private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException, NoDataAvailableOnHivetoolException {
         if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
-            // throw new Exception
+            throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
         }
         //Calculates number of days
         double milliseconds = (untilTime.getTime() - sinceTime.getTime()) / 1000;
@@ -108,7 +108,7 @@ public class WebScraper {
                     numOfDays + "&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=&begin=&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
         System.out.println("Henter URL: "+url);
             doc = Jsoup.connect(url)
-                    .timeout(30 * 1000).maxBodySize(4000000).get();
+                    .timeout(100 * 1000).maxBodySize(4000000).get();
             /* Catch-blokke fjernet af Jacob:
             Send de exceptions der opstår videre til rette modtager i stedet for at æde som og få følgefejl
         } catch (UnknownHostException u) {
@@ -148,7 +148,7 @@ public class WebScraper {
         Document doc = null;
         String url = "http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
                 hiveID + "&start_time=&end_time=&hive_id=" +
-                hiveID + "&number_of_days=&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=1&begin=" +
+                hiveID + "&number_of_days=&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=3&begin=" +
                 sinceStr+ "&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
 
         doc = Jsoup.connect(url)

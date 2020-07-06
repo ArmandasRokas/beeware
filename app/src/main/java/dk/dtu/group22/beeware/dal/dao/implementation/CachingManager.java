@@ -67,7 +67,7 @@ public class CachingManager {
         return CACHING_MANAGER;
     }
 
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
         Hive hive = findCachedHive(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
@@ -87,7 +87,7 @@ public class CachingManager {
         return null;
     }
 
-    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
         Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
 
@@ -116,7 +116,7 @@ public class CachingManager {
         }
     }
 
-    private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
 //        try {
             List<Measurement> mList = webScraper.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
   //          isConnectionFailed = false;
@@ -169,7 +169,7 @@ public class CachingManager {
         return null;
     }
 
-    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
 
         Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);

@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
@@ -55,13 +56,18 @@ public class GraphViewModel extends ViewModel {
      * @param id
      * ID of hive to download
      */
-    public void downloadHiveData(int id) throws IOException {
+    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException {
         fromDate = roundDateToMidnight(fromDate);
         try{
             hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
                 Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
-        } catch (IOException e){
+        } catch (NoDataAvailableOnHivetoolException e){
+            Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
+                    id + " from" + fromDate + " to " + toDate + ".");
+            throw new NoDataAvailableOnHivetoolException(e.getMessage());
+        }
+        catch (IOException e){
                 Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
                 throw new IOException(e.getMessage());
@@ -76,7 +82,7 @@ public class GraphViewModel extends ViewModel {
      * @pre A hive ID is aquired
      * @post The hive is updated with one year's data.
      */
-    public void downloadOldDataInBackground(int id) throws IOException {
+    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException {
 
         backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
@@ -109,7 +115,13 @@ public class GraphViewModel extends ViewModel {
                 cal.setTimeInMillis(endDate.getTime());
                 cal.add(Calendar.MONTH, -2);
                 startDate = new Timestamp(cal.getTimeInMillis());
-            } catch (IOException e) {
+            } catch (NoDataAvailableOnHivetoolException e){
+                Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
+                        id + " from" + fromDate + " to " + toDate + ".");
+                e.printStackTrace();
+                throw new NoDataAvailableOnHivetoolException(e.getMessage());
+            }
+            catch (IOException e) {
                 backgroundDownloadInProgress = false;
                 System.out.println("downloadOldDataInBackground: FAILED to download Hive " + id + ", " +
                         "from " + a.toString().substring(0, 10) + " " +

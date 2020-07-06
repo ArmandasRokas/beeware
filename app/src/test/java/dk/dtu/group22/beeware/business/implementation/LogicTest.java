@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
+import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 
@@ -21,7 +22,7 @@ import static org.junit.Assert.fail;
 public class LogicTest {
 
   //  @Test
-    public void GivenGetHiveThreeTimes_SleepOneMinute_ReturnSortedHive() throws InterruptedException, IOException {
+    public void GivenGetHiveThreeTimes_SleepOneMinute_ReturnSortedHive() throws InterruptedException, IOException, NoDataAvailableOnHivetoolException {
         Logic logic = Logic.getSingleton();
         //long now = 1574237548640L;
         long now = System.currentTimeMillis();
@@ -70,7 +71,7 @@ public class LogicTest {
     }
 
  //   @Test
-    public void GivenGetHiveThreeTimes_TenMinutes_ReturnSortedHive() throws InterruptedException, IOException {
+    public void GivenGetHiveThreeTimes_TenMinutes_ReturnSortedHive() throws InterruptedException, IOException, NoDataAvailableOnHivetoolException {
         Logic logic = Logic.getSingleton();
         long tenMinInMillis = 10*60*1000;
         //long now = 1574237548640L;
@@ -126,7 +127,7 @@ public class LogicTest {
 
 
     @Test
-    public void GivenGetHive_ThreeMonthAgo_ReturnSortedHive() throws InterruptedException, IOException {
+    public void GivenGetHive_ThreeMonthAgo_ReturnSortedHive() throws InterruptedException, IOException, NoDataAvailableOnHivetoolException {
         Logic logic = Logic.getSingleton();
         long now = System.currentTimeMillis();
         long threeMonthAgo = (now - 86400000 * 90L);
@@ -167,7 +168,7 @@ public class LogicTest {
         cachingManager.cleanCachedHives();
     }
 
-    public void testGetHive() throws IOException {
+    public void testGetHive() throws IOException, NoDataAvailableOnHivetoolException {
 
         // Testing, if "getHive()" will use its methods correctly, and return a full hive with
         // initialized values.

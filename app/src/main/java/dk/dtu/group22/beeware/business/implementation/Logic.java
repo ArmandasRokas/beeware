@@ -18,6 +18,7 @@ import java.util.List;
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
+import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionHivetool;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
@@ -125,7 +126,7 @@ public class Logic {
             Runnable runnable = () -> {
                 try {
                     hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             };
@@ -155,7 +156,7 @@ public class Logic {
      * @return
      * A hive, with data specified by the parameters.
      */
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException {
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
 
         Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
         setCurrValues(hive);
