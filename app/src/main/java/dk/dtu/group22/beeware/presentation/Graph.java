@@ -608,6 +608,11 @@ public class Graph extends CustomActivity {
      */
     private class DownloadBGHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected String doInBackground(Integer... id) {
