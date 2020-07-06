@@ -63,6 +63,7 @@ public class GraphViewModel extends ViewModel {
                 Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
         } catch (NoDataAvailableOnHivetoolException e){
+            backgroundDownloadInProgress = false;
             Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
                     id + " from" + fromDate + " to " + toDate + ".");
             throw new NoDataAvailableOnHivetoolException(e.getMessage());
@@ -116,6 +117,7 @@ public class GraphViewModel extends ViewModel {
                 cal.add(Calendar.MONTH, -2);
                 startDate = new Timestamp(cal.getTimeInMillis());
             } catch (NoDataAvailableOnHivetoolException e){
+                backgroundDownloadInProgress = false;
                 Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
                 e.printStackTrace();
