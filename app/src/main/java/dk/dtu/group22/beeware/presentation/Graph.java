@@ -486,8 +486,8 @@ public class Graph extends CustomActivity {
                 Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show();
             }
             // Try another download just in case.
-            DownloadBGHiveAsyncTask bg2 = new DownloadBGHiveAsyncTask();
-            bg2.execute(hiveId);
+  //          DownloadBGHiveAsyncTask bg2 = new DownloadBGHiveAsyncTask();  // Another download just freezes the app
+  //          bg2.execute(hiveId);
 //            try {  // Commented out because of:  NetworkOnMainThreadException. Creating new Async task resolves problem
 //                graphViewModel.downloadHiveData(hiveId);
 //                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
