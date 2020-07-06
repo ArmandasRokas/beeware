@@ -89,7 +89,10 @@ public class WebScraper {
      * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
     private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
-        // Calculates number of days
+        if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
+            // throw new Exception
+        }
+        //Calculates number of days
         double milliseconds = (untilTime.getTime() - sinceTime.getTime()) / 1000;
         //double numOfDays = (int) (milliseconds / (1000*60*60*24)) + 1;
         double numOfDays = (milliseconds * 1000 / (1000 * 60 * 60 * 24));
@@ -127,6 +130,36 @@ public class WebScraper {
         String[] lines = e.wholeText().split("\n");
 
         return new Pair<String[], String>(lines, name);
+    }
+
+    /**
+     * Checks if data is available for a given time interval.
+     * @param sinceTime
+     * @param untilTime no used yet, but should be considered to be checked to in order to push sinceTime more in future
+     *                  in case of untilTime is on HiveTool.
+     * @param hiveID
+     * @return
+     * @throws IOException
+     */
+    public boolean isDataAvailableOnHiveTool(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
+
+        String sinceStr = sinceTime.toString().split(" ")[0];
+
+        Document doc = null;
+        String url = "http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
+                hiveID + "&start_time=&end_time=&hive_id=" +
+                hiveID + "&number_of_days=&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=1&begin=" +
+                sinceStr+ "&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
+
+        doc = Jsoup.connect(url)
+                .timeout(30 * 1000).maxBodySize(4000000).get();
+
+        if(doc.body().getElementsByTag("h1").isEmpty()){
+            return true;
+        } else{
+            //System.out.println(doc.body().getElementsByTag("h1").get(0).text().contains("Sorry, no data"));
+            return false;
+        }
     }
 
     /**
