@@ -36,7 +36,6 @@
     <string name="ThisDataIsStillDownloading">Dataen er stadig i gang med at downloade.</string>
     <string name="LackingData">Dele af denne periode mangler muligvis data.</string>
     <string name="FailedToGetHive">Kunne ikke hente stade-data.</string>
-    <string name="NoDataAvailableOnHivetool">Ikke nok stade-data på HiveTool</string>
 
     <!-- Subscribe menu -->
     <string name="active">Aktive</string>

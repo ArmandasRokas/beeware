@@ -53,8 +53,6 @@
     <string name="ThisDataIsStillDownloading">This data is still downloading.</string>
     <string name="LackingData">Parts of the period may not have any data.</string>
     <string name="FailedToGetHive">Could not get hive data.</string>
-    <string name="NoDataAvailableOnHivetool">Missing hive data on Hivetool</string>
-
 
     <!-- Subscribe menu -->
     <string name="active">Active</string>

@@ -578,7 +578,7 @@ public class Graph extends CustomActivity {
                     graphViewModel.downloadHiveData(hiveId);
                 }
             } catch (NoDataAvailableOnHivetoolException e){
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.NoDataAvailableOnHivetool, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();
             } catch (IOException e) {
@@ -624,7 +624,7 @@ public class Graph extends CustomActivity {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
             }catch (NoDataAvailableOnHivetoolException e){
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.NoDataAvailableOnHivetool, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();
             }catch (IOException e) {
