@@ -582,7 +582,8 @@ public class Graph extends CustomActivity {
                 runOnUiThread(r2);
                 e.printStackTrace();
             } catch (IOException e) {
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
+                String errMessage = getString(R.string.FailedToGetLatestData) +  graphViewModel.getHive().getName();
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();
             }
@@ -628,7 +629,7 @@ public class Graph extends CustomActivity {
                 runOnUiThread(r2);
                 e.printStackTrace();
             }catch (IOException e) {
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
                 runOnUiThread(r2);
                 e.printStackTrace();
             }

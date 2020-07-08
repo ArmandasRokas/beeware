@@ -71,6 +71,7 @@ public class GraphViewModel extends ViewModel {
         catch (IOException e){
                 Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
+                hive = logic.getCachedHive(id); // fetch a cached hive instead.
                 throw new IOException(e.getMessage());
         }
     }
