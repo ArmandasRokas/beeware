@@ -144,7 +144,10 @@ public class Logic {
                 } catch (Exception e) {
                     e.printStackTrace();
                     notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
-                    // TODO fetch a hive from cached memory.
+                    Hive h = getCachedHive(id);
+                    if(h != null){
+                        hivesWithMeasurements.add(h);
+                    }
                 }
             };
             Thread thread = new Thread(runnable);
@@ -191,9 +194,14 @@ public class Logic {
      * @return Hive with the identifier id, if it has been cached. Otherwise returns null.
      * The time complexity is linear with the number of hives that have been cached.
      */
-    public Hive getHive(int id) {
-        Hive hive = cachingManager.getHive(id);
-        return hive;
+    public Hive getCachedHive(int id) {
+        Hive hive = cachingManager.findCachedHive(id);
+        if(hive != null){
+            setCurrValues(hive);
+            return hive;
+        } else{
+            return null;
+        }
     }
 
     public List<NameIdPair> getNamesAndIDs() {
@@ -532,7 +540,7 @@ public class Logic {
     }
 
     public void setIsConfigured(int id, boolean conf) {
-        Hive hive = cachingManager.getHive(id);
+        Hive hive = cachingManager.findCachedHive(id);
         hive.setHasBeenConfigured(conf);
 
         cachingManager.writeToFile(hive);

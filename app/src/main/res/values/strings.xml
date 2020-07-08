@@ -20,6 +20,7 @@
     <!-- At errors -->
     <string name="NoInternetConnection">No internet connection.</string>
     <string name="ClassError">: class error.</string>
+    <string name="FailedToGetLatestData">Could not get the latest data for: </string>
 
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">VIEW PERIOD</string>

@@ -118,7 +118,7 @@ public class Graph extends CustomActivity {
         downloadAsyncTask.execute(hiveId);
 
 
-        if (!Logic.getSingleton().getHive(hiveId).getHasBeenConfigured()) {
+        if (!Logic.getSingleton().getCachedHive(hiveId).getHasBeenConfigured()) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFromGraph", true);
             bundle.putInt("hiveID", hiveId);

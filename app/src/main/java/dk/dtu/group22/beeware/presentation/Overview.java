@@ -145,7 +145,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                 List<String> notFetchedHives = logic.getNotFetchedHives();
                 if(!notFetchedHives.isEmpty()){
                     System.out.println(notFetchedHives.toString());
-                    String errMessage = getString(R.string.FailedToGetHive) +  " " + notFetchedHives.toString();
+                    String errMessage = getString(R.string.FailedToGetLatestData) +  " " + notFetchedHives.toString();
                     Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                     logic.clearNotFetchHives();
                 }

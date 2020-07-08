@@ -3,6 +3,7 @@
     <!-- At errors -->
     <string name="NoInternetConnection">Ingen internet forbindelse.</string>
     <string name="ClassError">: klasse fejl.</string>
+    <string name="FailedToGetLatestData">Kunne ikke hente de seneste data for: </string>
 
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">SE PERIODE</string>

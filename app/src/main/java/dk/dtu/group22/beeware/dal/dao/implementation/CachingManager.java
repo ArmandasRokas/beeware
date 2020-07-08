@@ -77,15 +77,15 @@ public class CachingManager {
 
         return hive;
     }
-
-    public Hive getHive(int id) {
-        for (Hive hive : cachedHives) {
-            if (id == hive.getId()) {
-                return hive;
-            }
-        }
-        return null;
-    }
+    // Commented, because it is redundant method. findCachedHive can be used instead
+    //   public Hive getCachedHive(int id) {
+//        for (Hive hive : cachedHives) {
+//            if (id == hive.getId()) {
+//                return hive;
+//            }
+//        }
+//        return null;
+//    }
 
     private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
@@ -127,7 +127,7 @@ public class CachingManager {
  //       return null;
     }
 
-    private Hive findCachedHive(int id) {
+    public Hive findCachedHive(int id) {
         Hive foundHive;
         foundHive = retrieveHiveFromList(id);
 

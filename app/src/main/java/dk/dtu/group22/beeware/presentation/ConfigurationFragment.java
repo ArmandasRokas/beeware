@@ -65,7 +65,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         }
         int hiveid = getArguments().getInt("hiveID", 0);
         if (hiveid != 0) {
-            hive = logic.getHive(hiveid);
+            hive = logic.getCachedHive(hiveid);
         }
 
         hiveNameTV.setText(hive.getName());
