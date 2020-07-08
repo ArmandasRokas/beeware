@@ -30,6 +30,7 @@ public class DownloadWorker extends Worker {
         System.out.println("Worker.doWork called. Notification sent!");
 
         List<Hive> hives = logic.getSubscribedHives(2);
+        logic.clearNotFetchHives(); // Just in case of some hive could not be fetched.
 
         for (Hive hive : hives) {
             logic.calculateHiveStatus(hive);

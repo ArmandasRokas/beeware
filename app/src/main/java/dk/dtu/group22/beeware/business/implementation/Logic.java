@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import dk.dtu.group22.beeware.R;
@@ -37,6 +38,7 @@ public class Logic {
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
     private final static Logic logic = new Logic();
+    private List<String> notFetchedHives = new LinkedList<>();
 
 
     /**
@@ -67,6 +69,19 @@ public class Logic {
         this.subscriptionManager = new SubscriptionManager(context);
     }
 
+    /**
+     * notFetchedHives, getNotFetchedHives() and clearNotFetchHives()
+     * is a work around for a error handling (a feedback to user if
+     * there was a problem downloading hives). An exception could not
+     * be thrown in getSubscribedHives, because it crashes the app.
+     */
+    public List<String> getNotFetchedHives() {
+        return notFetchedHives;
+    }
+
+    public void clearNotFetchHives(){
+        notFetchedHives = new LinkedList<>();
+    }
     /**
      * Subscribes a hive
      * @param id
@@ -128,6 +143,8 @@ public class Logic {
                     hivesWithMeasurements.add(getHive(id, new Timestamp(since), new Timestamp(now)));
                 } catch (Exception e) {
                     e.printStackTrace();
+                    notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
+                    // TODO fetch a hive from cached memory.
                 }
             };
             Thread thread = new Thread(runnable);
@@ -185,6 +202,7 @@ public class Logic {
             if (hivesIdName == null || hivesIdName.isEmpty()) {
                 throw new HivesToSubscribeNoFound("Business error. Unable to fetch data");
             } else {
+                subscriptionManager.cacheHivesToSub(hivesIdName);
                 return hivesIdName;
             }
         } catch (Exception e) {

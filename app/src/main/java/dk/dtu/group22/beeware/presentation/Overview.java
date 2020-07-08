@@ -15,10 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -145,6 +141,13 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                 for (Hive hive : hives) {
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
+                }
+                List<String> notFetchedHives = logic.getNotFetchedHives();
+                if(!notFetchedHives.isEmpty()){
+                    System.out.println(notFetchedHives.toString());
+                    String errMessage = getString(R.string.FailedToGetHive) +  " " + notFetchedHives.toString();
+                    Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                    logic.clearNotFetchHives();
                 }
             }
         };

@@ -67,4 +67,18 @@ public class SubscriptionManager implements ISubscriptionManager {
         sharedPreferences.edit().putString("ids", subscriptions_after.toString()).apply();
     }
 
+    public void cacheHivesToSub(List<NameIdPair> hivesIdName) {
+        for(NameIdPair e: hivesIdName){
+            sharedPreferences.edit().putString(e.getID()+"", e.getName()).apply();
+        }
+    }
+
+    public String getCachedHiveName(int hiveId) {
+            String hiveName = sharedPreferences.getString(hiveId+"", "");
+            if(!hiveName.isEmpty()){
+                return hiveName;
+            } else {
+                return "Unknown hive";
+            }
+    }
 }
