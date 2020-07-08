@@ -49,7 +49,7 @@ public class TesterHiveTool extends CustomActivity {
             @Override
             protected Object doInBackground(Object... arg0) {
                 try {
-                    hive = logic.getHive(240, since, until);
+                    hive = logic.getHiveNetwork(240, since, until);
                     return null;
                 } catch (Exception e) {
                     errorMsg = e.getMessage();

@@ -30,16 +30,16 @@ public class LogicTest {
         long since = now - (86400000 * 3);
         long beforeSince = since - (86400000 * 3);
         long beforeBeforeSince = beforeSince - (86400000 * 3);
-        Hive hive = logic.getHive(240, new Timestamp(beforeSince), new Timestamp(since));
+        Hive hive = logic.getHiveNetwork(240, new Timestamp(beforeSince), new Timestamp(since));
 
-        Hive hive2 = logic.getHive(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
+        Hive hive2 = logic.getHiveNetwork(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
 
         //Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(fiveMinBeforeNow));
         now = System.currentTimeMillis();
-        Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
+        Hive hive3 = logic.getHiveNetwork(240,new Timestamp(beforeSince), new Timestamp(now));
         Thread.sleep(300000 /5);
         now = System.currentTimeMillis();
-        Hive hive4 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
+        Hive hive4 = logic.getHiveNetwork(240,new Timestamp(beforeSince), new Timestamp(now));
 
         boolean isSorted = true;
         for(int i = 0; i < hive4.getMeasurements().size() - 1; i++){
@@ -80,12 +80,12 @@ public class LogicTest {
         long since = now - (86400000 * 3);
         long beforeSince = since - (86400000 * 3);
         long beforeBeforeSince = beforeSince - (86400000 * 3);
-        Hive hive = logic.getHive(240, new Timestamp(beforeSince), new Timestamp(since));
+        Hive hive = logic.getHiveNetwork(240, new Timestamp(beforeSince), new Timestamp(since));
 
-        Hive hive2 = logic.getHive(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
+        Hive hive2 = logic.getHiveNetwork(240, new Timestamp(beforeBeforeSince), new Timestamp(since));
 
-        Hive hive3 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(tenMinBeforeNow));
-        Hive hive4 = logic.getHive(240,new Timestamp(beforeSince), new Timestamp(now));
+        Hive hive3 = logic.getHiveNetwork(240,new Timestamp(beforeSince), new Timestamp(tenMinBeforeNow));
+        Hive hive4 = logic.getHiveNetwork(240,new Timestamp(beforeSince), new Timestamp(now));
 
         /**
          * Test if the measurements is sorted.
@@ -132,8 +132,8 @@ public class LogicTest {
         long now = System.currentTimeMillis();
         long threeMonthAgo = (now - 86400000 * 90L);
         long since = now - (86400000 * 3);
-        Hive hive_since = logic.getHive(240, new Timestamp(since), new Timestamp(now));
-        Hive hive = logic.getHive(240, new Timestamp(threeMonthAgo), new Timestamp(now));
+        Hive hive_since = logic.getHiveNetwork(240, new Timestamp(since), new Timestamp(now));
+        Hive hive = logic.getHiveNetwork(240, new Timestamp(threeMonthAgo), new Timestamp(now));
 
 
         boolean isSorted = true;
@@ -176,7 +176,7 @@ public class LogicTest {
 
         long now = System.currentTimeMillis();
 
-        Hive hive = logic.getHive(240, new Timestamp(now - 300000), new Timestamp(now));
+        Hive hive = logic.getHiveNetwork(240, new Timestamp(now - 300000), new Timestamp(now));
 
         assertTrue(hive.getName().equals("FHA_Stade1"));
         assertFalse(hive.getMeasurements() == null);

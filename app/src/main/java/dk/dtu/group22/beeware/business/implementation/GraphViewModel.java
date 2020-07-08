@@ -59,7 +59,7 @@ public class GraphViewModel extends ViewModel {
     public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException {
         fromDate = roundDateToMidnight(fromDate);
         try{
-            hive = logic.getHive(id, fromDate, new Timestamp(System.currentTimeMillis()));
+            hive = logic.getHiveNetwork(id, fromDate, new Timestamp(System.currentTimeMillis()));
                 Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
                         id + " from" + fromDate + " to " + toDate + ".");
         } catch (NoDataAvailableOnHivetoolException e){
@@ -106,7 +106,7 @@ public class GraphViewModel extends ViewModel {
                 Hive junk = null;
 
                 while (junk == null) {
-                    junk = logic.getHive(id, a, b);
+                    junk = logic.getHiveNetwork(id, a, b);
                 }
                 System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
                         "from " + a.toString().substring(0, 10) + " " +
