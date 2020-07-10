@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.lifecycle.Lifecycle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,12 +38,15 @@ public class Overview extends CustomActivity implements View.OnClickListener {
     private CachingManager cachingManager;
     private boolean configureNow = false;
     private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
+    private Toast toastLatest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+        toastLatest = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 
         // Initialising variables
         ctx = this;
@@ -110,11 +115,11 @@ public class Overview extends CustomActivity implements View.OnClickListener {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                if (cachingManager.isConnectionFailed()) {
+           /*     if (cachingManager.isConnectionFailed()) { // Always true????
                     Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-                }
+                }*/
                 if (logic.getSubscriptionIDs().size() == 0) {
                     listEmptyTv.setText(R.string.YouHaveNotSubscribedToAnyHives);
                     listEmptyTv.setVisibility(View.VISIBLE);
@@ -146,7 +151,11 @@ public class Overview extends CustomActivity implements View.OnClickListener {
                 if(!notFetchedHives.isEmpty()){
                     Collections.sort(notFetchedHives);
                     String errMessage = getString(R.string.FailedToGetLatestData) +  " " + notFetchedHives.toString();
-                    Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastLatest.setText(errMessage);
+                        toastLatest.show();
+                    }
                     logic.clearNotFetchHives();
                 }
             }
@@ -169,6 +178,7 @@ public class Overview extends CustomActivity implements View.OnClickListener {
     protected void onPause() {
         super.onPause();
         setupSubscribedHives(false);
+        toastLatest.cancel();
     }
 
     @Override
