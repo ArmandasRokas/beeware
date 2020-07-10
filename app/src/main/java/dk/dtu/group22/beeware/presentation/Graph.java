@@ -691,12 +691,12 @@ public class Graph extends CustomActivity {
         super.onPause();
     }
 
-//    @Override
-//    protected void onStop() {
-//        toastPast.cancel();
-//        toastLatest.cancel();
-//        toastLackingData.cancel();
-//        toastFailed.cancel();
-//        super.onStop();
-//    }
+    @Override
+    protected void onStop() {
+        toastPast.cancel();
+        toastLatest.cancel();
+        toastLackingData.cancel();
+        toastFailed.cancel();
+        super.onStop();
+    }
 }
