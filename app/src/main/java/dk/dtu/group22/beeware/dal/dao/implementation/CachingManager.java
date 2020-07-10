@@ -48,7 +48,7 @@ public class CachingManager {
     private WebScraper webScraper;
     private Context ctx;
     private final static CachingManager CACHING_MANAGER = new CachingManager();
-    private boolean isConnectionFailed = false;
+   // private boolean isConnectionFailed = false;
 
     private CachingManager() {
         cachedHives = Collections.synchronizedList(new ArrayList<>());
@@ -58,10 +58,10 @@ public class CachingManager {
     public void setCtx(Context ctx) {
         this.ctx = ctx;
     }
-
+/*
     public boolean isConnectionFailed() {
         return isConnectionFailed;
-    }
+    }*/
 
     public static CachingManager getSingleton() {
         return CACHING_MANAGER;
