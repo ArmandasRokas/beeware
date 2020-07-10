@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -63,12 +64,20 @@ public class Graph extends CustomActivity {
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
     private final String TAG = "Graph";
+    private Toast toastPast;
+    private Toast toastLatest;
+    private Toast toastLackingData;
+    private Toast toastFailed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
         graphViewModel = ViewModelProviders.of(this).get(GraphViewModel.class);
+        toastPast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toastLatest = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toastLackingData = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toastFailed = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 
         // Get Summary data for weight
         Intent intent = getIntent();
@@ -578,12 +587,20 @@ public class Graph extends CustomActivity {
                     graphViewModel.downloadHiveData(hiveId);
                 }
             } catch (NoDataAvailableOnHivetoolException e){
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
+                //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> {
+                    toastLackingData.setText(R.string.LackingData);
+                    toastLackingData.show();
+                };
                 runOnUiThread(r2);
                 e.printStackTrace();
             } catch (IOException e) {
                 String errMessage = getString(R.string.FailedToGetLatestData) +  graphViewModel.getHive().getName();
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+              //  Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> {
+                    toastLatest.setText(errMessage);
+                    toastLatest.show();
+                };
                 runOnUiThread(r2);
                 e.printStackTrace();
             }
@@ -604,7 +621,9 @@ public class Graph extends CustomActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
+                toastFailed.setText(R.string.FailedToGetHive);
+                toastFailed.show();
+//                        Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -625,12 +644,20 @@ public class Graph extends CustomActivity {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
             }catch (NoDataAvailableOnHivetoolException e){
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
+                //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> {
+                    toastLackingData.setText(R.string.LackingData);
+                    toastLackingData.show();
+                };
                 runOnUiThread(r2);
                 e.printStackTrace();
             }catch (IOException e) {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();
-                Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                //Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
+                Runnable r2 = () -> {
+                    toastPast.setText(errMessage);
+                    toastPast.show();
+                };
                 runOnUiThread(r2);
                 e.printStackTrace();
             }
@@ -641,6 +668,13 @@ public class Graph extends CustomActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             hideProgressBar();
+            // Check if the activity is closed, when Async call is finished. If yes, not display delayed toasts.
+            if(getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED){
+                toastPast.cancel();
+                toastLatest.cancel();
+                toastLackingData.cancel();
+                toastFailed.cancel();
+            }
         }
     }
 
@@ -648,4 +682,21 @@ public class Graph extends CustomActivity {
         return graphViewModel;
     }
 
+    @Override
+    protected void onPause() {
+        toastPast.cancel();
+        toastLatest.cancel();
+        toastLackingData.cancel();
+        toastFailed.cancel();
+        super.onPause();
+    }
+
+//    @Override
+//    protected void onStop() {
+//        toastPast.cancel();
+//        toastLatest.cancel();
+//        toastLackingData.cancel();
+//        toastFailed.cancel();
+//        super.onStop();
+//    }
 }
