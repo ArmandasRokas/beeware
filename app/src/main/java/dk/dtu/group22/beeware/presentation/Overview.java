@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -27,7 +28,8 @@ import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
-public class Overview extends CustomActivity implements View.OnClickListener {
+public class Overview extends CustomActivity //implements View.OnClickListener
+ {
     GridView gridView;
     private Logic logic;
     private ImageButton subHiveButton;
@@ -62,7 +64,52 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         listEmptyTv = findViewById(R.id.emptyListTV);
         progressBar = findViewById(R.id.progressBarOverview);
         subHiveButton = findViewById(R.id.subHiveBtn);
-        subHiveButton.setOnClickListener(this);
+    //    subHiveButton.setOnClickListener(this);
+
+        // Moving FAB
+        subHiveButton.setOnTouchListener(new View.OnTouchListener() {
+
+            float startX;
+            float startRawX;
+            float startRawY;
+            float distanceX;
+            float distanceY;
+            int lastAction;
+            float startY;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = view.getX() - event.getRawX();
+                        startY = view.getY() - event.getRawY();
+                        startRawX = event.getRawX();
+                        startRawY = event.getRawY();
+                        lastAction = MotionEvent.ACTION_DOWN;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        view.setX(event.getRawX()+ startX
+                                 );
+                        view.setY(event.getRawY()  + startY
+                                 );
+
+                        lastAction = MotionEvent.ACTION_MOVE;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        distanceX = event.getRawX()-startRawX;
+                        distanceY = event.getRawY()-startRawY;
+                        if (Math.abs(distanceX)< 10 && Math.abs(distanceY)<10){
+                            Intent ID = new Intent(ctx, Subscribe.class);
+                            startActivity(ID);
+                        }
+                        break;
+                    case MotionEvent.ACTION_BUTTON_PRESS:
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 
     /***
@@ -181,13 +228,13 @@ public class Overview extends CustomActivity implements View.OnClickListener {
         toastLatest.cancel();
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == subHiveButton) {
-            Intent ID = new Intent(this, Subscribe.class);
-            startActivity(ID);
-        }
-    }
+//    @Override
+//    public void onClick(View view) {
+//        if (view == subHiveButton) {
+//            Intent ID = new Intent(this, Subscribe.class);
+//            startActivity(ID);
+//        }
+//    }
 
     public void setConfigureNow(boolean configureNow) {
         this.configureNow = configureNow;
