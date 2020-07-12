@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,6 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import androidx.lifecycle.Lifecycle;
 
 import java.util.ArrayList;
@@ -40,6 +48,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
     private CachingManager cachingManager;
     private boolean configureNow = false;
     private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
+    private SharedPreferences sharedPref;
     private Toast toastLatest;
 
 
@@ -54,6 +63,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         ctx = this;
         logic = Logic.getSingleton();
         logic.setContext(ctx);
+        sharedPref = ctx.getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         // Boilerplate code to set Context to the CachingManager
         cachingManager = CachingManager.getSingleton();
@@ -66,7 +76,23 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         subHiveButton = findViewById(R.id.subHiveBtn);
     //    subHiveButton.setOnClickListener(this);
 
-        // Moving FAB
+        float subHiveButtonX = sharedPref.getFloat("fabX",0);
+        float subHiveButtonY = sharedPref.getFloat("fabY",0);
+        // Check if the position of subHiveButton is saved in SharedPreferences.
+        if(subHiveButtonX != 0 || subHiveButtonY != 0){
+            // Set the position of subHiveButton with values saved in SharedPreferences
+            subHiveButton.setX(subHiveButtonX);
+            subHiveButton.setY(subHiveButtonY);
+        } else{
+            // Put subHiveButton on the right bottom corner programmatically
+            ConstraintLayout constraintLayout = findViewById(R.id.overviewConstrainLayout);
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayout);
+            constraintSet.connect(R.id.subHiveBtn,ConstraintSet.BOTTOM,R.id.overviewConstrainLayout,ConstraintSet.BOTTOM,24);
+            constraintSet.connect(R.id.subHiveBtn,ConstraintSet.END,R.id.overviewConstrainLayout,ConstraintSet.END,24);
+            constraintSet.applyTo(constraintLayout);
+        }
+        // Implements drag-and-drop subHiveButton
         subHiveButton.setOnTouchListener(new View.OnTouchListener() {
 
             float startX;
@@ -88,12 +114,13 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                         lastAction = MotionEvent.ACTION_DOWN;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        view.setX(event.getRawX()+ startX
-                                 );
-                        view.setY(event.getRawY()  + startY
-                                 );
-
+                        float currX = event.getRawX()+ startX;
+                        float currY = event.getRawY()  + startY;
+                        view.setX(currX);
+                        view.setY(currY);
                         lastAction = MotionEvent.ACTION_MOVE;
+                        sharedPref.edit().putFloat("fabX", currX).commit();
+                        sharedPref.edit().putFloat("fabY", currY).commit();
                         break;
                     case MotionEvent.ACTION_UP:
                         distanceX = event.getRawX()-startRawX;
