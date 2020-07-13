@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -75,6 +77,8 @@ public class Graph extends CustomActivity {
     private Toast toastFailed;
     private SharedPreferences sharedPref;
     private Context ctx;
+    private Display display;
+    private Point size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,11 @@ public class Graph extends CustomActivity {
         toastFailed = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         ctx = this;
         sharedPref = ctx.getSharedPreferences("pref", Context.MODE_PRIVATE);
+        display = getWindowManager().getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        int maxX = size.x;
+        int maxY = size.y;
 
         // Get Summary data for weight
         Intent intent = getIntent();
@@ -149,13 +158,18 @@ public class Graph extends CustomActivity {
                         lastAction = MotionEvent.ACTION_DOWN;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        float currX = event.getRawX()+ startX;
-                        float currY = event.getRawY()  + startY;
-                        view.setX(currX);
-                        view.setY(currY);
-                        lastAction = MotionEvent.ACTION_MOVE;
-                        sharedPref.edit().putFloat("graphMenuButtonX", currX).commit();
-                        sharedPref.edit().putFloat("graphMenuButtonY", currY).commit();
+                        float rawX = event.getRawX();
+                        float rawY = event.getRawY();
+                        float currX = rawX + startX;
+                        float currY = rawY + startY;
+                        // Check if MotionEvent is not outside the screen. Otherwise the buttons disappears from the screen.
+                        if( currX > 0 && currY>0 && rawX<maxX-10 && rawY<maxY-10) {
+                            view.setX(currX);
+                            view.setY(currY);
+                            lastAction = MotionEvent.ACTION_MOVE;
+                            sharedPref.edit().putFloat("graphMenuButtonX", currX).commit();
+                            sharedPref.edit().putFloat("graphMenuButtonY", currY).commit();
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         distanceX = event.getRawX()-startRawX;

@@ -3,8 +3,10 @@ package dk.dtu.group22.beeware.presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -50,6 +52,8 @@ public class Overview extends CustomActivity //implements View.OnClickListener
     private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
     private SharedPreferences sharedPref;
     private Toast toastLatest;
+    private Display display;
+    private Point size;
 
 
     @Override
@@ -64,6 +68,11 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         logic = Logic.getSingleton();
         logic.setContext(ctx);
         sharedPref = ctx.getSharedPreferences("pref", Context.MODE_PRIVATE);
+        display = getWindowManager().getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        int maxX = size.x;
+        int maxY = size.y;
 
         // Boilerplate code to set Context to the CachingManager
         cachingManager = CachingManager.getSingleton();
@@ -114,13 +123,18 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                         lastAction = MotionEvent.ACTION_DOWN;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        float currX = event.getRawX()+ startX;
-                        float currY = event.getRawY()  + startY;
-                        view.setX(currX);
-                        view.setY(currY);
-                        lastAction = MotionEvent.ACTION_MOVE;
-                        sharedPref.edit().putFloat("subHiveButtonX", currX).commit();
-                        sharedPref.edit().putFloat("subHiveButtonY", currY).commit();
+                        float rawX = event.getRawX();
+                        float rawY = event.getRawY();
+                        float currX = rawX + startX;
+                        float currY = rawY + startY;
+                        // Check if MotionEvent is not outside the screen. Otherwise the buttons disappears from the screen.
+                        if( currX > 0 && currY>0 && rawX<maxX-10 && rawY<maxY-10){
+                            view.setX(currX);
+                            view.setY(currY);
+                            lastAction = MotionEvent.ACTION_MOVE;
+                            sharedPref.edit().putFloat("subHiveButtonX", currX).commit();
+                            sharedPref.edit().putFloat("subHiveButtonY", currY).commit();
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         distanceX = event.getRawX()-startRawX;
