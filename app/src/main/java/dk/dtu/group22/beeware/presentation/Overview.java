@@ -76,8 +76,8 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         subHiveButton = findViewById(R.id.subHiveBtn);
     //    subHiveButton.setOnClickListener(this);
 
-        float subHiveButtonX = sharedPref.getFloat("fabX",0);
-        float subHiveButtonY = sharedPref.getFloat("fabY",0);
+        float subHiveButtonX = sharedPref.getFloat("subHiveButtonX",0);
+        float subHiveButtonY = sharedPref.getFloat("subHiveButtonY",0);
         // Check if the position of subHiveButton is saved in SharedPreferences.
         if(subHiveButtonX != 0 || subHiveButtonY != 0){
             // Set the position of subHiveButton with values saved in SharedPreferences
@@ -119,8 +119,8 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                         view.setX(currX);
                         view.setY(currY);
                         lastAction = MotionEvent.ACTION_MOVE;
-                        sharedPref.edit().putFloat("fabX", currX).commit();
-                        sharedPref.edit().putFloat("fabY", currY).commit();
+                        sharedPref.edit().putFloat("subHiveButtonX", currX).commit();
+                        sharedPref.edit().putFloat("subHiveButtonY", currY).commit();
                         break;
                     case MotionEvent.ACTION_UP:
                         distanceX = event.getRawX()-startRawX;
