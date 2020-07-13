@@ -63,7 +63,7 @@ public class Graph extends CustomActivity {
     private DownloadHiveAsyncTask downloadAsyncTask;
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
-    private FloatingActionButton hiveSettingsButton;
+  //  private FloatingActionButton hiveSettingsButton;
     private final String TAG = "Graph";
     private Toast toastPast;
     private Toast toastLatest;
@@ -93,7 +93,7 @@ public class Graph extends CustomActivity {
         lightSwitch = findViewById(R.id.lightSwitch);
         humidSwitch = findViewById(R.id.humidSwitch);
         graphMenuButton = findViewById(R.id.graphMenuButton);
-        hiveSettingsButton = findViewById(R.id.hiveSettingsButton);
+     //   hiveSettingsButton = findViewById(R.id.hiveSettingsButton);
         leftAxisUnit = findViewById(R.id.axisLeftLegend);
         rightAxisUnit = findViewById(R.id.axisRightLegend);
         noGraphSelectedText = findViewById(R.id.noGraphShownTV);
@@ -123,14 +123,14 @@ public class Graph extends CustomActivity {
             }
         });
 
-        hiveSettingsButton.setOnClickListener(view -> {
+   /*     hiveSettingsButton.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFromGraph", false);
             bundle.putInt("hiveID", hiveId);
             ConfigurationFragment fragment = new ConfigurationFragment();
             fragment.setArguments(bundle);
             fragment.show(getSupportFragmentManager(), "configurationDialog");
-        });
+        });*/
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
         downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
