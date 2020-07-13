@@ -1,11 +1,14 @@
 package dk.dtu.group22.beeware.presentation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Switch;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -69,6 +73,8 @@ public class Graph extends CustomActivity {
     private Toast toastLatest;
     private Toast toastLackingData;
     private Toast toastFailed;
+    private SharedPreferences sharedPref;
+    private Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,8 @@ public class Graph extends CustomActivity {
         toastLatest = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         toastLackingData = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         toastFailed = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        ctx = this;
+        sharedPref = ctx.getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         // Get Summary data for weight
         Intent intent = getIntent();
@@ -103,6 +111,80 @@ public class Graph extends CustomActivity {
         graphViewModel.setZoomEnabled(true);
 
         // Button for changing period
+        float graphMenuButtonX = sharedPref.getFloat("graphMenuButtonX",0);
+        float graphMenuButtonY = sharedPref.getFloat("graphMenuButtonY",0);
+        // Check if the position of graphMenuButton is saved in SharedPreferences.
+        if(graphMenuButtonX != 0 || graphMenuButtonY != 0){
+            // Set the position of graphMenuButton with values saved in SharedPreferences
+            graphMenuButton.setX(graphMenuButtonX);
+            graphMenuButton.setY(graphMenuButtonY);
+        } else{
+            // Put subHiveButton on the right bottom corner programmatically
+            ConstraintLayout constraintLayout = findViewById(R.id.graphConstrainLayout);
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayout);
+            constraintSet.connect(R.id.graphMenuButton,ConstraintSet.BOTTOM,R.id.graphConstrainLayout,ConstraintSet.BOTTOM,24);
+            constraintSet.connect(R.id.graphMenuButton,ConstraintSet.END,R.id.graphConstrainLayout,ConstraintSet.END,24);
+            constraintSet.applyTo(constraintLayout);
+        }
+        // Implements drag-and-drop subHiveButton
+        graphMenuButton.setOnTouchListener(new View.OnTouchListener() {
+
+            float startX;
+            float startRawX;
+            float startRawY;
+            float distanceX;
+            float distanceY;
+            int lastAction;
+            float startY;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = view.getX() - event.getRawX();
+                        startY = view.getY() - event.getRawY();
+                        startRawX = event.getRawX();
+                        startRawY = event.getRawY();
+                        lastAction = MotionEvent.ACTION_DOWN;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float currX = event.getRawX()+ startX;
+                        float currY = event.getRawY()  + startY;
+                        view.setX(currX);
+                        view.setY(currY);
+                        lastAction = MotionEvent.ACTION_MOVE;
+                        sharedPref.edit().putFloat("graphMenuButtonX", currX).commit();
+                        sharedPref.edit().putFloat("graphMenuButtonY", currY).commit();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        distanceX = event.getRawX()-startRawX;
+                        distanceY = event.getRawY()-startRawY;
+                        if (Math.abs(distanceX)< 10 && Math.abs(distanceY)<10){
+                            GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("hiveID", hiveId);
+                            if (fromDate != 0L && toDate != 0L) {
+                                bundle.putLong("selected1", fromDate);
+                                bundle.putLong("selected2", toDate);
+                                bundle.putInt("spinnerItem", spinnerItem);
+                            } else {
+                                bundle.putLong("selected1", 0L);
+                                bundle.putLong("selected2", 0L);
+                                bundle.putInt("spinnerItem", 0);
+                            }
+                            gts.setArguments(bundle);
+                            gts.show(getSupportFragmentManager(), "timeDialog");
+                        }
+                        break;
+                    case MotionEvent.ACTION_BUTTON_PRESS:
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+        /*
         graphMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +203,7 @@ public class Graph extends CustomActivity {
                 gts.setArguments(bundle);
                 gts.show(getSupportFragmentManager(), "timeDialog");
             }
-        });
+        }); */
 
    /*     hiveSettingsButton.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
