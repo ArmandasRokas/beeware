@@ -128,7 +128,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                         float currX = rawX + startX;
                         float currY = rawY + startY;
                         // Check if MotionEvent is not outside the screen. Otherwise the buttons disappears from the screen.
-                        if( currX > 0 && currY>0 && rawX<maxX-10 && rawY<maxY-10){
+                        if( currX > 0 && currY>0 && rawX<maxX-(maxX*0.09) && rawY<maxY-(maxY*0.06)){
                             view.setX(currX);
                             view.setY(currY);
                             lastAction = MotionEvent.ACTION_MOVE;
