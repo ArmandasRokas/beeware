@@ -92,13 +92,13 @@ public class GraphViewModel extends ViewModel {
         Timestamp endDate = new Timestamp(System.currentTimeMillis());
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(endDate.getTime());
-        cal.add(Calendar.MONTH, -3);
+        cal.add(Calendar.DATE, -14);
         Timestamp startDate = new Timestamp(cal.getTimeInMillis());
         startDate = roundDateToMidnight(startDate);
         Timestamp a = new Timestamp(startDate.getTime());
         Timestamp b = new Timestamp(endDate.getTime());
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 53; i++) {
             try {
 
                 a = new Timestamp(startDate.getTime());
@@ -115,7 +115,8 @@ public class GraphViewModel extends ViewModel {
                 // Iterate backwards
                 endDate = new Timestamp(startDate.getTime());
                 cal.setTimeInMillis(endDate.getTime());
-                cal.add(Calendar.MONTH, -2);
+                //cal.add(Calendar.MONTH, -2);
+                cal.add(Calendar.DATE, -7); // substract 7 days
                 startDate = new Timestamp(cal.getTimeInMillis());
             } catch (NoDataAvailableOnHivetoolException e){
                 backgroundDownloadInProgress = false;

@@ -89,7 +89,12 @@ public class WebScraper {
      * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
     private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException, NoDataAvailableOnHivetoolException {
-        if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
+     //   if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
+     //       throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
+     //   }
+        // If there is more than 9 days between requested timeinterval, it is assumed that there is no the data
+        // until this time point and stop downloading.
+        if(untilTime.getTime() - sinceTime.getTime() > 1000*9*24*60*60 ){
             throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
         }
         //Calculates number of days
@@ -122,6 +127,10 @@ public class WebScraper {
             System.out.println("IO Exception");
         }
              */
+            //Check if document contains h1 element with "Sorry, no data for hive...."
+//        if(!doc.body().getElementsByTag("h1").isEmpty()){
+//            throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
+//        }
         Elements nameElement = doc.getElementsByTag("title"); // her kom en nullpointerexception som følgefejl af problemer med at hente data
         String name = nameElement.get(0).wholeText().split(": ")[1];
 
@@ -141,7 +150,7 @@ public class WebScraper {
      * @return
      * @throws IOException
      */
-    public boolean isDataAvailableOnHiveTool(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
+    /*public boolean isDataAvailableOnHiveTool(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
 
         String sinceStr = sinceTime.toString().split(" ")[0];
 
@@ -160,7 +169,7 @@ public class WebScraper {
             //System.out.println(doc.body().getElementsByTag("h1").get(0).text().contains("Sorry, no data"));
             return false;
         }
-    }
+    }*/
 
     /**
      * @param string
