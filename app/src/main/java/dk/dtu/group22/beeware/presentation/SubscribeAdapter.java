@@ -2,6 +2,7 @@ package dk.dtu.group22.beeware.presentation;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -107,6 +109,12 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 
         holder.settingsBtn.setOnClickListener(view -> {
             System.out.println("Settings clicked");
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFromGraph", false);
+            bundle.putInt("hiveID", mDataset.get(position).getID());
+            ConfigurationFragment fragment = new ConfigurationFragment();
+            fragment.setArguments(bundle);
+            fragment.show(((AppCompatActivity)context).getSupportFragmentManager(), "configurationDialog");
         });
 
         //Alternates the background colors of the list elements
