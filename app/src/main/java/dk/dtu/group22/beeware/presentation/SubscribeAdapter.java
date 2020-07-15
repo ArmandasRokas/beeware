@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         public TextView subHiveName;
         public TextView subHiveLocation;
         public Switch subHiveSwitch;
+        public ImageView settingsBtn;
 
         public MyViewHolder(View v) {
             super(v);
@@ -57,6 +59,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             subHiveName = v.findViewById(R.id.subscribe_name);
             subHiveSwitch = v.findViewById(R.id.subscribe_switch);
             subHiveLocation = v.findViewById(R.id.subHiveLocation);
+            settingsBtn = v.findViewById(R.id.hive_settings_btn);
         }
     }
 
@@ -74,6 +77,37 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
+        View.OnClickListener switchOnClickListener = view -> {
+            if (holder.subHiveSwitch.isChecked()) {
+                if (tabNumber != 3) {
+                    --sessionSubs;
+                }
+                logic.unsubscribeHive(mDataset.get(position).getID());
+                holder.subHiveSwitch.setChecked(false);
+            } else {
+                if (sessionSubs < 10) {
+                    if (tabNumber != 3) {
+                        sessionSubs++;
+                    }
+                    logic.subscribeHive(mDataset.get(position).getID());
+                    holder.subHiveSwitch.setChecked(true);
+                } else {
+                    if (toast != null) {
+                        toast.cancel();
+                    }
+                    toast = Toast.makeText(context, "Save subscriptions before adding more", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        };
+        holder.subHiveName.setOnClickListener(switchOnClickListener);
+        holder.subHiveLocation.setOnClickListener(switchOnClickListener);
+//        holder.subHiveSwitch.setOnClickListener(switchOnClickListener); // Does not work correctly. Work around was to make subHiveName an sbubHiveLocation wider.
+
+        holder.settingsBtn.setOnClickListener(view -> {
+            System.out.println("Settings clicked");
+        });
 
         //Alternates the background colors of the list elements
         if (position % 2 == 0) {
@@ -113,33 +147,7 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
         }
 
         // If a whole item on the recyclerview is pressed, then toggle the subscription switch
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.subHiveSwitch.isChecked()) {
-                    if (tabNumber != 3) {
-                        --sessionSubs;
-                    }
-                    logic.unsubscribeHive(mDataset.get(position).getID());
-                    holder.subHiveSwitch.setChecked(false);
-                } else {
-                    if (sessionSubs < 10) {
-                        if (tabNumber != 3) {
-                            sessionSubs++;
-                        }
-                        logic.subscribeHive(mDataset.get(position).getID());
-                        holder.subHiveSwitch.setChecked(true);
-                    } else {
-                        if (toast != null) {
-                            toast.cancel();
-                        }
-                        toast = Toast.makeText(context, "Save subscriptions before adding more", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                }
-                subbedIds = logic.getSubscriptionIDs();
-            }
-        });
+    //    holder.itemView.setOnClickListener(switchOnClickListener);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
