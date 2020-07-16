@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,8 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton,cancelButton, topicThresh; // configTV
     private ImageView explainTresh;
-    private EditText weightIndicatorNum, tempIndicatorNum;
+    private EditText tempIndicatorNum;
+    private NumberPicker weightNumberPicker;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
     private boolean cameFromGraphAct;
@@ -73,7 +75,9 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         weightIndicatorTV = view.findViewById(R.id.weightIndicatorTV);
         tempIndicatorTV = view.findViewById(R.id.tempIndicatorTV);
 
-        weightIndicatorNum = view.findViewById(R.id.weightIndicatorNum);
+        weightNumberPicker = view.findViewById(R.id.weightNumberPicker);
+        weightNumberPicker.setMinValue(0);
+        weightNumberPicker.setMaxValue(199);
         tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
 
         //configTV = view.findViewById(R.id.config_tv);
@@ -126,7 +130,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
                     hive = logic.getCachedHive(hiveid);
                 }
                 hiveNameTV.setText(hive.getName());
-                weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
+                //weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
+                weightNumberPicker.setValue(hive.getWeightIndicator());
                 tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
             }
         };
@@ -145,14 +150,16 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     @Override
     public void onClick(View view) {
         // Only when saveButton is clicked, save new values
-        if (weightIndicatorNum.getText().toString().isEmpty()) {
-            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
-        }
+//        if (weightIndicatorNum.getText().toString().isEmpty()) {
+//            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
+//        }
+
         if (tempIndicatorNum.getText().toString().isEmpty()) {
             tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
         }
 
-        hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
+       // hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
+        hive.setWeightIndicator(weightNumberPicker.getValue());
         hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
 
         if (hive.getHasBeenConfigured() == false) {
