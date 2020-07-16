@@ -64,23 +64,25 @@
         android:id="@+id/tempIndicatorTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
         android:text="@string/ConfigTemp"
-        app:layout_constraintBottom_toTopOf="@+id/tempIndicatorNumber"
-        app:layout_constraintStart_toStartOf="@+id/tempIndicatorNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/configTopicThresh"
+        app:layout_constraintStart_toEndOf="@+id/weightIndicatorTV" />
 
-    <EditText
-        android:id="@+id/tempIndicatorNumber"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/field_borderbox"
-        android:hint="@string/ConfigTemp"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weightNumberPicker" />
+<!--    <EditText-->
+<!--        android:id="@+id/tempIndicatorNumber"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="36dp"-->
+<!--        android:background="@drawable/field_borderbox"-->
+<!--        android:hint="@string/ConfigTemp"-->
+<!--        android:importantForAutofill="no"-->
+<!--        android:inputType="number"-->
+<!--        android:paddingStart="10dp"-->
+<!--        android:paddingEnd="10dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/weightNumberPicker" />-->
 
     <TextView
         android:id="@+id/config_save"
@@ -97,7 +99,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempIndicatorNumber"
+        app:layout_constraintTop_toBottomOf="@+id/weightNumberPicker"
         app:layout_constraintVertical_bias="0.0" />
     <TextView
         android:id="@+id/config_cancel"
@@ -114,13 +116,14 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempIndicatorNumber"
+        app:layout_constraintTop_toBottomOf="@+id/weightNumberPicker"
         app:layout_constraintVertical_bias="0.0" />
     <ImageView
         android:id="@+id/explainThresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="4dp"
         android:src="@drawable/ic_help"
         app:layout_constraintStart_toEndOf="@+id/configTopicThresh"
         app:layout_constraintTop_toBottomOf="@+id/hiveNameTV" />
@@ -134,6 +137,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/weightIndicatorTV"
         app:layout_constraintTop_toBottomOf="@+id/weightIndicatorTV" ></NumberPicker>
+
+    <NumberPicker
+        android:id="@+id/tempNumberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/tempIndicatorTV"
+        app:layout_constraintTop_toBottomOf="@+id/tempIndicatorTV" ></NumberPicker>
 
 <!--    android:paddingStart="10dp"-->
 <!--    android:paddingEnd="10dp"-->

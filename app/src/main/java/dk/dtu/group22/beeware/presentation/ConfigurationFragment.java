@@ -29,8 +29,8 @@ import dk.dtu.group22.beeware.dal.dto.Hive;
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
     private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton,cancelButton, topicThresh; // configTV
     private ImageView explainTresh;
-    private EditText tempIndicatorNum;
-    private NumberPicker weightNumberPicker;
+   // private EditText tempIndicatorNum;
+    private NumberPicker weightNumberPicker, tempNumberPicker ;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
     private boolean cameFromGraphAct;
@@ -78,7 +78,10 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         weightNumberPicker = view.findViewById(R.id.weightNumberPicker);
         weightNumberPicker.setMinValue(0);
         weightNumberPicker.setMaxValue(199);
-        tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
+      //  tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
+        tempNumberPicker = view.findViewById(R.id.tempNumberPicker);
+        tempNumberPicker.setMinValue(0);
+        tempNumberPicker.setMaxValue(50);
 
         //configTV = view.findViewById(R.id.config_tv);
         topicThresh = view.findViewById(R.id.configTopicThresh);
@@ -92,6 +95,12 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected void onPreExecute() {
                 super.onPreExecute();
              //   getDialog().setCanceledOnTouchOutside(false);
+                topicThresh.setVisibility(View.INVISIBLE);
+                explainTresh.setVisibility(View.INVISIBLE);
+                weightNumberPicker.setVisibility(View.INVISIBLE);
+                tempNumberPicker.setVisibility(View.INVISIBLE);
+                weightIndicatorTV.setVisibility(View.INVISIBLE);
+                tempIndicatorTV.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
                 saveButton.setEnabled(false);
                 saveButton.setTextColor(getResources().getColor(R.color.BEE_graphWeight));
@@ -117,6 +126,12 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
              //   getDialog().setCanceledOnTouchOutside(true);
+                topicThresh.setVisibility(View.VISIBLE);
+                explainTresh.setVisibility(View.VISIBLE);
+                weightNumberPicker.setVisibility(View.VISIBLE);
+                tempNumberPicker.setVisibility(View.VISIBLE);
+                weightIndicatorTV.setVisibility(View.VISIBLE);
+                tempIndicatorTV.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
                 saveButton.setEnabled(true);
                 saveButton.setTextColor(getResources().getColor(R.color.app_theme));
@@ -132,7 +147,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
                 hiveNameTV.setText(hive.getName());
                 //weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
                 weightNumberPicker.setValue(hive.getWeightIndicator());
-                tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
+                tempNumberPicker.setValue(hive.getTempIndicator());
+                //tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
             }
         };
         asyncTask.execute();
@@ -154,13 +170,14 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
 //            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
 //        }
 
-        if (tempIndicatorNum.getText().toString().isEmpty()) {
-            tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
-        }
+//        if (tempIndicatorNum.getText().toString().isEmpty()) {
+//            tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
+//        }
 
        // hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
         hive.setWeightIndicator(weightNumberPicker.getValue());
-        hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+//        hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+        hive.setTempIndicator(tempNumberPicker.getValue());
 
         if (hive.getHasBeenConfigured() == false) {
             logic.setIsConfigured(hive.getId(), true);
