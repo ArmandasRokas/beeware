@@ -3,12 +3,14 @@ package dk.dtu.group22.beeware.presentation;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +25,14 @@ import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolEx
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, configInfo; // configTV
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, topicThresh, explainTresh; // configTV
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
     private boolean cameFromGraphAct;
     private ProgressBar progressBar;
     private AsyncTask asyncTask;
+    private Toast explainThreshToast;
 
     public ConfigurationFragment() {
         // Required empty public constructor
@@ -50,6 +53,11 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        explainThreshToast = Toast.makeText(getContext(), R.string.configInfo, Toast.LENGTH_LONG);
+        View.OnClickListener toastListener = vToast -> {
+            explainThreshToast.setGravity(Gravity.CENTER, 20, 20);
+            explainThreshToast.show();
+        };
      //   super.onViewCreated(view, savedInstanceState);
         saveButton = view.findViewById(R.id.config_save);
         saveButton.setOnClickListener(this);
@@ -63,7 +71,10 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
 
         //configTV = view.findViewById(R.id.config_tv);
-        configInfo = view.findViewById(R.id.configTopicThresh);
+        topicThresh = view.findViewById(R.id.configTopicThresh);
+        topicThresh.setOnClickListener(toastListener);
+        explainTresh = view.findViewById(R.id.explainThresh);
+        explainTresh.setOnClickListener(toastListener);
         progressBar = view.findViewById(R.id.progressBarConfigurationFrag);
         int hiveid = getArguments().getInt("hiveID", 0);
         asyncTask = new AsyncTask() {
@@ -120,6 +131,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     public void onDismiss(@NonNull DialogInterface dialog) {
         // Do not save any changes
         asyncTask.cancel(true);
+        explainThreshToast.cancel();
         super.onDismiss(dialog);
 
     }

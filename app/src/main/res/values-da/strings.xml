@@ -63,7 +63,7 @@
     <string name="ConfigWeight">Vægt (kg)</string>
 <!--    <string name="configTitle">Konfigurerer:</string>-->
 <!--    <string name="FromGraphConfigTitle">Konfigurer det nye bistade:</string>-->
-    <string name="configInfo">Numrene herunder indikerer værdien hvor bistadets ikon på oversigten vil skifte fra grøn til gul.</string>
+    <string name="configInfo">Grænseværdierne indikerer værdien hvor bistadets ikon på oversigten vil skifte fra grøn til gul.</string>
 <!--    <string name="FromGraphConfigInfo">Dette bistade er et nyt abonnement, som ikke er blevet konfigureret endnu.\nNumrene herunder indikerer værdien hvor bistadets ikon på oversigten vil skifte fra grøn til gul.\nDette kan til enhver tid blive indstillet under indstillinger i den nedre højre redigeringsmenu</string>-->
     <string name="configTopicThresh">Grænseværdier</string>
     <string name="SettingsButtonDescription">Knap til indstillinger</string>

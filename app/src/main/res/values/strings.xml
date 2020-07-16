@@ -78,7 +78,7 @@
     <!-- Configuration xml -->
 <!--    <string name="configTitle">Configuring:</string>-->
 <!--    <string name="FromGraphConfigTitle">Configure the new hive:</string>-->
-    <string name="configInfo">The numbers below indicate at which value the Hive\'s icon on the overview will change from green to yellow.</string>
+    <string name="configInfo">The threshold values indicate at which value the Hive\'s icon on the overview will change from green to yellow.</string>
 <!--    <string name="FromGraphConfigInfo">This is a newly subscribed hive that is not yet configured.\nThe numbers below indicate at which value the Hive\'s icon on the overview will change from green to yellow.\nThis can always be adjusted under settings in the bottom left edit menu.</string>-->
     <string name="configTopicThresh">Threshold values</string>
     <string name="ConfigWeight">Weight (kg)</string>
