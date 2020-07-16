@@ -88,6 +88,7 @@ public class Graph extends CustomActivity {
         toastPast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         toastLatest = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         toastLackingData = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toastLackingData.getView().setBackgroundResource(R.drawable.toast_error);
         toastFailed = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         ctx = this;
         sharedPref = ctx.getSharedPreferences("pref", Context.MODE_PRIVATE);
