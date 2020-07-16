@@ -100,6 +100,23 @@
         app:layout_constraintTop_toBottomOf="@+id/tempIndicatorNumber"
         app:layout_constraintVertical_bias="0.0" />
     <TextView
+        android:id="@+id/config_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:padding="15dp"
+        android:text="@string/ConfigCancel"
+        android:textColor="@color/app_theme"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tempIndicatorNumber"
+        app:layout_constraintVertical_bias="0.0" />
+    <TextView
         android:id="@+id/explainThresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -84,6 +84,7 @@
     <string name="ConfigWeight">Weight (kg)</string>
     <string name="ConfigTemp">Temperature (\u2103) </string>
     <string name="ConfigSave">SAVE</string>
+    <string name="ConfigCancel">CANCEL</string>
     <string name="no_graphs_selected">No graphs selected.</string>
     <string name="loading">Loading…</string>
 

@@ -59,6 +59,7 @@
 
     <!-- Configuration xml -->
     <string name="ConfigSave">GEM</string>
+    <string name="ConfigCancel">FORTRYD</string>
     <string name="ConfigTemp">Temperatur (\u2103)</string>
     <string name="ConfigWeight">Vægt (kg)</string>
 <!--    <string name="configTitle">Konfigurerer:</string>-->
