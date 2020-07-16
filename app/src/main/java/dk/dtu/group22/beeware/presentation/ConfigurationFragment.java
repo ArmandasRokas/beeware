@@ -23,7 +23,7 @@ import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolEx
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, configTV, configInfo;
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton, configInfo; // configTV
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
@@ -62,8 +62,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         weightIndicatorNum = view.findViewById(R.id.weightIndicatorNum);
         tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
 
-        configTV = view.findViewById(R.id.config_tv);
-        configInfo = view.findViewById(R.id.config_info);
+        //configTV = view.findViewById(R.id.config_tv);
+        configInfo = view.findViewById(R.id.configTopicThresh);
         progressBar = view.findViewById(R.id.progressBarConfigurationFrag);
         int hiveid = getArguments().getInt("hiveID", 0);
         asyncTask = new AsyncTask() {
