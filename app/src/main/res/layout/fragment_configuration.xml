@@ -116,18 +116,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tempIndicatorNumber"
         app:layout_constraintVertical_bias="0.0" />
-    <TextView
+    <ImageView
         android:id="@+id/explainThresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="\*"
-        android:textColor="#2196F3"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:src="@drawable/ic_help"
         app:layout_constraintStart_toEndOf="@+id/configTopicThresh"
         app:layout_constraintTop_toBottomOf="@+id/hiveNameTV" />
 
+<!--    android:textColor="#2196F3"-->
+<!--    android:textSize="18sp"-->
+<!--    android:textStyle="bold"-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/progressBarLayoutConfigurationFrag"

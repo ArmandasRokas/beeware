@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +26,8 @@ import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolEx
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
-    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton,cancelButton, topicThresh, explainTresh; // configTV
+    private TextView hiveNameTV, weightIndicatorTV, tempIndicatorTV, saveButton,cancelButton, topicThresh; // configTV
+    private ImageView explainTresh;
     private EditText weightIndicatorNum, tempIndicatorNum;
     private Logic logic = Logic.getSingleton();
     private Hive hive;
