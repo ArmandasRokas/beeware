@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.presentation;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -36,7 +37,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     private boolean cameFromGraphAct;
     private ProgressBar progressBar;
     private AsyncTask asyncTask;
-    private Toast explainThreshToast;
+    private Toast explainThreshToast, failedToGetHive;
 
     public ConfigurationFragment() {
         // Required empty public constructor
@@ -59,7 +60,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         explainThreshToast = Toast.makeText(getContext(), R.string.configInfo, Toast.LENGTH_LONG);
         View.OnClickListener toastListener = vToast -> {
-            explainThreshToast.setGravity(Gravity.CENTER, 20, 20);
+            explainThreshToast.setGravity(Gravity.CENTER, 0, 0);
             explainThreshToast.show();
         };
      //   super.onViewCreated(view, savedInstanceState);
@@ -89,6 +90,11 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         explainTresh = view.findViewById(R.id.explainThresh);
         explainTresh.setOnClickListener(toastListener);
         progressBar = view.findViewById(R.id.progressBarConfigurationFrag);
+        failedToGetHive = Toast.makeText(getContext(), R.string.FailedToGetHive, Toast.LENGTH_SHORT);
+        failedToGetHive.setGravity(Gravity.CENTER, 0, 00);
+        failedToGetHive.getView().setBackgroundResource(R.drawable.toast_error);
+        TextView v = (TextView) failedToGetHive.getView().findViewById(android.R.id.message);
+        v.setTextColor(Color.WHITE);
         int hiveid = getArguments().getInt("hiveID", 0);
         asyncTask = new AsyncTask() {
             @Override
@@ -110,14 +116,14 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected Object doInBackground(Object[] objects) {
                 long now = System.currentTimeMillis();
                 long since = now - (86400000 * 2);
-                try {
-                    hive = logic.getHiveNetwork(hiveid, new Timestamp(since), new Timestamp(now));
-                } catch (NoDataAvailableOnHivetoolException e) {
-                    // TODO implement Toast
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO implement Toast
-                    e.printStackTrace();
+                hive = logic.getCachedHive(hiveid);
+                if(hive==null) {
+                    try {
+                        hive = logic.getHiveNetwork(hiveid, new Timestamp(since), new Timestamp(now));
+                    } catch (Exception e) {
+                        failedToGetHive.show();
+                        e.printStackTrace();
+                    }
                 }
                 return null;
             }
@@ -125,29 +131,46 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-             //   getDialog().setCanceledOnTouchOutside(true);
-                topicThresh.setVisibility(View.VISIBLE);
-                explainTresh.setVisibility(View.VISIBLE);
-                weightNumberPicker.setVisibility(View.VISIBLE);
-                tempNumberPicker.setVisibility(View.VISIBLE);
-                weightIndicatorTV.setVisibility(View.VISIBLE);
-                tempIndicatorTV.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
-                saveButton.setEnabled(true);
-                saveButton.setTextColor(getResources().getColor(R.color.app_theme));
-
+                if(hive != null){
+                    topicThresh.setVisibility(View.VISIBLE);
+                    explainTresh.setVisibility(View.VISIBLE);
+                    weightNumberPicker.setVisibility(View.VISIBLE);
+                    tempNumberPicker.setVisibility(View.VISIBLE);
+                    weightIndicatorTV.setVisibility(View.VISIBLE);
+                    tempIndicatorTV.setVisibility(View.VISIBLE);
+                    saveButton.setEnabled(true);
+                    saveButton.setTextColor(getResources().getColor(R.color.app_theme));
+                    hiveNameTV.setText(hive.getName());
+                    weightNumberPicker.setValue(hive.getWeightIndicator());
+                    tempNumberPicker.setValue(hive.getTempIndicator());
+                } else {
+                    hiveNameTV.setText("");
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                                onDismiss(getDialog());
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }.start();
+                }
+                // some junk below.
              /*   cameFromGraphAct = getArguments().getBoolean("isFromGraph", false);
                 if (cameFromGraphAct) {
                     configTV.setText(getString(R.string.FromGraphConfigTitle));
                     configInfo.setText(getString(R.string.FromGraphConfigInfo));
                 }*/
-                if (hiveid != 0) {
+                /*if (hiveid != 0) {
                     hive = logic.getCachedHive(hiveid);
-                }
-                hiveNameTV.setText(hive.getName());
-                //weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
-                weightNumberPicker.setValue(hive.getWeightIndicator());
-                tempNumberPicker.setValue(hive.getTempIndicator());
+                }*/
+//                hiveNameTV.setText(hive.getName());
+//                weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
+//                weightNumberPicker.setValue(hive.getWeightIndicator());
+//                tempNumberPicker.setValue(hive.getTempIndicator());
                 //tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
             }
         };
@@ -159,30 +182,31 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         // Do not save any changes
         asyncTask.cancel(true);
         explainThreshToast.cancel();
+        failedToGetHive.cancel();
         super.onDismiss(dialog);
 
     }
 
     @Override
     public void onClick(View view) {
-        // Only when saveButton is clicked, save new values
+        // Some junk
 //        if (weightIndicatorNum.getText().toString().isEmpty()) {
 //            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
 //        }
-
 //        if (tempIndicatorNum.getText().toString().isEmpty()) {
 //            tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
 //        }
-
        // hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
-        hive.setWeightIndicator(weightNumberPicker.getValue());
 //        hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
+
+        // Only when saveButton is clicked, save new values
+        hive.setWeightIndicator(weightNumberPicker.getValue());
         hive.setTempIndicator(tempNumberPicker.getValue());
 
         if (hive.getHasBeenConfigured() == false) {
             logic.setIsConfigured(hive.getId(), true);
         }
         // Close fragment
-        getDialog().dismiss();
+        onDismiss(getDialog());
     }
 }
