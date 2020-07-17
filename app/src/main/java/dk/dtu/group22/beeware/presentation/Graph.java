@@ -234,7 +234,7 @@ public class Graph extends CustomActivity {
         downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
         downloadAsyncTask.execute(hiveId);
 
-
+/*
         if (!Logic.getSingleton().getCachedHive(hiveId).getHasBeenConfigured()) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFromGraph", true);
@@ -242,7 +242,7 @@ public class Graph extends CustomActivity {
             ConfigurationFragment fragment = new ConfigurationFragment();
             fragment.setArguments(bundle);
             fragment.show(getSupportFragmentManager(), "configurationDialog");
-        }
+        }*/
     }
 
     /**

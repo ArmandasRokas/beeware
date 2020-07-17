@@ -108,9 +108,9 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
 //        holder.subHiveSwitch.setOnClickListener(switchOnClickListener); // Does not work correctly. Work around was to make subHiveName an sbubHiveLocation wider.
 
         holder.settingsBtn.setOnClickListener(view -> {
-            System.out.println("Settings clicked");
+           // System.out.println("Settings clicked");
             Bundle bundle = new Bundle();
-            bundle.putBoolean("isFromGraph", false);
+           // bundle.putBoolean("isFromGraph", false);
             bundle.putInt("hiveID", mDataset.get(position).getID());
             ConfigurationFragment fragment = new ConfigurationFragment();
             fragment.setArguments(bundle);

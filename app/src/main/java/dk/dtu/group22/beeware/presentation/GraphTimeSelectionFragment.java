@@ -67,6 +67,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
+        settingsButton.setVisibility(View.INVISIBLE);
         resetButton.setOnClickListener(this);
 
         hiveid = getArguments().getInt("hiveID", 0);
