@@ -117,6 +117,10 @@ class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolde
             fragment.show(((AppCompatActivity)context).getSupportFragmentManager(), "configurationDialog");
         });
 
+        if(tabNumber == 1 || tabNumber == 2){
+            holder.settingsBtn.setVisibility(View.GONE);
+        }
+
         //Alternates the background colors of the list elements
         if (position % 2 == 0) {
             holder.background.setBackgroundColor(Color.parseColor("#40FFFFFF"));
