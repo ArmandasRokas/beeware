@@ -38,6 +38,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
     private ProgressBar progressBar;
     private AsyncTask asyncTask;
     private Toast explainThreshToast, failedToGetHive;
+    private final int minTempValue = -10, maxTempValue = 50;
+    private final int minWeightValue = 0, maxWeightValue = 150;
 
     public ConfigurationFragment() {
         // Required empty public constructor
@@ -77,12 +79,20 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         tempIndicatorTV = view.findViewById(R.id.tempIndicatorTV);
 
         weightNumberPicker = view.findViewById(R.id.weightNumberPicker);
-        weightNumberPicker.setMinValue(0);
-        weightNumberPicker.setMaxValue(199);
+        weightNumberPicker.setMinValue(minWeightValue);
+        weightNumberPicker.setMaxValue(maxWeightValue);
       //  tempIndicatorNum = view.findViewById(R.id.tempIndicatorNumber);
         tempNumberPicker = view.findViewById(R.id.tempNumberPicker);
         tempNumberPicker.setMinValue(0);
-        tempNumberPicker.setMaxValue(50);
+        tempNumberPicker.setMaxValue(maxTempValue-minTempValue);
+        tempNumberPicker.setFormatter(new NumberPicker.Formatter() {
+            @Override
+            public String format(int i) {
+                return Integer.toString(i + minTempValue);
+            }
+        });
+        //tempNumberPicker.setMinValue(-10);
+        //tempNumberPicker.setMaxValue(50);
 
         //configTV = view.findViewById(R.id.config_tv);
         topicThresh = view.findViewById(R.id.configTopicThresh);
@@ -143,7 +153,8 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
                     saveButton.setTextColor(getResources().getColor(R.color.app_theme));
                     hiveNameTV.setText(hive.getName());
                     weightNumberPicker.setValue(hive.getWeightIndicator());
-                    tempNumberPicker.setValue(hive.getTempIndicator());
+                    tempNumberPicker.setValue(hive.getTempIndicator()- minTempValue);
+                    //tempNumberPicker.setValue(hive.getTempIndicator());
                 } else {
                     hiveNameTV.setText("");
                     new Thread(){
@@ -201,11 +212,12 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
 
         // Only when saveButton is clicked, save new values
         hive.setWeightIndicator(weightNumberPicker.getValue());
-        hive.setTempIndicator(tempNumberPicker.getValue());
+        hive.setTempIndicator(tempNumberPicker.getValue()+minTempValue);
+        logic.setIsConfigured(hive.getId(), true);
 
-        if (hive.getHasBeenConfigured() == false) {
-            logic.setIsConfigured(hive.getId(), true);
-        }
+        //if (hive.getHasBeenConfigured() == false) {
+        //}
+
         // Close fragment
         onDismiss(getDialog());
     }
