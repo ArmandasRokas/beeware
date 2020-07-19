@@ -34,6 +34,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private TextView status;
     private ProgressBar progressBar;
     private TextView activeTextbutton, inactiveTextbutton, subscriptionsTextbutton;
+    private TextView activeTextbutton_NotEmpty, inactiveTextbutton_NotEmpty, subscriptionsTextbutton_NotEmpty;
     private View underlineOne, underlineTwo, underlineThree;
     private List<NameIdPair> allHives;
     private List<NameIdPair> active = new ArrayList<>();
@@ -58,15 +59,37 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         recyclerView = findViewById(R.id.hivesToSubRV);
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
+        activeTextbutton_NotEmpty = findViewById(R.id.subscribe_active_textbutton_NotEmpty);
+        activeTextbutton_NotEmpty.setOnClickListener(this);
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
+        subscriptionsTextbutton_NotEmpty = findViewById(R.id.subscribe_subscriptions_textbutton_NotEmpty);
+        subscriptionsTextbutton_NotEmpty.setOnClickListener(this);
         subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
         subscriptionsTextbutton.setOnClickListener(this);
+        inactiveTextbutton_NotEmpty = findViewById(R.id.subscribe_inactive_textbutton_NotEmpty);
+        inactiveTextbutton_NotEmpty.setOnClickListener(this);
         inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
         inactiveTextbutton.setOnClickListener(this);
         underlineOne = findViewById(R.id.subscribe_underline1);
         underlineTwo = findViewById(R.id.subscribe_underline2);
         underlineThree = findViewById(R.id.subscribe_underline3);
+
+        if(logic.getSubscriptionIDs().isEmpty()){
+            activeTextbutton_NotEmpty.setVisibility(View.GONE);
+            inactiveTextbutton_NotEmpty.setVisibility(View.GONE);
+            subscriptionsTextbutton_NotEmpty.setVisibility(View.GONE);
+            activeTextbutton.setVisibility(View.VISIBLE);
+            inactiveTextbutton.setVisibility(View.VISIBLE);
+            subscriptionsTextbutton.setVisibility(View.VISIBLE);
+        } else {
+            activeTextbutton.setVisibility(View.GONE);
+            inactiveTextbutton.setVisibility(View.GONE);
+            subscriptionsTextbutton.setVisibility(View.GONE);
+            activeTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+            inactiveTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+            subscriptionsTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+        }
 
         // Linear layout manager for the recycler view
         layoutManager = new LinearLayoutManager(this);
