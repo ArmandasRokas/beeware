@@ -34,10 +34,10 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private Logic logic;
     private TextView status;
     private ProgressBar progressBar;
+   // private TextView activeTextbutton, inactiveTextbutton, subscriptionsTextbutton;
     private TextView activeTextbutton, inactiveTextbutton, subscriptionsTextbutton;
-    private TextView activeTextbutton_NotEmpty, inactiveTextbutton_NotEmpty, subscriptionsTextbutton_NotEmpty;
     private View underlineOne, underlineTwo, underlineThree;
-    private List<NameIdPair> allHives;
+    private List<NameIdPair> allHives = new ArrayList<>();
     private List<NameIdPair> active = new ArrayList<>();
     private List<NameIdPair> inactive = new ArrayList<>();
     private List<NameIdPair> subscriptions = new ArrayList<>();
@@ -45,6 +45,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private int prevTab = 0, tab; // tab 1 = active, 2 = inactive, 3 = subscriptions
     private SubscribeAdapter currentAdapter;
     private List<Integer> subsIds;
+    private Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         // Initialisation
         logic = Logic.getSingleton();
         logic.setContext(this);
+        ctx = this;
 
         // Finding xml resources and setting listeners
         status = findViewById(R.id.statusText);
@@ -61,18 +63,18 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         recyclerView = findViewById(R.id.hivesToSubRV);
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
-        activeTextbutton_NotEmpty = findViewById(R.id.subscribe_active_textbutton_NotEmpty);
-        activeTextbutton_NotEmpty.setOnClickListener(this);
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
-        subscriptionsTextbutton_NotEmpty = findViewById(R.id.subscribe_subscriptions_textbutton_NotEmpty);
-        subscriptionsTextbutton_NotEmpty.setOnClickListener(this);
+//        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
+//        activeTextbutton.setOnClickListener(this);
         subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
         subscriptionsTextbutton.setOnClickListener(this);
-        inactiveTextbutton_NotEmpty = findViewById(R.id.subscribe_inactive_textbutton_NotEmpty);
-        inactiveTextbutton_NotEmpty.setOnClickListener(this);
+//        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
+//        subscriptionsTextbutton.setOnClickListener(this);
         inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
         inactiveTextbutton.setOnClickListener(this);
+//        inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
+//        inactiveTextbutton.setOnClickListener(this);
         underlineOne = findViewById(R.id.subscribe_underline1);
         underlineTwo = findViewById(R.id.subscribe_underline2);
         underlineThree = findViewById(R.id.subscribe_underline3);
@@ -80,20 +82,20 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         // If the user has subscribed some hive, so by default open "Subscriptions", otherwise "Active"
         subsIds = logic.getSubscriptionIDs();
         if(subsIds.isEmpty()){
-            activeTextbutton_NotEmpty.setVisibility(View.GONE);
-            inactiveTextbutton_NotEmpty.setVisibility(View.GONE);
-            subscriptionsTextbutton_NotEmpty.setVisibility(View.GONE);
-            activeTextbutton.setVisibility(View.VISIBLE);
-            inactiveTextbutton.setVisibility(View.VISIBLE);
-            subscriptionsTextbutton.setVisibility(View.VISIBLE);
+//            activeTextbutton_NotEmpty.setVisibility(View.GONE);
+//            inactiveTextbutton_NotEmpty.setVisibility(View.GONE);
+//            subscriptionsTextbutton_NotEmpty.setVisibility(View.GONE);
+//            activeTextbutton.setVisibility(View.VISIBLE);
+//            inactiveTextbutton.setVisibility(View.VISIBLE);
+//            subscriptionsTextbutton.setVisibility(View.VISIBLE);
             tab = 1;
         } else {
-            activeTextbutton.setVisibility(View.GONE);
-            inactiveTextbutton.setVisibility(View.GONE);
-            subscriptionsTextbutton.setVisibility(View.GONE);
-            activeTextbutton_NotEmpty.setVisibility(View.VISIBLE);
-            inactiveTextbutton_NotEmpty.setVisibility(View.VISIBLE);
-            subscriptionsTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+//            activeTextbutton.setVisibility(View.GONE);
+//            inactiveTextbutton.setVisibility(View.GONE);
+//            subscriptionsTextbutton.setVisibility(View.GONE);
+//            activeTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+//            inactiveTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+//            subscriptionsTextbutton_NotEmpty.setVisibility(View.VISIBLE);
             loadOnlySubscribedList();
             tab = 3;
         }
@@ -182,7 +184,30 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                     status.setText(errorMsg);
                 } else {
                     splitSubscriptions();
-                    changeTab(tab);
+                 //   changeTab(tab);
+                }
+                // active
+                if (tab == 1) {
+                    if(active.size() == 0) {
+                        status.setVisibility(View.VISIBLE);
+                        status.setText(getString(R.string.EmptyList));
+
+                    }else {
+                            status.setVisibility(View.INVISIBLE);
+                            currentAdapter = new SubscribeAdapter(active, ctx, getSessionSubs(), tab);
+                            recyclerView.setAdapter(currentAdapter);
+                    }
+                }
+                // inactive hives
+                if (tab == 2) {
+                    if (inactive.size() == 0) {
+                        status.setVisibility(View.VISIBLE);
+                        status.setText(getString(R.string.EmptyList));
+                    } else {
+                        status.setVisibility(View.INVISIBLE);
+                        currentAdapter = new SubscribeAdapter(inactive, ctx, getSessionSubs(), tab);
+                        recyclerView.setAdapter(currentAdapter);
+                    }
                 }
             }
         };
@@ -240,27 +265,44 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         this.tab = tab;
         if (tab == 1) {
             // User wants to see the active hives
-            if (active.size() == 0) {
-                status.setVisibility(View.VISIBLE);
-                status.setText(getString(R.string.EmptyList));
+            if(allHives.isEmpty()){
+                // Clear the list before fetching
+                currentAdapter = new SubscribeAdapter(new ArrayList<NameIdPair>(), ctx, getSessionSubs(), tab);
+                recyclerView.setAdapter(currentAdapter);
+                // Fetch Active/Inactive hives from HiveTool
+                loadListElements(true);
             } else {
-                status.setVisibility(View.INVISIBLE);
+                currentAdapter = new SubscribeAdapter(active, ctx, getSessionSubs(), tab);
+                recyclerView.setAdapter(currentAdapter);
             }
+//            if (active.size() == 0) {
+//                status.setVisibility(View.VISIBLE);
+//                status.setText(getString(R.string.EmptyList));
+//            } else {
+//                status.setVisibility(View.INVISIBLE);
+//            }
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);
-            currentAdapter = new SubscribeAdapter(active, this, getSessionSubs(), tab);
-            recyclerView.setAdapter(currentAdapter);
-
             prevTab = 0;
         } else if (tab == 2) {
             // User wants to see the inactive hives
-            if (inactive.size() == 0) {
-                status.setVisibility(View.VISIBLE);
-                status.setText(getString(R.string.EmptyList));
+//            if (inactive.size() == 0) {
+//                status.setVisibility(View.VISIBLE);
+//                status.setText(getString(R.string.EmptyList));
+//            } else {
+//                status.setVisibility(View.INVISIBLE);
+//            }
+            if(allHives.isEmpty()){
+                // Clear the list before fetching
+                currentAdapter = new SubscribeAdapter(new ArrayList<NameIdPair>(), ctx, getSessionSubs(), tab);
+                recyclerView.setAdapter(currentAdapter);
+                // Fetch Active/Inactive hives from HiveTool
+                loadListElements(true);
             } else {
-                status.setVisibility(View.INVISIBLE);
+                currentAdapter = new SubscribeAdapter(inactive, ctx, getSessionSubs(), tab);
+                recyclerView.setAdapter(currentAdapter);
             }
             searchField.setText("");
             underlineOne.setVisibility(View.INVISIBLE);

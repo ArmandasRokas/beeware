@@ -35,22 +35,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+<!--        <TextView-->
+<!--            android:id="@+id/subscribe_active_textbutton"-->
+<!--            android:layout_width="120dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:foreground="?attr/selectableItemBackgroundBorderless"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/active"-->
+<!--            android:textColor="@color/app_theme"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/view"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/subscribe_inactive_textbutton"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"-->
+<!--            app:layout_constraintVertical_bias="1.0" />-->
         <TextView
-            android:id="@+id/subscribe_active_textbutton"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text="@string/active"
-            android:textColor="@color/app_theme"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toStartOf="@+id/subscribe_inactive_textbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-            app:layout_constraintVertical_bias="1.0" />
-        <TextView
-            android:id="@+id/subscribe_subscriptions_textbutton_NotEmpty"
+            android:id="@+id/subscribe_subscriptions_textbutton"
             android:layout_width="120dp"
             android:layout_height="0dp"
             android:foreground="?attr/selectableItemBackgroundBorderless"
@@ -59,7 +59,7 @@
             android:textColor="@color/app_theme"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toStartOf="@+id/subscribe_active_textbutton_NotEmpty"
+            app:layout_constraintEnd_toStartOf="@+id/subscribe_active_textbutton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
             app:layout_constraintVertical_bias="1.0" />
@@ -78,22 +78,22 @@
             app:layout_constraintStart_toStartOf="@+id/subscribe_active_textbutton"
             tools:visibility="invisible" />
 
+<!--        <TextView-->
+<!--            android:id="@+id/subscribe_inactive_textbutton"-->
+<!--            android:layout_width="120dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:foreground="?attr/selectableItemBackgroundBorderless"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/inactive"-->
+<!--            android:textColor="@color/app_theme"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/view"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"-->
+<!--            app:layout_constraintVertical_bias="1.0" />-->
         <TextView
-            android:id="@+id/subscribe_inactive_textbutton"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text="@string/inactive"
-            android:textColor="@color/app_theme"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-            app:layout_constraintVertical_bias="1.0" />
-        <TextView
-            android:id="@+id/subscribe_active_textbutton_NotEmpty"
+            android:id="@+id/subscribe_active_textbutton"
             android:layout_width="120dp"
             android:layout_height="0dp"
             android:foreground="?attr/selectableItemBackgroundBorderless"
@@ -120,22 +120,22 @@
             app:layout_constraintEnd_toEndOf="@+id/subscribe_inactive_textbutton"
             app:layout_constraintStart_toStartOf="@+id/subscribe_inactive_textbutton" />
 
+<!--        <TextView-->
+<!--            android:id="@+id/subscribe_subscriptions_textbutton"-->
+<!--            android:layout_width="120dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:foreground="?attr/selectableItemBackgroundBorderless"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/subs"-->
+<!--            android:textColor="@color/app_theme"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/view"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/subscribe_inactive_textbutton"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"-->
+<!--            app:layout_constraintVertical_bias="1.0" />-->
         <TextView
-            android:id="@+id/subscribe_subscriptions_textbutton"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text="@string/subs"
-            android:textColor="@color/app_theme"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/subscribe_inactive_textbutton"
-            app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
-            app:layout_constraintVertical_bias="1.0" />
-        <TextView
-            android:id="@+id/subscribe_inactive_textbutton_NotEmpty"
+            android:id="@+id/subscribe_inactive_textbutton"
             android:layout_width="120dp"
             android:layout_height="0dp"
             android:foreground="?attr/selectableItemBackgroundBorderless"
@@ -145,7 +145,7 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/subscribe_active_textbutton_NotEmpty"
+            app:layout_constraintStart_toEndOf="@+id/subscribe_active_textbutton"
             app:layout_constraintTop_toBottomOf="@+id/subscribe_search_field"
             app:layout_constraintVertical_bias="1.0" />
 
