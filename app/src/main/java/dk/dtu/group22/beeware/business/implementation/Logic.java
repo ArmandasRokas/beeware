@@ -143,7 +143,8 @@ public class Logic {
                     hivesWithMeasurements.add(getHiveNetwork(id, new Timestamp(since), new Timestamp(now)));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
+                   // notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
+                    notFetchedHives.add(subscriptionManager.getCachedNameIdPair(id).getName());
                     Hive h = getCachedHive(id);
                     if(h != null){
                         hivesWithMeasurements.add(h);
@@ -544,5 +545,9 @@ public class Logic {
         hive.setHasBeenConfigured(conf);
 
         cachingManager.writeToFile(hive);
+    }
+
+    public NameIdPair getCachedNameIdPair(int hiveId){
+        return subscriptionManager.getCachedNameIdPair(hiveId);
     }
 }

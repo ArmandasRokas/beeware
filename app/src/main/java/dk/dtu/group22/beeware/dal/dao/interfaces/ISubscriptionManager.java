@@ -13,11 +13,17 @@ public interface ISubscriptionManager {
     void deleteSubscription(int id);
 
     /**
-     * Cached hive names is used for an error messaging, when the app
-     * only knows, which hiveId had problems.
+     * Caches hives meta data for offline use.
      * @param hivesIdName
      */
     void cacheHivesToSub(List<NameIdPair> hivesIdName);
 
-    String getCachedHiveName(int hiveId);
+    //String getCachedHiveName(int hiveId);
+
+    /**
+     * Receives cached NameIdPairs of the hives
+     * @param hiveId
+     * @return
+     */
+    NameIdPair getCachedNameIdPair(int hiveId);
 }

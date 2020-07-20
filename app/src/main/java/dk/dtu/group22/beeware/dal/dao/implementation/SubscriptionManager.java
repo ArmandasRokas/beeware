@@ -5,14 +5,17 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscriptionManager;
 
 public class SubscriptionManager implements ISubscriptionManager {
     private SharedPreferences sharedPreferences;
+    private Context ctx;
 
     public SubscriptionManager(Context ctx) {
+        this.ctx = ctx;
         sharedPreferences = ctx.getSharedPreferences(String.valueOf(R.string.subscriptions), Context.MODE_PRIVATE);
     }
 
@@ -68,11 +71,14 @@ public class SubscriptionManager implements ISubscriptionManager {
     }
 
     public void cacheHivesToSub(List<NameIdPair> hivesIdName) {
+        SharedPreferences hiveNames = ctx.getSharedPreferences(String.valueOf("hiveNames"), Context.MODE_PRIVATE);
+        SharedPreferences hiveLocation = ctx.getSharedPreferences(String.valueOf("hiveLocation"), Context.MODE_PRIVATE);
         for(NameIdPair e: hivesIdName){
-            sharedPreferences.edit().putString(e.getID()+"", e.getName()).apply();
+            hiveNames.edit().putString(e.getID()+"", e.getName()).apply();
+            hiveLocation.edit().putString(e.getID()+"", e.getLocation()).apply();
         }
     }
-
+/*
     public String getCachedHiveName(int hiveId) {
             String hiveName = sharedPreferences.getString(hiveId+"", "");
             if(!hiveName.isEmpty()){
@@ -80,5 +86,17 @@ public class SubscriptionManager implements ISubscriptionManager {
             } else {
                 return "Unknown hive";
             }
+    }
+ */
+    public NameIdPair getCachedNameIdPair(int hiveId){
+        SharedPreferences hiveNames = ctx.getSharedPreferences(String.valueOf("hiveNames"), Context.MODE_PRIVATE);
+        SharedPreferences hiveLocation = ctx.getSharedPreferences(String.valueOf("hiveLocation"), Context.MODE_PRIVATE);
+        String hiveName = hiveNames.getString(hiveId+"", "");
+        String location = hiveLocation.getString(hiveId+"", "");
+        if(!hiveName.isEmpty() && !location.isEmpty()){
+            return new NameIdPair(hiveName, hiveId, true, location);
+        } else {
+            return new NameIdPair("Unknown hive", hiveId, true, "Unknown location");
+        }
     }
 }

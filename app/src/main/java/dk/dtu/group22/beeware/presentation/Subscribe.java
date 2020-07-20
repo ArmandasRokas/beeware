@@ -229,13 +229,18 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private void loadOnlySubscribedList(){
 
         for(Integer id: subsIds){
-            Hive h = logic.getCachedHive(id);
-            if(h != null){
-                subscriptions.add(new NameIdPair(h.getName(), id, true, "")); // FIXME ?? hive doesnot have location. But maybe it is not imporant here?
+           // Hive h = logic.getCachedHive(id);
+//            if(h != null){
+//                subscriptions.add(new NameIdPair(h.getName(), id, true, ""));
+//            }
+            NameIdPair nameIdPair = logic.getCachedNameIdPair(id);
+            if(!nameIdPair.getName().contentEquals("Unknown hive")){
+                subscriptions.add(nameIdPair);
             }
+
         }
         // Work around for search function to work before allHives is fetched
-        active = subscriptions;
+      //  active = subscriptions; // No more need for this work around
     }
 
     /**
