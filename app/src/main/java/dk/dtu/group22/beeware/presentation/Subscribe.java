@@ -26,6 +26,7 @@ import java.util.List;
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
+import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class Subscribe extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView recyclerView;
@@ -41,8 +42,9 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private List<NameIdPair> inactive = new ArrayList<>();
     private List<NameIdPair> subscriptions = new ArrayList<>();
     private EditText searchField;
-    private int prevTab = 0, tab = 1; // tab 1 = active, 2 = inactive, 3 = subscriptions
+    private int prevTab = 0, tab; // tab 1 = active, 2 = inactive, 3 = subscriptions
     private SubscribeAdapter currentAdapter;
+    private List<Integer> subsIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +77,16 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         underlineTwo = findViewById(R.id.subscribe_underline2);
         underlineThree = findViewById(R.id.subscribe_underline3);
 
-        if(logic.getSubscriptionIDs().isEmpty()){
+        // If the user has subscribed some hive, so by default open "Subscriptions", otherwise "Active"
+        subsIds = logic.getSubscriptionIDs();
+        if(subsIds.isEmpty()){
             activeTextbutton_NotEmpty.setVisibility(View.GONE);
             inactiveTextbutton_NotEmpty.setVisibility(View.GONE);
             subscriptionsTextbutton_NotEmpty.setVisibility(View.GONE);
             activeTextbutton.setVisibility(View.VISIBLE);
             inactiveTextbutton.setVisibility(View.VISIBLE);
             subscriptionsTextbutton.setVisibility(View.VISIBLE);
+            tab = 1;
         } else {
             activeTextbutton.setVisibility(View.GONE);
             inactiveTextbutton.setVisibility(View.GONE);
@@ -89,7 +94,10 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
             activeTextbutton_NotEmpty.setVisibility(View.VISIBLE);
             inactiveTextbutton_NotEmpty.setVisibility(View.VISIBLE);
             subscriptionsTextbutton_NotEmpty.setVisibility(View.VISIBLE);
+            loadOnlySubscribedList();
+            tab = 3;
         }
+        changeTab(tab);
 
         // Linear layout manager for the recycler view
         layoutManager = new LinearLayoutManager(this);
@@ -104,13 +112,15 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                 return false;
             }
         });
-    }
 
+    }
+/*
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("onResume");
         loadListElements(true);
-    }
+    }*/
 
     @Override
     protected void onPause() {
@@ -183,6 +193,16 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
             asyncTask.cancel(true);
         }
 
+    }
+
+    private void loadOnlySubscribedList(){
+
+        for(Integer id: subsIds){
+            Hive h = logic.getCachedHive(id);
+            if(h != null){
+                subscriptions.add(new NameIdPair(h.getName(), id, true, "")); // FIXME ?? hive doesnot have location. But maybe it is not imporant here?
+            }
+        }
     }
 
     /**
