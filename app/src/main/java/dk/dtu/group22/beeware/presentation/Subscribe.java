@@ -228,6 +228,8 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                 subscriptions.add(new NameIdPair(h.getName(), id, true, "")); // FIXME ?? hive doesnot have location. But maybe it is not imporant here?
             }
         }
+        // Work around for search function to work before allHives is fetched
+        active = subscriptions;
     }
 
     /**
