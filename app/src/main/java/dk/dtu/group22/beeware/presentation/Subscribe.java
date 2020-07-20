@@ -265,6 +265,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
 
     private void changeTab(int tab) {
         this.tab = tab;
+        status.setVisibility(View.INVISIBLE); // Clear all status from a previous tab
         if (tab == 1) {
             // User wants to see the active hives
             if(allHives.isEmpty()){
