@@ -60,7 +60,8 @@
     <string name="active">Active</string>
     <string name="search">Search</string>
     <string name="inactive">Inactive</string>
-    <string name="subs">Subscriptions</string>
+<!--    <string name="subs">Subscriptions</string>-->
+    <string name="subs">My hives</string>
     <string name="NoSubscriptions">You have no subscriptions.</string>
     <string name="EmptyList">The list is empty.</string>
 
