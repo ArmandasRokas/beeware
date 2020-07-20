@@ -63,6 +63,11 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         recyclerView = findViewById(R.id.hivesToSubRV);
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
+        searchField.setOnClickListener(view -> {
+            if(allHives .isEmpty()){
+                loadListElements(true);
+            }
+        });
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
 //        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
@@ -163,6 +168,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                 subscriptionsTextbutton.setEnabled(false);
                 inactiveTextbutton.setEnabled(false);
                 searchField.setEnabled(false);
+                searchField.setHint(getResources().getString(R.string.loading));
             }
 
             @Override
@@ -261,6 +267,7 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         subscriptionsTextbutton.setEnabled(true);
         inactiveTextbutton.setEnabled(true);
         searchField.setEnabled(true);
+        searchField.setHint(getResources().getString(R.string.search));
     }
 
     private void changeTab(int tab) {
