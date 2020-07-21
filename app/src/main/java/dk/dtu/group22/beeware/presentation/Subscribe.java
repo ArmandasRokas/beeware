@@ -63,10 +63,11 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         recyclerView = findViewById(R.id.hivesToSubRV);
         searchField = findViewById(R.id.subscribe_search_field);
         searchField.addTextChangedListener(textWatcher);
-        searchField.setOnClickListener(view -> {
+        searchField.setOnTouchListener((view, motionEvent) -> {
             if(allHives .isEmpty()){
                 loadListElements(true);
             }
+            return false;
         });
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
