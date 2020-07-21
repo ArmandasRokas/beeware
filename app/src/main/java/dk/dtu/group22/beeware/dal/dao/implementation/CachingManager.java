@@ -67,7 +67,7 @@ public class CachingManager {
         return CACHING_MANAGER;
     }
 
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
+    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
         Hive hive = findCachedHive(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
@@ -87,7 +87,7 @@ public class CachingManager {
 //        return null;
 //    }
 
-    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
+    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
         Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
 
@@ -127,7 +127,7 @@ public class CachingManager {
  //       return null;
     }
 
-    public Hive findCachedHive(int id) {
+    public Hive findCachedHive(int id) throws AccessLocalFileException {
         Hive foundHive;
         foundHive = retrieveHiveFromList(id);
 
@@ -149,7 +149,7 @@ public class CachingManager {
         return null;
     }
 
-    private Hive retrieveHiveFromFile(int id) {
+    private synchronized Hive retrieveHiveFromFile(int id) throws AccessLocalFileException {
         File file = new File(ctx.getCacheDir(), String.valueOf(id));
         if (file.exists()) {
             try {
@@ -164,12 +164,13 @@ public class CachingManager {
                 return hive;
             } catch (Exception e) {
                 e.printStackTrace();
+                throw new AccessLocalFileException(e.getMessage());
             }
         }
         return null;
     }
 
-    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
 
         Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);
@@ -177,13 +178,12 @@ public class CachingManager {
         if (ctx != null) {
             writeToFile(hive);
         }
-
         cachedHives.add(hive);
 
         return hive;
     }
 
-    public void writeToFile(Hive hive) {
+    public synchronized void writeToFile(Hive hive) throws AccessLocalFileException {
         File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
         try {
             FileOutputStream fos = new FileOutputStream(file, false);
@@ -195,6 +195,7 @@ public class CachingManager {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new AccessLocalFileException(e.getMessage());
         }
     }
 

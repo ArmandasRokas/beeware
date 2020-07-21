@@ -702,7 +702,7 @@ public class Graph extends CustomActivity {
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 String errMessage = getString(R.string.FailedToGetLatestData) +  graphViewModel.getHive().getName();
               //  Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {
@@ -759,7 +759,7 @@ public class Graph extends CustomActivity {
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
-            }catch (IOException e) {
+            }catch (Exception e) {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {

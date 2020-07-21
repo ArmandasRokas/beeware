@@ -5,6 +5,7 @@
     <string name="ClassError">: klasse fejl.</string>
     <string name="FailedToGetLatestData">Kunne ikke hente de seneste data for: </string>
     <string name="FailedToGetPastData">Kunne ikke hente de fortidsdata for: </string>
+    <string name="FailedToGetData">Kunne ikke hente data for: </string>
 
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">SE PERIODE</string>

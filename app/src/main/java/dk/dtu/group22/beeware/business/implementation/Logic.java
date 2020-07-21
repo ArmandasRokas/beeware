@@ -20,6 +20,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
+import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionHivetool;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
@@ -38,7 +39,8 @@ public class Logic {
     private ISubscriptionManager subscriptionManager;
     private Context ctx;
     private final static Logic logic = new Logic();
-    private List<String> notFetchedHives = new LinkedList<>();
+    private List<String> notFetchedHivesFromNetwork = new LinkedList<>();
+    private List<String> notFetchedHivesFromFile = new LinkedList<>();
 
 
     /**
@@ -75,12 +77,19 @@ public class Logic {
      * there was a problem downloading hives). An exception could not
      * be thrown in getSubscribedHives, because it crashes the app.
      */
-    public List<String> getNotFetchedHives() {
-        return notFetchedHives;
+    public List<String> getNotFetchedHivesFromNetwork() {
+        return notFetchedHivesFromNetwork;
     }
 
-    public void clearNotFetchHives(){
-        notFetchedHives = new LinkedList<>();
+    public List<String> getNotFetchedHivesFromFile() {
+        return notFetchedHivesFromFile;
+    }
+
+    public void clearNotFetchHivesFromNetwork(){
+        notFetchedHivesFromNetwork = new LinkedList<>();
+    }
+    public void clearNotFetchHivesFromFile(){
+        notFetchedHivesFromFile = new LinkedList<>();
     }
     /**
      * Subscribes a hive
@@ -144,10 +153,15 @@ public class Logic {
                 } catch (Exception e) {
                     e.printStackTrace();
                    // notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
-                    notFetchedHives.add(subscriptionManager.getCachedNameIdPair(id).getName());
+                    notFetchedHivesFromNetwork.add(subscriptionManager.getCachedNameIdPair(id).getName());
+
+                    try {
                     Hive h = getCachedHive(id);
                     if(h != null){
                         hivesWithMeasurements.add(h);
+                    }} catch(AccessLocalFileException re){
+                        re.printStackTrace();
+                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
                     }
                 }
             };
@@ -177,7 +191,7 @@ public class Logic {
      * @return
      * A hive, with data specified by the parameters.
      */
-    public Hive getHiveNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
+    public Hive getHiveNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
 
         Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
         setCurrValues(hive);
@@ -195,7 +209,7 @@ public class Logic {
      * @return Hive with the identifier id, if it has been cached. Otherwise returns null.
      * The time complexity is linear with the number of hives that have been cached.
      */
-    public Hive getCachedHive(int id) {
+    public Hive getCachedHive(int id) throws AccessLocalFileException {
         Hive hive = cachingManager.findCachedHive(id);
         if(hive != null){
             setCurrValues(hive);
@@ -540,7 +554,7 @@ public class Logic {
         }
     }
 
-    public void setIsConfigured(int id, boolean conf) {
+    public void setIsConfigured(int id, boolean conf) throws AccessLocalFileException {
         Hive hive = cachingManager.findCachedHive(id);
         hive.setHasBeenConfigured(conf);
 
