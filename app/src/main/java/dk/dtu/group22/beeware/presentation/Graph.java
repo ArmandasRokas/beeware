@@ -697,8 +697,10 @@ public class Graph extends CustomActivity {
             } catch (NoDataAvailableOnHivetoolException e){
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {
-                    toastLackingData.setText(R.string.LackingData);
-                    toastLackingData.show();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastLackingData.setText(R.string.LackingData);
+                        toastLackingData.show();
+                    }
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
@@ -706,8 +708,10 @@ public class Graph extends CustomActivity {
                 String errMessage = getString(R.string.FailedToGetLatestData) +  graphViewModel.getHive().getName();
               //  Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {
-                    toastLatest.setText(errMessage);
-                    toastLatest.show();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastLatest.setText(errMessage);
+                        toastLatest.show();
+                    }
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
@@ -729,8 +733,10 @@ public class Graph extends CustomActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                toastFailed.setText(R.string.FailedToGetHive);
-                toastFailed.show();
+                if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                    toastFailed.setText(R.string.FailedToGetHive);
+                    toastFailed.show();
+                }
 //                        Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
             }
         }
@@ -754,8 +760,10 @@ public class Graph extends CustomActivity {
             }catch (NoDataAvailableOnHivetoolException e){
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {
-                    toastLackingData.setText(R.string.LackingData);
-                    toastLackingData.show();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastLackingData.setText(R.string.LackingData);
+                        toastLackingData.show();
+                    }
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
@@ -763,8 +771,10 @@ public class Graph extends CustomActivity {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {
-                    toastPast.setText(errMessage);
-                    toastPast.show();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastPast.setText(errMessage);
+                        toastPast.show();
+                    }
                 };
                 runOnUiThread(r2);
                 e.printStackTrace();
@@ -792,6 +802,8 @@ public class Graph extends CustomActivity {
 
     @Override
     protected void onPause() {
+        downloadAsyncTask.cancel(true);
+        downloadBGAsyncTask.cancel(true);
         toastPast.cancel();
         toastLatest.cancel();
         toastLackingData.cancel();
