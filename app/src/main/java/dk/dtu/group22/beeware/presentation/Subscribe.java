@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -66,6 +67,15 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         searchField.setOnTouchListener((view, motionEvent) -> {
             if(allHives .isEmpty()){
                 loadListElements(true);
+            }
+            return false;
+        });
+        // hide virtual keyboard when the enter is clicked
+        searchField.setOnEditorActionListener((v, keyCode, event) -> {
+            if (keyCode == 5) {
+                InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                return true;
             }
             return false;
         });
