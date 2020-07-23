@@ -25,7 +25,7 @@ import dk.dtu.group22.beeware.R;
 public class GraphTimeSelectionFragment extends DialogFragment implements View.OnClickListener {
     private Fragment calendarFragment;
     private TextView fromDate, toDate, viewPeriod, resetButton;
-    private ImageView settingsButton;
+    private TextView settingsButton;
     private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
@@ -67,7 +67,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-        settingsButton.setVisibility(View.INVISIBLE);
+     //   settingsButton.setVisibility(View.INVISIBLE);
         resetButton.setOnClickListener(this);
 
         hiveid = getArguments().getInt("hiveID", 0);
@@ -92,17 +92,17 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
      * Updates the fromDate based on the time period selected in the spinner.
      */
     public void setFromDate() {
-        if (calendarFragment != null) {
-        } else {
+        if (calendarFragment == null) {
+        //} else {
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-            if (selectedDate != 0L &&
-                    (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
-                fromDate.setText(dateFormat.format(selectedDate));
-            } else {
+    //        if (selectedDate != 0L && // Should be always used the selected period from the current date
+    //                (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
+    //            fromDate.setText(dateFormat.format(selectedDate));
+   //         } else {
                 fromDate.setText(dateFormat
                         .format(calendarObj.getTimeInMillis() - spinnerSelection));
                 selectedDate = calendarObj.getTimeInMillis() - spinnerSelection;
-            }
+    //        }
         }
     }
 
