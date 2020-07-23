@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -19,12 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
+import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
@@ -126,7 +124,12 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected Object doInBackground(Object[] objects) {
                 long now = System.currentTimeMillis();
                 long since = now - (86400000 * 2);
-                hive = logic.getCachedHive(hiveid);
+                try {
+                    hive = logic.getCachedHive(hiveid);
+                } catch (AccessLocalFileException e) {
+                    failedToGetHive.show();
+                    e.printStackTrace();
+                }
                 if(hive==null) {
                     try {
                         hive = logic.getHiveNetwork(hiveid, new Timestamp(since), new Timestamp(now));
@@ -213,7 +216,12 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         // Only when saveButton is clicked, save new values
         hive.setWeightIndicator(weightNumberPicker.getValue());
         hive.setTempIndicator(tempNumberPicker.getValue()+minTempValue);
-        logic.setIsConfigured(hive.getId(), true);
+        try {
+            logic.setIsConfigured(hive.getId(), true);
+        } catch (AccessLocalFileException e) {
+            failedToGetHive.show();
+            e.printStackTrace();
+        }
 
         //if (hive.getHasBeenConfigured() == false) {
         //}

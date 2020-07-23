@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -22,10 +21,6 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import androidx.lifecycle.Lifecycle;
 
 import java.util.ArrayList;
@@ -51,7 +46,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
     private boolean configureNow = false;
     private ArrayList<Integer> subscribedHiveIDs = new ArrayList<>();
     private SharedPreferences sharedPref;
-    private Toast toastLatest;
+    private Toast toastLatest, toastfailedFetchData;
     private Display display;
     private Point size;
 
@@ -62,6 +57,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
         toastLatest = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toastfailedFetchData = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 
         // Initialising variables
         ctx = this;
@@ -174,20 +170,20 @@ public class Overview extends CustomActivity //implements View.OnClickListener
 
             @Override
             protected Object doInBackground(Object... arg0) {
-                try {
-                    hives = logic.getSubscribedHives(2);
-                    Collections.sort(hives);
-                    for (Integer i : logic.getSubscriptionIDs()) {
+               // try {
+                // All exceptions is handled in getSubscribedHives because of multithreading in the method.
+                hives = logic.getSubscribedHives(2);
+                Collections.sort(hives);
+                for (Integer i : logic.getSubscriptionIDs()) {
 
-                        subscribedHiveIDs.add(i);
+                    subscribedHiveIDs.add(i);
 
-                    }
-                    return null;
-                } catch (Exception e) {
-                    //    errorMsg = e.getMessage();
-                    e.printStackTrace();
-                    return e;
                 }
+                return null;
+               // } catch (Exception e) {
+               //     e.printStackTrace();
+               //     return e;
+                //}
             }
 
             @Override
@@ -235,7 +231,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
-                List<String> notFetchedHives = logic.getNotFetchedHives();
+                List<String> notFetchedHives = logic.getNotFetchedHivesFromNetwork();
                 if(!notFetchedHives.isEmpty()){
                     Collections.sort(notFetchedHives);
                     String errMessage = getString(R.string.FailedToGetLatestData) +  " " + notFetchedHives.toString();
@@ -244,7 +240,17 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                         toastLatest.setText(errMessage);
                         toastLatest.show();
                     }
-                    logic.clearNotFetchHives();
+                    logic.clearNotFetchHivesFromNetwork();
+                }
+                List<String> notFetchedHivesFromFile = logic.getNotFetchedHivesFromFile();
+                if(!notFetchedHivesFromFile.isEmpty()){
+                    Collections.sort(notFetchedHivesFromFile);
+                    String errMessage = getString(R.string.FailedToGetData) +  " " + notFetchedHivesFromFile.toString();
+                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                        toastfailedFetchData.setText(errMessage);
+                        toastfailedFetchData.show();
+                    }
+                    logic.clearNotFetchHivesFromFile();
                 }
             }
         };
@@ -267,6 +273,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         super.onPause();
         setupSubscribedHives(false);
         toastLatest.cancel();
+        toastfailedFetchData.cancel();
     }
 
 //    @Override
