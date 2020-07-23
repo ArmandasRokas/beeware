@@ -25,31 +25,38 @@
         app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/constraintLayout2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginStart="15dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:background="@drawable/spinner_borderbox"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/newTime_from_text"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/newTime_settings"-->
+<!--        app:layout_constraintVertical_bias="0.0">-->
+
+<!--        <Spinner-->
+<!--            android:id="@+id/newTime_spinner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:backgroundTint="@color/app_theme"-->
+<!--            android:entries="@array/time_period"-->
+<!--            android:spinnerMode="dropdown"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <NumberPicker
+        android:id="@+id/periodPicker"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/spinner_borderbox"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/newTime_from_text"
-        app:layout_constraintTop_toBottomOf="@+id/newTime_settings"
-        app:layout_constraintVertical_bias="0.0">
-
-        <Spinner
-            android:id="@+id/newTime_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:backgroundTint="@color/app_theme"
-            android:entries="@array/time_period"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+        app:layout_constraintStart_toStartOf="parent"></NumberPicker>
     <TextView
         android:id="@+id/newTime_to_text"
         android:layout_width="150dp"

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -26,13 +27,15 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     private Fragment calendarFragment;
     private TextView fromDate, toDate, viewPeriod, resetButton;
     private TextView settingsButton;
-    private Spinner spinner;
+   // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
     private long selectedDate = 0L;
     private int spinnerItem = 0;
     private int skipTwice = 3;
     private int hiveid;
+    private NumberPicker periodPicker;
+    private String[] periods;
 
     // Default empty constructor
     public GraphTimeSelectionFragment() {
@@ -59,15 +62,18 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         // Initialisation
         fromDate = view.findViewById(R.id.newTime_from_text);
         toDate = view.findViewById(R.id.newTime_to_text);
-        spinner = view.findViewById(R.id.newTime_spinner);
+       // spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         settingsButton = view.findViewById(R.id.newTime_settings);
         resetButton = view.findViewById(R.id.newTimeResetButton);
+        // FIXME below
+        fromDate.setVisibility(View.INVISIBLE);
+        toDate.setVisibility(View.INVISIBLE);
+        resetButton.setVisibility(View.INVISIBLE);
 
         fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-     //   settingsButton.setVisibility(View.INVISIBLE);
         resetButton.setOnClickListener(this);
 
         hiveid = getArguments().getInt("hiveID", 0);
@@ -85,7 +91,37 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
             spinnerSelection = givenToDate - givenFromDate;
         }
 
-        spinnerHandler();
+        periodPicker  = view.findViewById(R.id.periodPicker);
+        periodPicker.setMinValue(0);
+        periodPicker.setMaxValue(4);
+        periods = getResources().getStringArray(R.array.time_period);
+        periodPicker.setDisplayedValues(periods);
+        periodPicker.setValue(spinnerItem);
+        periodPicker.setOnValueChangedListener((numberPicker, i, i1) -> {
+            spinnerItem = numberPicker.getValue();
+            switch (spinnerItem) {
+                case 0:
+                    spinnerSelection = DateUtils.WEEK_IN_MILLIS; // 1 week
+                    break;
+                case 1:
+                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12; // 1 month
+                    break;
+                case 2:
+                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 3; // 3 months
+                    break;
+                case 3:
+                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 6; // 6 months
+                    break;
+                case 4:
+                    spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
+                    break;
+            }
+            setFromDate();
+            setSelectedDate(selectedDate);
+        });
+
+
+        //   spinnerHandler(); // FIXME
     }
 
     /**
@@ -186,7 +222,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
             selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
             spinnerItem = 0;
             skipTwice = 3;
-            spinnerHandler();
+           // spinnerHandler(); FIXME
         }
     }
 
@@ -195,51 +231,51 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
      * @pre A new date is selected by the user.
      * @post fromDate is updated, and view is updated with the new date.
      */
-    public void spinnerHandler() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.time_period, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (skipTwice < 2) {
-                    if (spinnerItem == 0) {
-                        skipTwice = 3;
-                    }
-                    spinner.setSelection(spinnerItem);
-                    skipTwice++;
-                    return;
-                }
-                spinnerItem = position;
-                switch (spinnerItem) {
-                    case 0:
-                        spinnerSelection = DateUtils.WEEK_IN_MILLIS; // 1 week
-                        break;
-                    case 1:
-                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12; // 1 month
-                        break;
-                    case 2:
-                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 3; // 3 months
-                        break;
-                    case 3:
-                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 6; // 6 months
-                        break;
-                    case 4:
-                        spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
-                        break;
-                }
-                refreshCalendar();
-
-                setFromDate();
-                setSelectedDate(selectedDate);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
+//    public void spinnerHandler() {
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+//                R.array.time_period, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapter);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (skipTwice < 2) {
+//                    if (spinnerItem == 0) {
+//                        skipTwice = 3;
+//                    }
+//                    spinner.setSelection(spinnerItem);
+//                    skipTwice++;
+//                    return;
+//                }
+//                spinnerItem = position;
+//                switch (spinnerItem) {
+//                    case 0:
+//                        spinnerSelection = DateUtils.WEEK_IN_MILLIS; // 1 week
+//                        break;
+//                    case 1:
+//                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12; // 1 month
+//                        break;
+//                    case 2:
+//                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 3; // 3 months
+//                        break;
+//                    case 3:
+//                        spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 6; // 6 months
+//                        break;
+//                    case 4:
+//                        spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
+//                        break;
+//                }
+//                refreshCalendar();
+//
+//                setFromDate();
+//                setSelectedDate(selectedDate);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+//    }
 
     /**
      * Set by the calendar fragment, and when the spinner changes. Updates the fromDate and toDate
