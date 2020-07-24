@@ -55,7 +55,8 @@
         android:text="@string/datePlaceholder"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/newTime_to_text"
@@ -83,10 +84,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/newTime_from_text"
-        app:layout_constraintTop_toBottomOf="@+id/newTime_from_text"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
@@ -139,29 +138,28 @@
         android:id="@+id/newTime_viewperiod_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="4dp"
+        android:paddingEnd="15dp"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="5dp"
+        android:padding="0dp"
         android:text="@string/ViewPeriod"
         android:textColor="@color/app_theme"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/newTime_settings" />
+        android:layout_marginBottom="15sp"
+        app:layout_constraintStart_toEndOf="@id/newTime_calendar_frame"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <EditText
         android:id="@+id/daysEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="34dp"
         android:ems="3"
         android:hint="Days"
         android:inputType="number"
         android:maxLength="3"
-        app:layout_constraintStart_toEndOf="@+id/newTime_from_text"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/newTime_calendar_frame"
+        app:layout_constraintBottom_toTopOf="@id/newTime_viewperiod_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
