@@ -143,6 +143,17 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //            setFromDate();
 //            setSelectedDate(selectedDate);
 //        });
+        Bundle bundle = new Bundle();
+        calendarFragment = new GraphTimeCalendarFragment();
+        bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
+        //    bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
+        bundle.putLong("max", (calendarObj.getTimeInMillis() - DateUtils.DAY_IN_MILLIS));
+        if (selectedDate != 0L) {
+            bundle.putLong("selected", selectedDate);
+        }
+        calendarFragment.setArguments(bundle);
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
 
 
         //   spinnerHandler(); // FIXME
@@ -208,25 +219,25 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     @Override
     public void onClick(View v) {
         if (v == fromDate) {
-            // User wants to see calendar to change date
-            if (calendarFragment != null) {
-                // If the user wants to close the shown calendar
-                getChildFragmentManager().beginTransaction().remove(calendarFragment).commit();
-                calendarFragment = null;
-            } else {
-                // If the user wants to open the calendar
-                Bundle bundle = new Bundle();
-                calendarFragment = new GraphTimeCalendarFragment();
-                bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
-            //    bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
-                bundle.putLong("max", (calendarObj.getTimeInMillis() - DateUtils.DAY_IN_MILLIS));
-                if (selectedDate != 0L) {
-                    bundle.putLong("selected", selectedDate);
-                }
-                calendarFragment.setArguments(bundle);
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
-            }
+//            // User wants to see calendar to change date
+//            if (calendarFragment != null) {
+//                // If the user wants to close the shown calendar
+//                getChildFragmentManager().beginTransaction().remove(calendarFragment).commit();
+//                calendarFragment = null;
+//            } else {
+//                // If the user wants to open the calendar
+//                Bundle bundle = new Bundle();
+//                calendarFragment = new GraphTimeCalendarFragment();
+//                bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
+//            //    bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
+//                bundle.putLong("max", (calendarObj.getTimeInMillis() - DateUtils.DAY_IN_MILLIS));
+//                if (selectedDate != 0L) {
+//                    bundle.putLong("selected", selectedDate);
+//                }
+//                calendarFragment.setArguments(bundle);
+//                getChildFragmentManager().beginTransaction()
+//                        .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
+//            }
         } else if (v == viewPeriod) {
             // User wants to close fragment and see the updated time period
 //            ((Graph) getActivity())
