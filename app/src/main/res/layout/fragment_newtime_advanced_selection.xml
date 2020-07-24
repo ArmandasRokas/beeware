@@ -152,7 +152,7 @@
         app:layout_constraintTop_toBottomOf="@+id/newTime_settings" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/daysEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

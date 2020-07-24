@@ -6,7 +6,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -27,6 +27,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
+    private int daysEntered;
+    private EditText daysEditText;
     private long selectedDate = 0L;
     private int spinnerItem = 0;
     private int skipTwice = 3;
@@ -63,6 +65,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         settingsButton = view.findViewById(R.id.newTime_settings);
         resetButton = view.findViewById(R.id.newTimeResetButton);
+        daysEditText = view.findViewById(R.id.daysEditText);
         // FIXME below
 //        fromDate.setVisibility(View.INVISIBLE);
 //        toDate.setVisibility(View.INVISIBLE);
@@ -226,10 +229,15 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
             }
         } else if (v == viewPeriod) {
             // User wants to close fragment and see the updated time period
+//            ((Graph) getActivity())
+//                    .setPeriod(selectedDate, (selectedDate + spinnerSelection), spinnerItem);
+//            ((Graph) getActivity()).showWithNewTimeDelta(new Timestamp(selectedDate),
+//                    new Timestamp(selectedDate + spinnerSelection));
+            daysEntered = Integer.parseInt(daysEditText.getText().toString());
             ((Graph) getActivity())
-                    .setPeriod(selectedDate, (selectedDate + spinnerSelection), spinnerItem);
+                    .setPeriod(selectedDate, (selectedDate + daysEntered*DateUtils.DAY_IN_MILLIS), spinnerItem);
             ((Graph) getActivity()).showWithNewTimeDelta(new Timestamp(selectedDate),
-                    new Timestamp(selectedDate + spinnerSelection));
+                    new Timestamp(selectedDate + daysEntered*DateUtils.DAY_IN_MILLIS));
             this.dismiss();
         } else if (v == settingsButton) {
 //            Bundle bundle = new Bundle();
