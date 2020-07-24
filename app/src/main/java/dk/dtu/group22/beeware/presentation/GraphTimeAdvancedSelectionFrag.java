@@ -101,6 +101,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         // Set starting from and to date or just to date
         long givenFromDate = this.getArguments().getLong("selected1");
         long givenToDate = this.getArguments().getLong("selected2");
+        System.out.println("givenFromDate "+ givenFromDate + ", givenToData" + givenToDate);
         spinnerItem = this.getArguments().getInt("spinnerItem");
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
         if (givenFromDate != 0L && givenToDate != 0L) {
@@ -214,7 +215,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
                 Bundle bundle = new Bundle();
                 calendarFragment = new GraphTimeCalendarFragment();
                 bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
-                bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
+            //    bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
+                bundle.putLong("max", (calendarObj.getTimeInMillis() - DateUtils.DAY_IN_MILLIS));
                 if (selectedDate != 0L) {
                     bundle.putLong("selected", selectedDate);
                 }
