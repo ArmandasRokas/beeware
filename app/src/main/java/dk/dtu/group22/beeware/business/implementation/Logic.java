@@ -159,7 +159,10 @@ public class Logic {
                     Hive h = getCachedHive(id);
                     if(h != null){
                         hivesWithMeasurements.add(h);
-                    }} catch(AccessLocalFileException re){
+                    }else{
+                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
+                    }
+                    } catch(AccessLocalFileException re){
                         re.printStackTrace();
                         notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
                     }
