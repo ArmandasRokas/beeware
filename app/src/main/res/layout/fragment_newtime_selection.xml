@@ -106,11 +106,9 @@
         android:id="@+id/newTime_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
         android:contentDescription="@string/SettingsButtonDescription"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="10dp"
+        android:padding="15dp"
         android:text="Advanced"
         android:textColor="@color/app_theme"
         android:textSize="12sp"
@@ -118,6 +116,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+<!--    android:layout_marginTop="5dp"-->
+<!--    android:layout_marginEnd="5dp"-->
 
     <TextView
         android:id="@+id/newTimeResetButton"

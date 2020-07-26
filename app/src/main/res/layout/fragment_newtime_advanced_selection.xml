@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/SettingsButtonDescription"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="5dp"
+        android:padding="15dp"
         android:text="Basic"
         android:textColor="@color/app_theme"
         android:textSize="12sp"
