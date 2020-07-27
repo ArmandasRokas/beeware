@@ -6,8 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import dk.dtu.group22.beeware.dal.dao.interfaces.CachedHiveRepoI;
 import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
 import static dk.dtu.group22.beeware.dal.dao.implementation.HiveReaderContract.*;
 
 public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
@@ -40,29 +44,46 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
-        cursor.moveToNext();
 
-        int id = cursor.getInt(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
-        String hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
 
-        return new Hive(id, hiveName);
+        int id = 0;
+        String hiveName = "";
+        List<Measurement> measurements = new ArrayList<>();
+        while (cursor.moveToNext()){
+            id = cursor.getInt(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
+            hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
+            Timestamp timestamp = new Timestamp(cursor.getInt(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            double weight = cursor.getDouble(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
+            measurements.add(new Measurement(timestamp, weight, 0.0, 0.0, 0.0));
+            System.out.println("measurements: " + measurements.toString());
+        }
+        Hive hiveToReturn = new Hive(id, hiveName);
+        hiveToReturn.setMeasurements(measurements);
+        return hiveToReturn;
     }
 
+    /**
+     * What should the method do is given hive, does not have any measurements?
+     * Maybe throw an IllegalArgumentException
+     * @param hive
+     */
     @Override
     public void createCachedHive(Hive hive) {
+
         // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
 // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
-        values.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName());
-        values.put(HiveEntry.COLUMN_NAME_TIMESTAMP, System.currentTimeMillis());
-        values.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, 32.0);
-
+        for (int i = 0; i<hive.getMeasurements().size(); i++ ){
+            ContentValues values = new ContentValues();
+            values.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
+            values.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName());
+            values.put(HiveEntry.COLUMN_NAME_TIMESTAMP, hive.getMeasurements().get(i).getTimestamp().getTime());
+            values.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, hive.getMeasurements().get(i).getWeight());
 // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(HiveEntry.TABLE_NAME, null, values);
-        System.out.println("newRowId: " + newRowId);
+            long newRowId = db.insert(HiveEntry.TABLE_NAME, null, values);
+            System.out.println("newRowId: " + newRowId);
+        }
     }
 }
 
