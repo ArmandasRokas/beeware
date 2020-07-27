@@ -35,11 +35,14 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS
         };
 
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
+        String[] selectionArgs = {hiveId+""};
+
         Cursor cursor = db.query(
                 "HIVE_DATA",   // The table to query
                 null,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
                 null,                   // don't group the rows
                 null,                   // don't filter by row groups
                 null               // The sort order
@@ -76,12 +79,12 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 // Create a new map of values, where column names are the keys
         for (int i = 0; i<hive.getMeasurements().size(); i++ ){
             ContentValues values = new ContentValues();
-            values.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
-            values.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName());
+            values.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId()); // FIXME should not update id on every measurement
+            values.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName()); // FIXME the same as above
             values.put(HiveEntry.COLUMN_NAME_TIMESTAMP, hive.getMeasurements().get(i).getTimestamp().getTime());
             values.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, hive.getMeasurements().get(i).getWeight());
 // Insert the new row, returning the primary key value of the new row
-            long newRowId = db.insert(HiveEntry.TABLE_NAME, null, values);
+            long newRowId = db.insert(HiveEntry.TABLE_NAME, null, values); // -1 if was problem to insert data
             System.out.println("newRowId: " + newRowId);
         }
     }
