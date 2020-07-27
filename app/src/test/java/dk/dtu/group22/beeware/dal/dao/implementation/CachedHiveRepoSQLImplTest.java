@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.dal.dao.implementation;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,7 @@ public class CachedHiveRepoSQLImplTest {
     }
 
     @Test
-    public void givenHiveId_ReturnHiveWithAllData() {
+    public void givenHiveWithIdAndName_ReturnHiveWithIdAndName() {
         int id = 999999;
         String hiveName = "testHive";
         Hive hive = new Hive(id, hiveName);
