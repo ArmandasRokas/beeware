@@ -7,4 +7,6 @@ public interface CachedHiveRepoI {
     Hive getCachedHiveWithAllData(int hiveId);
 
     void createCachedHive(Hive hive);
+
+    void updateHive(Hive hive);
 }

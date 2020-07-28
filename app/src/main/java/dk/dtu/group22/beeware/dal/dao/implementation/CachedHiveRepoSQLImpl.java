@@ -24,7 +24,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         dbHelper = new HiveReaderDbHelper(ctx);
     }
 
-    // TODO updateHiveConfigurations(Hive hive)
+    // TODO updateHiveConfigurations(Hive hive) maybe not anymore. updateHive is enough
 
     @Override
     public Hive getCachedHiveWithAllData(int hiveId) {
@@ -103,8 +103,13 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());
         long rowIDHiveValues = db.insert(HiveEntry.TABLE_HIVE, null, hiveValues);
         System.out.println("rowIDHiveValues: " + rowIDHiveValues);
+        insertHiveMeasurements(hive);
 
-// Create a new map of values, where column names are the keys
+    }
+
+    private void insertHiveMeasurements(Hive hive) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        // Create a new map of values, where column names are the keys
         for (int i = 0; i<hive.getMeasurements().size(); i++ ){
             ContentValues measurements = new ContentValues();
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
@@ -117,6 +122,25 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             long newRowId = db.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
             System.out.println("newRowId: " + newRowId);
         }
+    }
+
+    @Override
+    public void updateHive(Hive hive) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
+        String[] selectionArgs = {hive.getId()+""};
+        int deletedRows = db.delete(HiveEntry.TABLE_HIVE_MEASUREMENT, selection, selectionArgs);
+        System.out.println("deletedRows" + deletedRows);
+        insertHiveMeasurements(hive);
+        // Update indicators
+        ContentValues indicators = new ContentValues();
+        indicators.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR, hive.getWeightIndicator());
+        indicators.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());
+        int count = db.update(
+                HiveEntry.TABLE_HIVE,
+                indicators,
+                selection,
+                selectionArgs);
     }
 }
 

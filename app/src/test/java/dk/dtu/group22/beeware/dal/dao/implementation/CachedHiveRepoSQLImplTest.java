@@ -279,4 +279,100 @@ public class CachedHiveRepoSQLImplTest {
         Collections.sort(actual);
         assertEquals(expected, actual);
     }
+
+    /**
+     Update:
+    - save one Hive to SQLite
+    - change indicator , add measurements
+    - put a hive to updateHive
+    - getHiveWithAll measurements
+    - test if the received hive is updated correctly
+     */
+    @Test
+    public void givenHiveToUpdate_returnUpdatedHive(){
+        // Arrange
+        int id = 99998;
+        String hiveName = "testHive1";
+        Hive hive = new Hive(id,hiveName);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis()-1000*60*60);
+        double weightKg = 30.0;
+        double tempC = 20.0;
+        double humidity = 80.0;
+        double illuminance = 100.0;
+
+        data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
+        hive.setMeasurements(data_measure);
+
+
+        repo.createCachedHive(hive);
+        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+        // Add a new measurement
+        Timestamp timestamp2 = new Timestamp(System.currentTimeMillis()-1000*60*30);
+        double weightKg2 = 32.0;
+        double tempC2 = 22.0;
+        double humidity2 = 82.0;
+        double illuminance2 = 102.0;
+
+        returnedHive.getMeasurements().add(new Measurement(timestamp2, weightKg2, tempC2, humidity2, illuminance2));
+
+        // Change indicator
+        int newTempIndicator = 99;
+        int newWeightIndicator = 88;
+        returnedHive.setTempIndicator(newTempIndicator);
+        returnedHive.setWeightIndicator(newWeightIndicator);
+
+        // Act
+        repo.updateHive(returnedHive);// FIXME Should be updateHive
+        Hive returnedUpdatedHive = repo.getCachedHiveWithAllData(id);
+        // Assert
+
+        List<Double> expectedWeight = new ArrayList<>();
+        expectedWeight.add(weightKg);
+        expectedWeight.add(weightKg2);
+        Collections.sort(expectedWeight);
+
+        List<Double> actualWeight = new ArrayList<>();
+        for (Measurement m: returnedUpdatedHive.getMeasurements() ) {
+            actualWeight.add(m.getWeight());
+        }
+
+        List<Double> expectedTempC = new ArrayList<>();
+        expectedTempC.add(tempC);
+        expectedTempC.add(tempC2);
+        Collections.sort(expectedTempC);
+
+        List<Double> actualTempC = new ArrayList<>();
+        for (Measurement m: returnedUpdatedHive.getMeasurements() ) {
+            actualTempC.add(m.getTempIn());
+        }
+
+        List<Double> expectedHum = new ArrayList<>();
+        expectedHum.add(humidity);
+        expectedHum.add(humidity2);
+        Collections.sort(expectedHum);
+
+        List<Double> actualHum = new ArrayList<>();
+        for (Measurement m: returnedUpdatedHive.getMeasurements() ) {
+            actualHum.add(m.getHumidity());
+        }
+
+        List<Double> expectedIllum = new ArrayList<>();
+        expectedIllum.add(illuminance);
+        expectedIllum.add(illuminance2);
+        Collections.sort(expectedIllum);
+
+        List<Double> actualIllum = new ArrayList<>();
+        for (Measurement m: returnedUpdatedHive.getMeasurements() ) {
+            actualIllum.add(m.getIlluminance());
+        }
+
+        assertEquals(expectedWeight, actualWeight);
+        assertEquals(expectedTempC, actualTempC);
+        assertEquals(expectedHum, actualHum);
+        assertEquals(expectedIllum, actualIllum);
+        assertEquals(newWeightIndicator, returnedUpdatedHive.getWeightIndicator());
+        assertEquals(newTempIndicator, returnedUpdatedHive.getTempIndicator());
+    }
 }
