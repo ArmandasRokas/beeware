@@ -49,7 +49,7 @@ public class CachingManager {
     private WebScraper webScraper;
     private Context ctx;
     private final static CachingManager CACHING_MANAGER = new CachingManager();
-    private CachedHiveRepoI repo;
+    private CachedHiveRepoI repo = null;
    // private boolean isConnectionFailed = false;
 
     private CachingManager() {
@@ -59,7 +59,16 @@ public class CachingManager {
 
     public void setCtx(Context ctx) {
         this.ctx = ctx;
-        repo = new CachedHiveRepoSQLImpl(ctx);
+    }
+
+    private void initRepo() {
+        if(repo == null){
+          if(this.ctx != null){
+              repo = new CachedHiveRepoSQLImpl(this.ctx);
+          } else {
+              // FIXME Catch exception
+          }
+        }
     }
 /*
     public boolean isConnectionFailed() {
@@ -72,6 +81,7 @@ public class CachingManager {
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
        // Hive hive = findCachedHive(id);
+        initRepo();
         Hive hive = repo.getCachedHiveWithAllData(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
@@ -117,6 +127,7 @@ public class CachingManager {
         if (isUpdated && ctx != null) {
             trimMeasurements(hive); // Remove older measurements
         //    writeToFile(hive);
+            initRepo();
             repo.updateHive(hive);
         }
     }
@@ -141,6 +152,7 @@ public class CachingManager {
  //         Hive  foundHive = retrieveHiveFromFile(id);
      //   }
 
+        initRepo();
         return repo.getCachedHiveWithAllData(id);
     }
 /*
@@ -182,6 +194,7 @@ public class CachingManager {
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
         if (ctx != null) {
+            initRepo();
             repo.createCachedHive(hive);
          //   writeToFile(hive);
         }
@@ -243,6 +256,7 @@ public class CachingManager {
     }
 
     public void updateHive(Hive hive) {
+        initRepo();
         repo.updateHive(hive);
     }
 
