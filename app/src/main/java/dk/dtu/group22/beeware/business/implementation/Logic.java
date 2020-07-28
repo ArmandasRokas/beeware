@@ -501,6 +501,10 @@ public class Logic {
         return midnight;
     }
 
+    public void updateHive(Hive hive) {
+        cachingManager.updateHive(hive);
+    }
+
     class HivesToSubscribeNoFound extends RuntimeException {
         public HivesToSubscribeNoFound(String msg) {
             super(msg);
@@ -558,7 +562,8 @@ public class Logic {
         Hive hive = cachingManager.findCachedHive(id);
         hive.setHasBeenConfigured(conf); // FIXME update weightIndicator and tempIndicator values in SQLite.
 
-        cachingManager.writeToFile(hive);
+
+        //cachingManager.writeToFile(hive);
     }
 
     public NameIdPair getCachedNameIdPair(int hiveId){

@@ -57,6 +57,36 @@ public class CachedHiveRepoSQLImplTest {
         assertEquals(id, returnedHive.getId());
         assertEquals(weightKg, returnedHive.getMeasurements().get(0).getWeight(), 0.0);
     }
+
+    @Test
+    public void givenHiveWithTimestampToStore_returnHiveFromDB(){
+        // Arrange
+        int id = 99998;
+        String hiveName = "testHive1";
+        Hive hive = new Hive(id,hiveName);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        long time = System.currentTimeMillis()-1000*60*60;
+        Timestamp timestamp = new Timestamp(time);
+        double weightKg = 30.0;
+        double tempC = 20.0;
+        double humidity = 80.0;
+        double illuminance = 100.0;
+
+        data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
+        hive.setMeasurements(data_measure);
+
+        // Act
+        repo.createCachedHive(hive);
+        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+        assertEquals(hiveName, returnedHive.getName());
+        assertEquals(id, returnedHive.getId());
+        assertEquals(weightKg, returnedHive.getMeasurements().get(0).getWeight(), 0.0);
+        assertEquals(time, returnedHive.getMeasurements().get(0).getTimestamp().getTime());
+    }
+
     @Test
     public void givenHiveWithWeightAndIndicatorsToStore_returnHiveFromDB(){
         // Arrange
@@ -69,7 +99,8 @@ public class CachedHiveRepoSQLImplTest {
         hive.setTempIndicator(tempIndicator);
 
         List<Measurement> data_measure = new ArrayList<>();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis()-1000*60*60);
+        long time = System.currentTimeMillis()-1000*60*60;
+        Timestamp timestamp = new Timestamp(time);
         double weightKg = 30.0;
         double tempC = 20.0;
         double humidity = 80.0;

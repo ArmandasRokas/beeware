@@ -49,7 +49,9 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
-        hiveCursor.moveToNext();
+        if(!hiveCursor.moveToNext()){
+            return null;// TODO check for null
+        }
         int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
         String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
         int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
@@ -67,7 +69,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         );
         List<Measurement> measurements = new ArrayList<>();
         while (measurementsCursor.moveToNext()){
-            Timestamp timestamp = new Timestamp(measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            Timestamp timestamp = new Timestamp(measurementsCursor.getLong(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
             double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
             double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
             double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));

@@ -216,12 +216,13 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
         // Only when saveButton is clicked, save new values
         hive.setWeightIndicator(weightNumberPicker.getValue());
         hive.setTempIndicator(tempNumberPicker.getValue()+minTempValue);
-        try {
+      /*  try {
             logic.setIsConfigured(hive.getId(), true);
         } catch (AccessLocalFileException e) {
             failedToGetHive.show();
             e.printStackTrace();
-        }
+        }*/
+      logic.updateHive(hive);
 
         //if (hive.getHasBeenConfigured() == false) {
         //}

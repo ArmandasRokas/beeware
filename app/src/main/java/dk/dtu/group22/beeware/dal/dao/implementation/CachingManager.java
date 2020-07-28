@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import dk.dtu.group22.beeware.dal.dao.interfaces.CachedHiveRepoI;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
@@ -44,19 +45,21 @@ import dk.dtu.group22.beeware.dal.dto.Measurement;
  * there are made any modifications in caching.
  */
 public class CachingManager {
-    private List<Hive> cachedHives;
+ //   private List<Hive> cachedHives;
     private WebScraper webScraper;
     private Context ctx;
     private final static CachingManager CACHING_MANAGER = new CachingManager();
+    private CachedHiveRepoI repo;
    // private boolean isConnectionFailed = false;
 
     private CachingManager() {
-        cachedHives = Collections.synchronizedList(new ArrayList<>());
+    //    cachedHives = Collections.synchronizedList(new ArrayList<>());
         webScraper = new WebScraper();
     }
 
     public void setCtx(Context ctx) {
         this.ctx = ctx;
+        repo = new CachedHiveRepoSQLImpl(ctx);
     }
 /*
     public boolean isConnectionFailed() {
@@ -68,7 +71,8 @@ public class CachingManager {
     }
 
     public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
-        Hive hive = findCachedHive(id);
+       // Hive hive = findCachedHive(id);
+        Hive hive = repo.getCachedHiveWithAllData(id);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
         } else {
@@ -112,7 +116,8 @@ public class CachingManager {
         }
         if (isUpdated && ctx != null) {
             trimMeasurements(hive); // Remove older measurements
-            writeToFile(hive);
+        //    writeToFile(hive);
+            repo.updateHive(hive);
         }
     }
 
@@ -128,16 +133,17 @@ public class CachingManager {
     }
 
     public Hive findCachedHive(int id) throws AccessLocalFileException {
-        Hive foundHive;
-        foundHive = retrieveHiveFromList(id);
+    //    Hive foundHive;
+    //    foundHive = retrieveHiveFromList(id);
 
         // If hive was not found in List<Hive> cachedHives, try to look in cached files
-        if (foundHive == null && ctx != null) {
-            foundHive = retrieveHiveFromFile(id);
-        }
-        return foundHive;
-    }
+     //   if (foundHive == null && ctx != null) {
+ //         Hive  foundHive = retrieveHiveFromFile(id);
+     //   }
 
+        return repo.getCachedHiveWithAllData(id);
+    }
+/*
     private Hive retrieveHiveFromList(int id) {
         synchronized (cachedHives) {
             for (Hive hive : cachedHives) {
@@ -147,7 +153,7 @@ public class CachingManager {
             }
         }
         return null;
-    }
+    }*/
 
     private synchronized Hive retrieveHiveFromFile(int id) throws AccessLocalFileException {
         File file = new File(ctx.getCacheDir(), String.valueOf(id));
@@ -160,7 +166,7 @@ public class CachingManager {
                 is.close();
                 bufferedInputStream.close();
                 fis.close();
-                cachedHives.add(hive);
+            //    cachedHives.add(hive);
                 return hive;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -176,9 +182,10 @@ public class CachingManager {
         Hive hive = new Hive(id, measurementsAndName.second);
         hive.setMeasurements(measurementsAndName.first);
         if (ctx != null) {
-            writeToFile(hive);
+            repo.createCachedHive(hive);
+         //   writeToFile(hive);
         }
-        cachedHives.add(hive);
+      //  cachedHives.add(hive);
 
         return hive;
     }
@@ -235,10 +242,14 @@ public class CachingManager {
         }
     }
 
+    public void updateHive(Hive hive) {
+        repo.updateHive(hive);
+    }
+
     /**
      * Should be used only for testing purposes
      */
     public void cleanCachedHives() {
-        cachedHives = new ArrayList<>();
+        //cachedHives = new ArrayList<>();
     }
 }
