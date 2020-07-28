@@ -102,6 +102,84 @@ public class CachedHiveRepoSQLImplTest {
     }
 
     @Test
+    public void givenHiveWithMultipleMeasurementsToStore_returnHiveWithWeightFromDB(){
+        // Arrange
+        int id = 99997;
+        String hiveName = "testHive2";
+        Hive hive = new Hive(id,hiveName);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis()-1000*60*10);
+        double weightKg = 30.0;
+        double tempC = 20.0;
+        double humidity = 80.0;
+        double illuminance = 100.0;
+
+        data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
+
+        Timestamp timestamp2 = new Timestamp(System.currentTimeMillis()-1000*60*5);
+        double weightKg2 = 32.0;
+        double tempC2 = 22.0;
+        double humidity2 = 82.0;
+        double illuminance2 = 102.0;
+        data_measure.add(new Measurement(timestamp2, weightKg2, tempC2, humidity2, illuminance2));
+
+        hive.setMeasurements(data_measure);
+
+        // Act
+        repo.createCachedHive(hive);
+        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+        List<Double> expectedWeight = new ArrayList<>();
+        expectedWeight.add(weightKg);
+        expectedWeight.add(weightKg2);
+        Collections.sort(expectedWeight);
+
+        List<Double> actualWeight = new ArrayList<>();
+        for (Measurement m: returnedHive.getMeasurements() ) {
+            actualWeight.add(m.getWeight());
+        }
+
+        List<Double> expectedTempC = new ArrayList<>();
+        expectedTempC.add(tempC);
+        expectedTempC.add(tempC2);
+        Collections.sort(expectedTempC);
+
+        List<Double> actualTempC = new ArrayList<>();
+        for (Measurement m: returnedHive.getMeasurements() ) {
+            actualTempC.add(m.getTempIn());
+        }
+
+        List<Double> expectedHum = new ArrayList<>();
+        expectedHum.add(humidity);
+        expectedHum.add(humidity2);
+        Collections.sort(expectedHum);
+
+        List<Double> actualHum = new ArrayList<>();
+        for (Measurement m: returnedHive.getMeasurements() ) {
+            actualHum.add(m.getHumidity());
+        }
+
+        List<Double> expectedIllum = new ArrayList<>();
+        expectedIllum.add(illuminance);
+        expectedIllum.add(illuminance2);
+        Collections.sort(expectedIllum);
+
+        List<Double> actualIllum = new ArrayList<>();
+        for (Measurement m: returnedHive.getMeasurements() ) {
+            actualIllum.add(m.getIlluminance());
+        }
+
+
+
+        assertEquals(expectedWeight, actualWeight);
+        assertEquals(expectedTempC, actualTempC);
+        assertEquals(expectedHum, actualHum);
+        assertEquals(expectedIllum, actualIllum);
+    }
+
+    @Test
     public void givenMultipleHiveWithWeightMeasurementsToStore_ReturnOnlyRequiredHiveWithRightMeasurements(){
         // Arrange
         // Hive number 1

@@ -24,6 +24,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         dbHelper = new HiveReaderDbHelper(ctx);
     }
 
+    // TODO updateHiveConfigurations(Hive hive)
+
     @Override
     public Hive getCachedHiveWithAllData(int hiveId) {
 
@@ -69,7 +71,11 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
          //   hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
             Timestamp timestamp = new Timestamp(measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
             double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
-            measurements.add(new Measurement(timestamp, weight, 0.0, 0.0, 0.0));
+            double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
+            double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));
+            double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
+
+            measurements.add(new Measurement(timestamp, weight, tempIn, hum, illum));
             System.out.println("measurements: " + measurements.toString());
         }
 
@@ -100,6 +106,9 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
             measurements.put(HiveEntry.COLUMN_NAME_TIMESTAMP, hive.getMeasurements().get(i).getTimestamp().getTime());
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, hive.getMeasurements().get(i).getWeight());
+            measurements.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN, hive.getMeasurements().get(i).getTempIn());
+            measurements.put(HiveEntry.COLUMN_NAME_HIVE_HUM, hive.getMeasurements().get(i).getHumidity());
+            measurements.put(HiveEntry.COLUMN_NAME_HIVE_ILLUM, hive.getMeasurements().get(i).getIlluminance());
 // Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
             long newRowId = db.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
             System.out.println("newRowId: " + newRowId);
@@ -120,6 +129,10 @@ final class HiveReaderContract {
         public static final String COLUMN_NAME_HIVE_NAME = "hive_name";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_NAME_HIVE_WEIGHT_KGS = "hive_weight_kgs";
+        public static final String COLUMN_NAME_HIVE_TEMP_C_IN = "hive_temp_c_in";
+        public static final String COLUMN_NAME_HIVE_TEMP_C_OUT = "hive_temp_c_out";
+        public static final String COLUMN_NAME_HIVE_HUM = "hive_hum";
+        public static final String COLUMN_NAME_HIVE_ILLUM = "hive_illum";
     }
 }
 class HiveReaderDbHelper extends SQLiteOpenHelper {
@@ -131,7 +144,12 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
                     HiveEntry._ID + " INTEGER PRIMARY KEY," +
                     HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER," +
                     HiveEntry.COLUMN_NAME_TIMESTAMP + " timestamp," +
-                    HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS+ " decimal(5,2))";
+                    HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS+ " decimal(5,2),"+
+                    HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN+ " decimal(5,2),"+
+                    HiveEntry.COLUMN_NAME_HIVE_TEMP_C_OUT+ " decimal(5,2),"+
+                    HiveEntry.COLUMN_NAME_HIVE_HUM+ " decimal(5,2),"+
+                    HiveEntry.COLUMN_NAME_HIVE_ILLUM+ " decimal(5,2)"+
+                    ")";
 
     private static final String CREATE_TABLE_HIVE =
             "CREATE TABLE " + HiveEntry.TABLE_HIVE + " (" +
