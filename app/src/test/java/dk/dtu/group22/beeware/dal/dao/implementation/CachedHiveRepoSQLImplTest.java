@@ -57,6 +57,39 @@ public class CachedHiveRepoSQLImplTest {
         assertEquals(id, returnedHive.getId());
         assertEquals(weightKg, returnedHive.getMeasurements().get(0).getWeight(), 0.0);
     }
+    @Test
+    public void givenHiveWithWeightAndIndicatorsToStore_returnHiveFromDB(){
+        // Arrange
+        int id = 99998;
+        String hiveName = "testHive1";
+        int weightIndicator = 20;
+        int tempIndicator = 40;
+        Hive hive = new Hive(id,hiveName);
+        hive.setWeightIndicator(weightIndicator);
+        hive.setTempIndicator(tempIndicator);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis()-1000*60*60);
+        double weightKg = 30.0;
+        double tempC = 20.0;
+        double humidity = 80.0;
+        double illuminance = 100.0;
+
+        data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
+        hive.setMeasurements(data_measure);
+
+        // Act
+        repo.createCachedHive(hive);
+        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+        assertEquals(hiveName, returnedHive.getName());
+        assertEquals(id, returnedHive.getId());
+        assertEquals(weightKg, returnedHive.getMeasurements().get(0).getWeight(), 0.0);
+        assertEquals(weightIndicator, returnedHive.getWeightIndicator());
+        assertEquals(tempIndicator, returnedHive.getTempIndicator());
+
+    }
 
     @Test
     public void givenHiveWithMultipleWeightMeasurementsToStore_returnHiveWithWeightFromDB(){

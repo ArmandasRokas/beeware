@@ -39,6 +39,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hiveId+""};
 
+        // Fetch hive data
         Cursor hiveCursor = db.query(
                 HiveEntry.TABLE_HIVE,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
@@ -51,7 +52,10 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         hiveCursor.moveToNext();
         int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
         String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
+        int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
+        int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
 
+        // Fetch measurements of a hive
         Cursor measurementsCursor = db.query(
                 HiveEntry.TABLE_HIVE_MEASUREMENT,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
@@ -61,14 +65,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
-        Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
-
-//        int id = 0;
-//        String hiveName = "";
         List<Measurement> measurements = new ArrayList<>();
         while (measurementsCursor.moveToNext()){
-            //id = measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
-         //   hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
             Timestamp timestamp = new Timestamp(measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
             double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
             double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
@@ -79,6 +77,10 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             System.out.println("measurements: " + measurements.toString());
         }
 
+        //Construct the hive
+        Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
+        hiveToReturn.setWeightIndicator(returnedWeightIndicator);
+        hiveToReturn.setTempIndicator(returnedTempIndicator);
         hiveToReturn.setMeasurements(measurements);
         return hiveToReturn;
     }
@@ -97,6 +99,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         ContentValues hiveValues = new ContentValues();
         hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
         hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName());
+        hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR, hive.getWeightIndicator());
+        hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());
         long rowIDHiveValues = db.insert(HiveEntry.TABLE_HIVE, null, hiveValues);
         System.out.println("rowIDHiveValues: " + rowIDHiveValues);
 
@@ -127,6 +131,8 @@ final class HiveReaderContract {
         public static final String TABLE_HIVE = "HIVE";
         public static final String COLUMN_NAME_HIVE_ID = "hive_id";
         public static final String COLUMN_NAME_HIVE_NAME = "hive_name";
+        public static final String COLUMN_NAME_HIVE_WEIGHT_INDICATOR = "hive_weight_indicator";
+        public static final String COLUMN_NAME_HIVE_TEMP_INDICATOR = "hive_temp_indicator";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_NAME_HIVE_WEIGHT_KGS = "hive_weight_kgs";
         public static final String COLUMN_NAME_HIVE_TEMP_C_IN = "hive_temp_c_in";
@@ -154,7 +160,10 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_HIVE =
             "CREATE TABLE " + HiveEntry.TABLE_HIVE + " (" +
                     HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER PRIMARY KEY," +
-                    HiveEntry.COLUMN_NAME_HIVE_NAME + " TEXT)";
+                    HiveEntry.COLUMN_NAME_HIVE_NAME + " TEXT,"+
+                    HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR + " INTEGER," +
+                    HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR + " INTEGER" +
+                    ")";
 
     private static final String SQL_DELETE_HIVE_MEASUREMENT_TABLE =
             "DROP TABLE IF EXISTS " + HiveEntry.TABLE_HIVE_MEASUREMENT;
