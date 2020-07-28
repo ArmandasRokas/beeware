@@ -34,12 +34,11 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 HiveEntry.COLUMN_NAME_TIMESTAMP,
                 HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS
         };
-
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hiveId+""};
 
-        Cursor cursor = db.query(
-                "HIVE_DATA",   // The table to query
+        Cursor hiveCursor = db.query(
+                HiveEntry.TABLE_HIVE,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
                 selection,              // The columns for the WHERE clause
                 selectionArgs,          // The values for the WHERE clause
@@ -47,20 +46,33 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
+        hiveCursor.moveToNext();
+        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
+        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
 
+        Cursor measurementsCursor = db.query(
+                HiveEntry.TABLE_HIVE_MEASUREMENT,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+        Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
 
-        int id = 0;
-        String hiveName = "";
+//        int id = 0;
+//        String hiveName = "";
         List<Measurement> measurements = new ArrayList<>();
-        while (cursor.moveToNext()){
-            id = cursor.getInt(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
-            hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
-            Timestamp timestamp = new Timestamp(cursor.getInt(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
-            double weight = cursor.getDouble(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
+        while (measurementsCursor.moveToNext()){
+            //id = measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
+         //   hiveName = cursor.getString(cursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
+            Timestamp timestamp = new Timestamp(measurementsCursor.getInt(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
             measurements.add(new Measurement(timestamp, weight, 0.0, 0.0, 0.0));
             System.out.println("measurements: " + measurements.toString());
         }
-        Hive hiveToReturn = new Hive(id, hiveName);
+
         hiveToReturn.setMeasurements(measurements);
         return hiveToReturn;
     }
@@ -76,15 +88,20 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        ContentValues hiveValues = new ContentValues();
+        hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
+        hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName());
+        long rowIDHiveValues = db.insert(HiveEntry.TABLE_HIVE, null, hiveValues);
+        System.out.println("rowIDHiveValues: " + rowIDHiveValues);
+
 // Create a new map of values, where column names are the keys
         for (int i = 0; i<hive.getMeasurements().size(); i++ ){
-            ContentValues values = new ContentValues();
-            values.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId()); // FIXME should not update id on every measurement
-            values.put(HiveEntry.COLUMN_NAME_HIVE_NAME, hive.getName()); // FIXME the same as above
-            values.put(HiveEntry.COLUMN_NAME_TIMESTAMP, hive.getMeasurements().get(i).getTimestamp().getTime());
-            values.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, hive.getMeasurements().get(i).getWeight());
-// Insert the new row, returning the primary key value of the new row
-            long newRowId = db.insert(HiveEntry.TABLE_NAME, null, values); // -1 if was problem to insert data
+            ContentValues measurements = new ContentValues();
+            measurements.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
+            measurements.put(HiveEntry.COLUMN_NAME_TIMESTAMP, hive.getMeasurements().get(i).getTimestamp().getTime());
+            measurements.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS, hive.getMeasurements().get(i).getWeight());
+// Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
+            long newRowId = db.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
             System.out.println("newRowId: " + newRowId);
         }
     }
@@ -97,7 +114,8 @@ final class HiveReaderContract {
 
     /* Inner class that defines the table contents */
     public static class HiveEntry implements BaseColumns {
-        public static final String TABLE_NAME = "HIVE_DATA";
+        public static final String TABLE_HIVE_MEASUREMENT = "HIVE_MEASUREMENT";
+        public static final String TABLE_HIVE = "HIVE";
         public static final String COLUMN_NAME_HIVE_ID = "hive_id";
         public static final String COLUMN_NAME_HIVE_NAME = "hive_name";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
@@ -108,27 +126,35 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "hive.db";
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + HiveEntry.TABLE_NAME + " (" +
+    private static final String CREATE_TABLE_HIVE_MEASUREMENT =
+            "CREATE TABLE " + HiveEntry.TABLE_HIVE_MEASUREMENT + " (" +
                     HiveEntry._ID + " INTEGER PRIMARY KEY," +
                     HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER," +
-                    HiveEntry.COLUMN_NAME_HIVE_NAME + " TEXT," +
                     HiveEntry.COLUMN_NAME_TIMESTAMP + " timestamp," +
                     HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS+ " decimal(5,2))";
 
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + HiveEntry.TABLE_NAME;
+    private static final String CREATE_TABLE_HIVE =
+            "CREATE TABLE " + HiveEntry.TABLE_HIVE + " (" +
+                    HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER PRIMARY KEY," +
+                    HiveEntry.COLUMN_NAME_HIVE_NAME + " TEXT)";
+
+    private static final String SQL_DELETE_HIVE_MEASUREMENT_TABLE =
+            "DROP TABLE IF EXISTS " + HiveEntry.TABLE_HIVE_MEASUREMENT;
+    private static final String SQL_DELETE_HIVE_TABLE =
+            "DROP TABLE IF EXISTS " + HiveEntry.TABLE_HIVE;
 
     public HiveReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(CREATE_TABLE_HIVE_MEASUREMENT);
+        db.execSQL(CREATE_TABLE_HIVE);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_HIVE_MEASUREMENT_TABLE);
+        db.execSQL(SQL_DELETE_HIVE_TABLE);
         onCreate(db);
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {

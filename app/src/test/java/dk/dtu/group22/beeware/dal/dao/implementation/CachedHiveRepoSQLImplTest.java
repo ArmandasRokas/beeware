@@ -101,9 +101,6 @@ public class CachedHiveRepoSQLImplTest {
         assertEquals(expected, actual);
     }
 
-        // Next test could be with multiple hives
-    // Add more data with different id and return only right data that tilhører den rette stade
-    // GivenMultipleHivesToStore_ReturnOneHiveWithMeasurements
     @Test
     public void givenMultipleHiveWithWeightMeasurementsToStore_ReturnOnlyRequiredHiveWithRightMeasurements(){
         // Arrange

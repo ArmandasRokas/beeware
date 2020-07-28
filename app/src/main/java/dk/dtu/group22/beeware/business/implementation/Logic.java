@@ -556,7 +556,7 @@ public class Logic {
 
     public void setIsConfigured(int id, boolean conf) throws AccessLocalFileException {
         Hive hive = cachingManager.findCachedHive(id);
-        hive.setHasBeenConfigured(conf);
+        hive.setHasBeenConfigured(conf); // FIXME update weightIndicator and tempIndicator values in SQLite.
 
         cachingManager.writeToFile(hive);
     }
