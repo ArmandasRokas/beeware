@@ -406,4 +406,46 @@ public class CachedHiveRepoSQLImplTest {
         assertEquals(newWeightIndicator, returnedUpdatedHive.getWeightIndicator());
         assertEquals(newTempIndicator, returnedUpdatedHive.getTempIndicator());
     }
+
+    @Test
+    public void givenTwoSameMeasurements_returnOnlyOne(){
+        // Arrange
+        int id = 99997;
+        String hiveName = "testHive2";
+        Hive hive = new Hive(id,hiveName);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        long currTime = System.currentTimeMillis()-1000*60*10;
+        Timestamp timestamp = new Timestamp(currTime);
+        double weightKg = 30.0;
+        double tempC = 20.0;
+        double humidity = 80.0;
+        double illuminance = 100.0;
+
+        data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
+
+        Timestamp timestamp2 = new Timestamp(currTime);
+        double weightKg2 = 32.0;
+        double tempC2 = 20.0;
+        double humidity2 = 80.0;
+        double illuminance2 = 100.0;
+        data_measure.add(new Measurement(timestamp2, weightKg2, tempC2, humidity2, illuminance2));
+
+        hive.setMeasurements(data_measure);
+
+        // Act
+        repo.createCachedHive(hive);
+        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+        List<Double> expected = new ArrayList<>();
+        expected.add(weightKg);
+
+        List<Double> actual = new ArrayList<>();
+        for (Measurement m: returnedHive.getMeasurements() ) {
+            actual.add(m.getWeight());
+        }
+
+        assertEquals(expected, actual);
+    }
 }
