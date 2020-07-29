@@ -79,9 +79,9 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
             double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));
             double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
-
-            measurements.add(new Measurement(timestamp, weight, tempIn, hum, illum));
-            System.out.println("measurements: " + measurements.toString());
+            Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
+            measurements.add(m);
+            System.out.println(hiveId + " : " + m.toString());
         }
         measurementsCursor.close();
 
@@ -179,14 +179,15 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "hive.db";
     private static final String CREATE_TABLE_HIVE_MEASUREMENT =
             "CREATE TABLE " + HiveEntry.TABLE_HIVE_MEASUREMENT + " (" +
-                    HiveEntry._ID + " INTEGER PRIMARY KEY," +
+              //      HiveEntry._ID + " INTEGER PRIMARY KEY," +
                     HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER," +
                     HiveEntry.COLUMN_NAME_TIMESTAMP + " timestamp," +
                     HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS+ " decimal(5,2),"+
                     HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN+ " decimal(5,2),"+
                     HiveEntry.COLUMN_NAME_HIVE_TEMP_C_OUT+ " decimal(5,2),"+
                     HiveEntry.COLUMN_NAME_HIVE_HUM+ " decimal(5,2),"+
-                    HiveEntry.COLUMN_NAME_HIVE_ILLUM+ " decimal(5,2)"+
+                    HiveEntry.COLUMN_NAME_HIVE_ILLUM+ " decimal(5,2),"+
+                    " PRIMARY KEY ("+HiveEntry.COLUMN_NAME_HIVE_ID+", "+ HiveEntry.COLUMN_NAME_TIMESTAMP + ")"+
                     ")";
 
     private static final String CREATE_TABLE_HIVE =
