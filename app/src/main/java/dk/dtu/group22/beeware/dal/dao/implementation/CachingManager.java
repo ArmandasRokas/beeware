@@ -66,7 +66,7 @@ public class CachingManager {
           if(this.ctx != null){
               repo = new CachedHiveRepoSQLImpl(this.ctx);
           } else {
-              // FIXME Catch exception
+              // FIXME Throw exception
           }
         }
     }
