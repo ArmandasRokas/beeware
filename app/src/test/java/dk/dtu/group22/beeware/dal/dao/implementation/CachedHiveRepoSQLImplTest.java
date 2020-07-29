@@ -448,4 +448,10 @@ public class CachedHiveRepoSQLImplTest {
 
         assertEquals(expected, actual);
     }
+
+    /**
+     * Next test. getHiveInterval:
+     * Add 4 measurements and query only
+     * two in the middle with sinceTime and untilTime
+     */
 }

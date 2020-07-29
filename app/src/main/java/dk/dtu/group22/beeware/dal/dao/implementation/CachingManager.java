@@ -79,7 +79,7 @@ public class CachingManager {
         return CACHING_MANAGER;
     }
 
-    public Hive getHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public Hive getCachedHiveAndUpdateOrCreateUsesNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
        // Hive hive = findCachedHive(id);
         initRepo();
         Hive hive = repo.getCachedHiveWithAllData(id);
@@ -109,8 +109,8 @@ public class CachingManager {
         boolean isWithinUntil = untilTimeDelta.before(hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp());
         boolean isUpdated = false;
         if (!isWithinSince) {
-            List<Measurement> list = fetchFromHiveTool(hive, sinceTime,
-                    new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime()));
+            List<Measurement> list =  webScraper.getHiveMeasurements(hive.getId(), sinceTime,
+                    new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime())).first;
             if (list != null) {
 
                 hive.getMeasurements().addAll(0, list);
@@ -118,7 +118,7 @@ public class CachingManager {
             }
         }
         if (!isWithinUntil) {
-            List<Measurement> list = fetchFromHiveTool(hive, hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime);
+            List<Measurement> list =  webScraper.getHiveMeasurements(hive.getId(), hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
             if (list != null) {
                 hive.getMeasurements().addAll(list);
                 isUpdated = true;
@@ -143,7 +143,7 @@ public class CachingManager {
  //       return null;
     }
 
-    public Hive findCachedHive(int id) throws AccessLocalFileException {
+    public Hive getCachedHive(int id) throws AccessLocalFileException {
     //    Hive foundHive;
     //    foundHive = retrieveHiveFromList(id);
 

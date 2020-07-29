@@ -193,7 +193,7 @@ public class Logic {
      */
     public Hive getHiveNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
 
-        Hive hive = cachingManager.getHive(id, sinceTime, untilTime);
+        Hive hive = cachingManager.getCachedHiveAndUpdateOrCreateUsesNetwork(id, sinceTime, untilTime);
         setCurrValues(hive);
 
         return hive;
@@ -210,7 +210,7 @@ public class Logic {
      * The time complexity is linear with the number of hives that have been cached.
      */
     public Hive getCachedHive(int id) throws AccessLocalFileException {
-        Hive hive = cachingManager.findCachedHive(id);
+        Hive hive = cachingManager.getCachedHive(id);
         if(hive != null){
             setCurrValues(hive);
             return hive;
@@ -559,7 +559,7 @@ public class Logic {
     }
 
     public void setIsConfigured(int id, boolean conf) throws AccessLocalFileException {
-        Hive hive = cachingManager.findCachedHive(id);
+        Hive hive = cachingManager.getCachedHive(id);
         hive.setHasBeenConfigured(conf); // FIXME update weightIndicator and tempIndicator values in SQLite.
 
 
