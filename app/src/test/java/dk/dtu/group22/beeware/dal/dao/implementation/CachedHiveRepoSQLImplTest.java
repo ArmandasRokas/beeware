@@ -12,6 +12,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -425,11 +426,11 @@ public class CachedHiveRepoSQLImplTest {
         data_measure.add(new Measurement(timestamp, weightKg, tempC, humidity, illuminance));
 
         Timestamp timestamp2 = new Timestamp(currTime);
-        double weightKg2 = 32.0;
+        double weightKg2 = 30.0;
         double tempC2 = 20.0;
         double humidity2 = 80.0;
         double illuminance2 = 100.0;
-        data_measure.add(new Measurement(timestamp2, weightKg2, tempC2, humidity2, illuminance2));
+        data_measure.add(new Measurement(timestamp, weightKg2, tempC2, humidity2, illuminance2));
 
         hive.setMeasurements(data_measure);
 
@@ -448,6 +449,31 @@ public class CachedHiveRepoSQLImplTest {
 
         assertEquals(expected, actual);
     }
+     @Test
+    public void givenNotOrderedmeasurements_ReturnOrdered(){
+         // Arrange
+         int id = 99997;
+         String hiveName = "testHive2";
+         Hive hive = new Hive(id,hiveName);
+
+         List<Measurement> data_measure = new ArrayList<>();
+         long  currTime = System.currentTimeMillis();
+
+         data_measure.add(new Measurement(new Timestamp(currTime-1000*60*10), 34.0, 24.0, 82, 102));
+         data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+         data_measure.add(new Measurement(new Timestamp(currTime-1000*60*15), 32.0, 22.0, 80, 100));
+
+         hive.setMeasurements(data_measure);
+
+         // Act
+         repo.createCachedHive(hive);
+         Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+         // Assert
+         Comparator<Measurement> comparator = (m1, m2) -> Long.compare(m1.getTimestamp().getTime(), m2.getTimestamp().getTime());
+         Collections.sort(data_measure, comparator);
+         assertEquals(data_measure.toString(), returnedHive.getMeasurements().toString());
+     }
 
     /**
      * Next test. getHiveInterval:

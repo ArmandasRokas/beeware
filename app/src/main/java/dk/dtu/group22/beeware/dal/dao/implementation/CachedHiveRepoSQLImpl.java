@@ -3,6 +3,7 @@ package dk.dtu.group22.beeware.dal.dao.implementation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -63,6 +64,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         hiveCursor.close();
 
         // Fetch measurements of a hive
+        String sortOrder =
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC";
         Cursor measurementsCursor = readable.query(
                 HiveEntry.TABLE_HIVE_MEASUREMENT,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
@@ -70,7 +73,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 selectionArgs,          // The values for the WHERE clause
                 null,                   // don't group the rows
                 null,                   // don't filter by row groups
-                null               // The sort order
+                sortOrder               // The sort order
         );
         List<Measurement> measurements = new ArrayList<>();
         while (measurementsCursor.moveToNext()){
@@ -81,7 +84,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
             Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
             measurements.add(m);
-            System.out.println(hiveId + " : " + m.toString());
+          //  System.out.println(hiveId + " : " + m.toString());
         }
         measurementsCursor.close();
 
@@ -110,7 +113,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR, hive.getWeightIndicator());
         hiveValues.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());
         long rowIDHiveValues = writable.insert(HiveEntry.TABLE_HIVE, null, hiveValues);
-        System.out.println("rowIDHiveValues: " + rowIDHiveValues);
+       // System.out.println("rowIDHiveValues: " + rowIDHiveValues);
         insertHiveMeasurements(hive);
 
     }
@@ -118,6 +121,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
     private void insertHiveMeasurements(Hive hive) {
    //     SQLiteDatabase db = dbHelper.getWritableDatabase();
         // Create a new map of values, where column names are the keys
+  //      System.out.println(hive.getMeasurements().toString());
         for (int i = 0; i<hive.getMeasurements().size(); i++ ){
             ContentValues measurements = new ContentValues();
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
@@ -126,9 +130,13 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN, hive.getMeasurements().get(i).getTempIn());
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_HUM, hive.getMeasurements().get(i).getHumidity());
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ILLUM, hive.getMeasurements().get(i).getIlluminance());
-// Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
-            long newRowId = writable.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
-            System.out.println("newRowId: " + newRowId);
+            try {
+                // Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
+                long newRowId = writable.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
+            } catch (SQLiteConstraintException eConst){
+                eConst.printStackTrace();
+            }
+          //  System.out.println("newRowId: " + newRowId);
         }
     }
 
@@ -138,7 +146,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hive.getId()+""};
         int deletedRows = writable.delete(HiveEntry.TABLE_HIVE_MEASUREMENT, selection, selectionArgs);
-        System.out.println("deletedRows" + deletedRows);
+     //   System.out.println("deletedRows" + deletedRows);
         insertHiveMeasurements(hive);
         // Update indicators
         ContentValues indicators = new ContentValues();
