@@ -1,6 +1,9 @@
 package dk.dtu.group22.beeware.dal.dao.interfaces;
 
+import java.util.List;
+
 import dk.dtu.group22.beeware.dal.dto.Hive;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public interface CachedHiveRepoI {
 
@@ -9,4 +12,6 @@ public interface CachedHiveRepoI {
     void createCachedHive(Hive hive);
 
     void updateHive(Hive hive);
+
+    void saveNewMeasurements(Hive hive, List<Measurement> measurements);
 }

@@ -132,7 +132,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
                 }
                 if(hive==null) {
                     try {
-                        hive = logic.getHiveNetwork(hiveid, new Timestamp(since), new Timestamp(now));
+                        hive = logic.getHiveNetworkAndSetCurrValues(hiveid, new Timestamp(since), new Timestamp(now));
                     } catch (Exception e) {
                         failedToGetHive.show();
                         e.printStackTrace();

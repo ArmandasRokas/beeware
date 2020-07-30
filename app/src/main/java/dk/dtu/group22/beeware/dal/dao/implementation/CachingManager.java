@@ -15,7 +15,6 @@ import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import dk.dtu.group22.beeware.dal.dao.interfaces.CachedHiveRepoI;
@@ -102,6 +101,7 @@ public class CachingManager {
 //    }
 
     private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+        initRepo();
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
         Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
 
@@ -112,8 +112,8 @@ public class CachingManager {
             List<Measurement> list =  webScraper.getHiveMeasurements(hive.getId(), sinceTime,
                     new Timestamp(hive.getMeasurements().get(0).getTimestamp().getTime())).first;
             if (list != null) {
-
                 hive.getMeasurements().addAll(0, list);
+                repo.saveNewMeasurements(hive, list);
                 isUpdated = true;
             }
         }
@@ -121,18 +121,19 @@ public class CachingManager {
             List<Measurement> list =  webScraper.getHiveMeasurements(hive.getId(), hive.getMeasurements().get(hive.getMeasurements().size() - 1).getTimestamp(), untilTime).first;
             if (list != null) {
                 hive.getMeasurements().addAll(list);
+                repo.saveNewMeasurements(hive, list);
                 isUpdated = true;
             }
         }
         if (isUpdated && ctx != null) {
-            trimMeasurements(hive); // Remove older measurements
+        //    trimMeasurements(hive); // Remove older measurements
         //    writeToFile(hive);
-            initRepo();
-            repo.updateHive(hive);
+        //    initRepo();
+    //        repo.updateHive(hive);
         }
     }
 
-    private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
+ /*   private List<Measurement> fetchFromHiveTool(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException {
 //        try {
             List<Measurement> mList = webScraper.getHiveMeasurements(hive.getId(), sinceTime, untilTime).first;
   //          isConnectionFailed = false;
@@ -141,7 +142,7 @@ public class CachingManager {
  //           e.printStackTrace();
  //       }
  //       return null;
-    }
+    }*/
 
     public Hive getCachedHive(int id) throws AccessLocalFileException {
     //    Hive foundHive;
@@ -228,6 +229,7 @@ public class CachingManager {
      * @pre The hive object has measurements
      * @post The hive object is guaranteed to have no older measurements than 16 months.
      */
+    // FIXME Do not need this method if the app is going to store more than one year's data.
     private void trimMeasurements(Hive hive) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());

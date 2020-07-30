@@ -149,7 +149,7 @@ public class Logic {
         for (int id : subscribedHives) {
             Runnable runnable = () -> {
                 try {
-                    hivesWithMeasurements.add(getHiveNetwork(id, new Timestamp(since), new Timestamp(now)));
+                    hivesWithMeasurements.add(getHiveNetworkAndSetCurrValues(id, new Timestamp(since), new Timestamp(now)));
                 } catch (Exception e) {
                     e.printStackTrace();
                    // notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
@@ -191,7 +191,7 @@ public class Logic {
      * @return
      * A hive, with data specified by the parameters.
      */
-    public Hive getHiveNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public Hive getHiveNetworkAndSetCurrValues(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
 
         Hive hive = cachingManager.getCachedHiveAndUpdateOrCreateUsesNetwork(id, sinceTime, untilTime);
         setCurrValues(hive);

@@ -1,20 +1,16 @@
 package dk.dtu.group22.beeware.dal.dao.implementation;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import dk.dtu.group22.beeware.dal.dao.interfaces.CachedHiveRepoI;
 import dk.dtu.group22.beeware.dal.dto.Hive;
@@ -474,6 +470,39 @@ public class CachedHiveRepoSQLImplTest {
          Collections.sort(data_measure, comparator);
          assertEquals(data_measure.toString(), returnedHive.getMeasurements().toString());
      }
+
+     @Test
+    public void givenHiveToAddTwoMeasurements_returnHiveWithFourMeasurements(){
+         // Arrange
+         int id = 99997;
+         String hiveName = "testHive2";
+         Hive expectedHive = new Hive(id,hiveName);
+
+         List<Measurement> data_measure = new ArrayList<>();
+         long  currTime = System.currentTimeMillis();
+
+         data_measure.add(new Measurement(new Timestamp(currTime-1000*60*10), 34.0, 24.0, 82, 102));
+         data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+         expectedHive.setMeasurements(data_measure);
+         repo.createCachedHive(expectedHive);
+
+         List<Measurement> newMeasurements = new ArrayList<>();
+         newMeasurements.add(new Measurement(new Timestamp(currTime-1000*60*15), 32.0, 22.0, 80, 100));
+         newMeasurements.add(new Measurement(new Timestamp(currTime+1000*60*15), 33.0, 23.0, 83, 103));
+
+         expectedHive.setMeasurements(data_measure);
+         expectedHive.getMeasurements().addAll(newMeasurements);
+
+         // Act
+        repo.saveNewMeasurements(expectedHive, newMeasurements);
+         Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+         // Assert
+         Comparator<Measurement> comparator = (m1, m2) -> Long.compare(m1.getTimestamp().getTime(), m2.getTimestamp().getTime());
+         Collections.sort(expectedHive.getMeasurements(), comparator);
+         assertEquals(expectedHive.getMeasurements().toString(), returnedHive.getMeasurements().toString());
+     }
+
 
     /**
      * Next test. getHiveInterval:

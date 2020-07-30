@@ -65,7 +65,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 
         // Fetch measurements of a hive
         String sortOrder =
-                HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC";
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC ";
         Cursor measurementsCursor = readable.query(
                 HiveEntry.TABLE_HIVE_MEASUREMENT,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
@@ -141,7 +141,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
     }
 
     @Override
-    public void updateHive(Hive hive) {
+    public void updateHive(Hive hive) { // TODO change to be update hive configuration, not measurements
        // SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hive.getId()+""};
@@ -157,6 +157,14 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 indicators,
                 selection,
                 selectionArgs);
+    }
+
+    @Override
+    public void saveNewMeasurements(Hive hive, List<Measurement> measurements) {
+        // Set only these measurements which should be added to DB. That is not all measurements.
+        Hive hiveOnlyWithNewMeasurements = new Hive(hive.getId(), hive.getName());
+        hiveOnlyWithNewMeasurements.setMeasurements(measurements);
+        insertHiveMeasurements(hiveOnlyWithNewMeasurements);
     }
 }
 
