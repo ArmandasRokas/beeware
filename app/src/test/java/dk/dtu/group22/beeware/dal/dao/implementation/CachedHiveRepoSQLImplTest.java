@@ -551,4 +551,77 @@ public class CachedHiveRepoSQLImplTest {
         assertEquals(tempIndicator, returnedHive.getTempIndicator());
     }
 
+    @Test
+    public void queriedHiveWithinPeriodInPastWithNoMeasurements_returnMeasurementsWithMinAndMaxTimestamps(){
+        // Arrange
+        int id = 99997;
+        String hiveName = "testHive2";
+        Hive hive = new Hive(id,hiveName);
+        int weightIndicator = 20;
+        int tempIndicator = 40;
+        hive.setWeightIndicator(weightIndicator);
+        hive.setTempIndicator(tempIndicator);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        long  currTime = System.currentTimeMillis();
+
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*15), 32.0, 22.0, 80, 100));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*10), 34.0, 24.0, 82, 102));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*20), 38.0, 28.0, 88, 108));
+
+        hive.setMeasurements(data_measure);
+        repo.createCachedHive(hive);
+
+        // Act
+        Hive returnedHive = repo.getHiveWithinPeriod(id, new Timestamp(currTime-1000*60*50), new Timestamp(currTime-1000*60*30));
+//        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+//        Comparator<Measurement> comparator = (m1, m2) -> Long.compare(m1.getTimestamp().getTime(), m2.getTimestamp().getTime());
+//        Collections.sort(data_measure, comparator);
+        List<Measurement> expected_data_measure = new ArrayList<>();
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*20), 38.0, 28.0, 88, 108));
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+
+        assertEquals(expected_data_measure.toString(), returnedHive.getMeasurements().toString());
+
+    }
+
+    @Test
+    public void queriedHiveWithinPeriodInFuturetWithNoMeasurements_returnMeasurementsWithMinAndMaxTimestamps(){
+        // Arrange
+        int id = 99997;
+        String hiveName = "testHive2";
+        Hive hive = new Hive(id,hiveName);
+        int weightIndicator = 20;
+        int tempIndicator = 40;
+        hive.setWeightIndicator(weightIndicator);
+        hive.setTempIndicator(tempIndicator);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        long  currTime = System.currentTimeMillis();
+
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*20), 38.0, 28.0, 88, 108));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*15), 32.0, 22.0, 80, 100));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*10), 34.0, 24.0, 82, 102));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+
+        hive.setMeasurements(data_measure);
+        repo.createCachedHive(hive);
+
+        // Act
+        Hive returnedHive = repo.getHiveWithinPeriod(id, new Timestamp(currTime+1000*60*5), new Timestamp(currTime+1000*60*30));
+//        Hive returnedHive = repo.getCachedHiveWithAllData(id);
+
+        // Assert
+//        Comparator<Measurement> comparator = (m1, m2) -> Long.compare(m1.getTimestamp().getTime(), m2.getTimestamp().getTime());
+//        Collections.sort(data_measure, comparator);
+        List<Measurement> expected_data_measure = new ArrayList<>();
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*20), 38.0, 28.0, 88, 108));
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+
+        assertEquals(expected_data_measure.toString(), returnedHive.getMeasurements().toString());
+
+    }
 }

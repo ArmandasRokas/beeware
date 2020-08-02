@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import dk.dtu.group22.beeware.dal.dao.interfaces.CachedHiveRepoI;
 import dk.dtu.group22.beeware.dal.dto.Hive;
@@ -220,14 +221,74 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
             Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
             measurements.add(m);
-            //  System.out.println(hiveId + " : " + m.toString());
+            //System.out.println(hiveId + " : " + m.toString());
         }
         measurementsCursor.close();
+        // if measurements is empty, than get measurements with min and max timestamps.
+        if(measurements.isEmpty()){
+            measurements = fetchMinMaxMeasurementsByTimestamp(hiveId);
+        }
 
         //Construct the hive
         Hive hiveToReturn = fetchHiveMetaData(hiveId);
-        hiveToReturn.setMeasurements(measurements);
-        return hiveToReturn;
+        if(hiveToReturn != null){
+            hiveToReturn.setMeasurements(measurements);
+            return hiveToReturn;
+        } else {
+            return null;
+        }
+    }
+
+    private List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId) {
+        List<Measurement> measurements = new ArrayList<>();
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
+        String[] selectionArgs = {hiveId+""};
+        String sortOrder;
+        // Fetch the measurement with min timestamp value
+        sortOrder =
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC ";
+        Cursor measurementsCursor = readable.query(
+                HiveEntry.TABLE_HIVE_MEASUREMENT,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder,
+                "1");
+        if(measurementsCursor.moveToNext()){
+            Timestamp timestamp = new Timestamp(measurementsCursor.getLong(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
+            double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
+            double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));
+            double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
+            Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
+            measurements.add(m);
+        }
+        // Fetch the measurement with max timestamp value
+        sortOrder =
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " DESC ";
+        measurementsCursor = readable.query(
+                HiveEntry.TABLE_HIVE_MEASUREMENT,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder,
+                "1");
+        if(measurementsCursor.moveToNext()){
+            Timestamp timestamp = new Timestamp(measurementsCursor.getLong(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
+            double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
+            double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));
+            double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
+            Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
+            measurements.add(m);
+        }
+        measurementsCursor.close();
+
+        return measurements;
     }
 }
 
