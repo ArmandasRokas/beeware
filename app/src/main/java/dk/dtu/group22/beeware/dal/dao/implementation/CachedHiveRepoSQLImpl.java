@@ -35,35 +35,35 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
     public Hive getCachedHiveWithAllData(int hiveId) {
 
      //  SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {
+    /*    String[] projection = {
                 BaseColumns._ID,
                 HiveEntry.COLUMN_NAME_HIVE_ID,
                 HiveEntry.COLUMN_NAME_TIMESTAMP,
                 HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS
-        };
-        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
-        String[] selectionArgs = {hiveId+""};
-
-        // Fetch hive data
-        Cursor hiveCursor = readable.query(
-                HiveEntry.TABLE_HIVE,   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
-        );
-        if(!hiveCursor.moveToNext()){
-            return null;// TODO check for null
-        }
-        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
-        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
-        int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
-        int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
-        hiveCursor.close();
+        };*/
+//
+//        // Fetch hive data
+//        Cursor hiveCursor = readable.query(
+//                HiveEntry.TABLE_HIVE,   // The table to query
+//                null,             // The array of columns to return (pass null to get all)
+//                selection,              // The columns for the WHERE clause
+//                selectionArgs,          // The values for the WHERE clause
+//                null,                   // don't group the rows
+//                null,                   // don't filter by row groups
+//                null               // The sort order
+//        );
+//        if(!hiveCursor.moveToNext()){
+//            return null;// TODO check for null
+//        }
+//        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
+//        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
+//        int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
+//        int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
+//        hiveCursor.close();
 
         // Fetch measurements of a hive
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
+        String[] selectionArgs = {hiveId+""};
         String sortOrder =
                 HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC ";
         Cursor measurementsCursor = readable.query(
@@ -89,9 +89,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         measurementsCursor.close();
 
         //Construct the hive
-        Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
-        hiveToReturn.setWeightIndicator(returnedWeightIndicator);
-        hiveToReturn.setTempIndicator(returnedTempIndicator);
+        Hive hiveToReturn = fetchHiveMetaData(hiveId);
         hiveToReturn.setMeasurements(measurements);
         return hiveToReturn;
     }
@@ -140,6 +138,35 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         }
     }
 
+    private Hive fetchHiveMetaData(int hiveId){
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
+        String[] selectionArgs = {hiveId+""};
+
+        Cursor hiveCursor = readable.query(
+                HiveEntry.TABLE_HIVE,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+        if(!hiveCursor.moveToNext()){
+            return null;// TODO check for null
+        }
+        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
+        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
+        int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
+        int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
+        hiveCursor.close();
+
+        Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
+        hiveToReturn.setWeightIndicator(returnedWeightIndicator);
+        hiveToReturn.setTempIndicator(returnedTempIndicator);
+
+        return  hiveToReturn;
+    }
+
     @Override
     public void updateHive(Hive hive) { // TODO change to be update hive configuration, not measurements
        // SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -165,6 +192,42 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         Hive hiveOnlyWithNewMeasurements = new Hive(hive.getId(), hive.getName());
         hiveOnlyWithNewMeasurements.setMeasurements(measurements);
         insertHiveMeasurements(hiveOnlyWithNewMeasurements);
+    }
+
+    @Override
+    public Hive getHiveWithinPeriod(int hiveId, Timestamp since, Timestamp until) {
+        String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? AND " +
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " >=  ?  AND " +
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " <= ? ";
+        String[] selectionArgs = {hiveId+"", since.getTime()+ "", until.getTime()+""};
+        String sortOrder =
+                HiveEntry.COLUMN_NAME_TIMESTAMP + " ASC ";
+        Cursor measurementsCursor = readable.query(
+                HiveEntry.TABLE_HIVE_MEASUREMENT,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                sortOrder               // The sort order
+        );
+        List<Measurement> measurements = new ArrayList<>();
+        while (measurementsCursor.moveToNext()){
+            Timestamp timestamp = new Timestamp(measurementsCursor.getLong(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_TIMESTAMP)));
+            double weight = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS));
+            double tempIn = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN));
+            double hum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_HUM));
+            double illum = measurementsCursor.getDouble(measurementsCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ILLUM));
+            Measurement m = new Measurement(timestamp, weight, tempIn, hum, illum);
+            measurements.add(m);
+            //  System.out.println(hiveId + " : " + m.toString());
+        }
+        measurementsCursor.close();
+
+        //Construct the hive
+        Hive hiveToReturn = fetchHiveMetaData(hiveId);
+        hiveToReturn.setMeasurements(measurements);
+        return hiveToReturn;
     }
 }
 
