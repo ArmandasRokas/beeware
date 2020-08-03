@@ -509,6 +509,10 @@ public class Logic {
         return cachingManager.getCachedHiveWithinPeriod(hiveId, from, to);
     }
 
+    public void downloadOldDataInBackground(int id)throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException  {
+        cachingManager.downloadOldDataInBackground(id);
+    }
+
     class HivesToSubscribeNoFound extends RuntimeException {
         public HivesToSubscribeNoFound(String msg) {
             super(msg);

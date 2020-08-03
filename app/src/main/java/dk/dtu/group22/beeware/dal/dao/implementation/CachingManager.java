@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.core.util.Pair;
 
@@ -274,6 +275,81 @@ public class CachingManager {
         initRepo();
         repo.updateHive(hive);
     }
+
+    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+
+     //   backgroundDownloadInProgress = true;
+//        System.out.println("downloadOldDataInBackground: Starting background download.");
+
+        Timestamp endDate = new Timestamp(System.currentTimeMillis()); // FIXME start date last cached
+   //     repo.fetchMinMaxMeasurementsByTimestamp
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(endDate.getTime());
+        cal.add(Calendar.DATE, -14);
+        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+        startDate = roundDateToMidnight(startDate);
+        Timestamp a = new Timestamp(startDate.getTime());
+        Timestamp b = new Timestamp(endDate.getTime());
+
+        for (int i = 0; i < 53; i++) {
+            try {
+
+                a = new Timestamp(startDate.getTime());
+                b = new Timestamp(endDate.getTime());
+                Hive junk = null;
+
+                System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
+                        "from " + a.toString().substring(0, 10) + " " +
+                        "to " + b.toString().substring(0, 10) + ".");
+                while (junk == null) {
+                    junk = getCachedHiveAndUpdateOrCreateUsesNetwork(id, a, b);
+                }
+                // hive = junk;
+
+                // Iterate backwards
+                endDate = new Timestamp(startDate.getTime());
+                cal.setTimeInMillis(endDate.getTime());
+                //cal.add(Calendar.MONTH, -2);
+                cal.add(Calendar.DATE, -7); // substract 7 days
+                startDate = new Timestamp(cal.getTimeInMillis());
+            } catch (NoDataAvailableOnHivetoolException e){
+             //   backgroundDownloadInProgress = false;
+                System.out.printf("downloadHiveData: No data available on hivetool to download hive data for hive " +
+                        id + " from" + a + " to " + b + ".");
+                e.printStackTrace();
+                throw new NoDataAvailableOnHivetoolException(e.getMessage());
+            }
+            catch (IOException e) {
+           //     backgroundDownloadInProgress = false;
+                System.out.println("downloadOldDataInBackground: FAILED to download Hive " + id + ", " +
+                        "from " + a.toString().substring(0, 10) + " " +
+                        "to " + b.toString().substring(0, 10) + ".");
+                e.printStackTrace();
+                throw new IOException(e.getMessage());
+            }
+        }
+        //backgroundDownloadInProgress = false;
+//        System.out.println("downloadOldDataInBackground: Background download Done.");
+    }
+
+    /**
+     * Resets the clock on a Timestamp
+     * @param stamp
+     * A TimeStamp to set to time 00:00
+     * @return A TimeStamp with time set to 00:00
+     */
+    private Timestamp roundDateToMidnight(Timestamp stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp.getTime());
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Timestamp result = new Timestamp(cal.getTimeInMillis());
+        System.out.println("roundDateToMidnight: Corrected the date to midnight: " + result);
+        return result;
+    }
+
 
     /**
      * Should be used only for testing purposes
