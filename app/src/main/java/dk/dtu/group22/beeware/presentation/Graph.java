@@ -67,7 +67,7 @@ public class Graph extends CustomActivity {
     private int hiveId;
     private String hiveName;
     private float currentWeight;
-    private DownloadHiveAsyncTask downloadAsyncTask;
+   // private DownloadHiveAsyncTask downloadAsyncTask;
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
   //  private FloatingActionButton hiveSettingsButton;
@@ -230,10 +230,17 @@ public class Graph extends CustomActivity {
             fragment.show(getSupportFragmentManager(), "configurationDialog");
         });*/
 
+        // Render the graph with predefined fromData and ToDate
+        showWithNewTimeDelta(graphViewModel.getFromDate(), getGraphViewModel().getToDate());
+        setSwitchListeners();
+        TextView name = findViewById(R.id.hiveNameTextView);
+        name.setText(hiveName);
+
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
-        downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
+     //   downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
         downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
-        downloadAsyncTask.execute(hiveId);
+        downloadBGAsyncTask.execute();
+     //   downloadAsyncTask.execute(hiveId);
 
 /*
         if (!Logic.getSingleton().getCachedHive(hiveId).getHasBeenConfigured()) {
@@ -682,6 +689,7 @@ public class Graph extends CustomActivity {
      * @post
      * First week of data is downloaded, and rendergraph() is called.
      */
+    /*
     private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
         @Override
         protected void onPreExecute() {
@@ -743,7 +751,7 @@ public class Graph extends CustomActivity {
             }
         }
     }
-
+     */
     /**
      * This class controls download of the data not immediately shown when a graph view is opened.
      */
@@ -804,7 +812,7 @@ public class Graph extends CustomActivity {
 
     @Override
     protected void onPause() {
-        downloadAsyncTask.cancel(true);
+      //  downloadAsyncTask.cancel(true);
         downloadBGAsyncTask.cancel(true);
         toastPast.cancel();
         toastLatest.cancel();
@@ -815,6 +823,7 @@ public class Graph extends CustomActivity {
 
     @Override
     protected void onStop() {
+        downloadBGAsyncTask.cancel(true);
         toastPast.cancel();
         toastLatest.cancel();
         toastLackingData.cancel();

@@ -290,6 +290,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 
         return measurements;
     }
+
+    // TODO implement method. fetchMostRecentTwoDays(hiveId) for offline use, Sort by timestamp and  limit around for to days.
 }
 
 final class HiveReaderContract {

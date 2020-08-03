@@ -172,7 +172,7 @@ public class Overview extends CustomActivity //implements View.OnClickListener
             protected Object doInBackground(Object... arg0) {
                // try {
                 // All exceptions is handled in getSubscribedHives because of multithreading in the method.
-                hives = logic.getSubscribedHives(2);
+                hives = logic.getSubscribedHives(8);
                 Collections.sort(hives);
                 for (Integer i : logic.getSubscriptionIDs()) {
 

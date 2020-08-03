@@ -156,7 +156,7 @@ public class Logic {
                     notFetchedHivesFromNetwork.add(subscriptionManager.getCachedNameIdPair(id).getName());
 
                     try {
-                    Hive h = getCachedHive(id);
+                    Hive h = getCachedHive(id); // FIXME get cached hive with last data. That is since and until data it could not used because it is possible that there is not data stored within 8 days delta
                     if(h != null){
                         hivesWithMeasurements.add(h);
                     }} catch(AccessLocalFileException re){
