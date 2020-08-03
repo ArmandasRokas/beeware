@@ -36,6 +36,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -590,7 +591,8 @@ public class Graph extends CustomActivity {
      * End of period.
      */
     public void showWithNewTimeDelta(Timestamp from, Timestamp to) {
-        graphViewModel.updateTimePeriod(from, to);
+
+        graphViewModel.updateTimePeriod(hiveId, from, to);
         // Get hive and render with new from- and to-dates.
         if (graphViewModel.getHive() != null &&
                 from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp()) &&

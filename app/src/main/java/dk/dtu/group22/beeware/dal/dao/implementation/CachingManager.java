@@ -81,7 +81,8 @@ public class CachingManager {
     public Hive getCachedHiveAndUpdateOrCreateUsesNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
        // Hive hive = findCachedHive(id);
         initRepo();
-        Hive hive = repo.getCachedHiveWithAllData(id);
+      //  Hive hive = repo.getCachedHiveWithAllData(id);
+        Hive hive = repo.getHiveWithinPeriod(id, sinceTime, untilTime);
         if (hive != null) {
             updateHive(hive, sinceTime, untilTime);
         } else {
@@ -155,6 +156,18 @@ public class CachingManager {
 
         initRepo();
         return repo.getCachedHiveWithAllData(id);
+    }
+    public Hive getCachedHiveWithinPeriod(int id, Timestamp since, Timestamp until) {
+        //    Hive foundHive;
+        //    foundHive = retrieveHiveFromList(id);
+
+        // If hive was not found in List<Hive> cachedHives, try to look in cached files
+        //   if (foundHive == null && ctx != null) {
+        //         Hive  foundHive = retrieveHiveFromFile(id);
+        //   }
+
+        initRepo();
+        return repo.getHiveWithinPeriod(id, since, until);
     }
 /*
     private Hive retrieveHiveFromList(int id) {

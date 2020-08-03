@@ -505,6 +505,10 @@ public class Logic {
         cachingManager.updateHive(hive);
     }
 
+    public Hive getCachedHiveWithinPeriod(int hiveId, Timestamp from, Timestamp to) {
+        return cachingManager.getCachedHiveWithinPeriod(hiveId, from, to);
+    }
+
     class HivesToSubscribeNoFound extends RuntimeException {
         public HivesToSubscribeNoFound(String msg) {
             super(msg);

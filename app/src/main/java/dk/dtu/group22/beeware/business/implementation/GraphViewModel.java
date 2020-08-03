@@ -106,13 +106,13 @@ public class GraphViewModel extends ViewModel {
                 b = new Timestamp(endDate.getTime());
                 Hive junk = null;
 
-                while (junk == null) {
-                    junk = logic.getHiveNetworkAndSetCurrValues(id, a, b);
-                }
-                hive = junk;
                 System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
                         "from " + a.toString().substring(0, 10) + " " +
                         "to " + b.toString().substring(0, 10) + ".");
+                while (junk == null) {
+                    junk = logic.getHiveNetworkAndSetCurrValues(id, a, b);
+                }
+               // hive = junk;
 
                 // Iterate backwards
                 endDate = new Timestamp(startDate.getTime());
@@ -514,9 +514,10 @@ public class GraphViewModel extends ViewModel {
         this.humidityLineVisible = humidityLineVisible;
     }
 
-    public void updateTimePeriod(Timestamp from, Timestamp to) {
+    public void updateTimePeriod(int hiveId, Timestamp from, Timestamp to) {
         this.fromDate = from;
         this.toDate = to;
+        hive  =  logic.getCachedHiveWithinPeriod(hiveId, new Timestamp(from.getTime() - 1000*60*60), to);
     }
 
     // Used to set lower and upper X value visible
