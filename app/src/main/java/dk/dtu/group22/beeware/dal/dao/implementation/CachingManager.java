@@ -281,11 +281,12 @@ public class CachingManager {
      //   backgroundDownloadInProgress = true;
 //        System.out.println("downloadOldDataInBackground: Starting background download.");
 
-        Timestamp endDate = new Timestamp(System.currentTimeMillis()); // FIXME start date last cached
-   //     repo.fetchMinMaxMeasurementsByTimestamp
+        List<Measurement> minMaxMeasurements = repo.fetchMinMaxMeasurementsByTimestamp(id);
+     //   Timestamp endDate = new Timestamp(System.currentTimeMillis()); // FIXME start date last cached
+        Timestamp endDate = minMaxMeasurements.get(0).getTimestamp();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(endDate.getTime());
-        cal.add(Calendar.DATE, -14);
+        cal.add(Calendar.DATE, -7);
         Timestamp startDate = new Timestamp(cal.getTimeInMillis());
         startDate = roundDateToMidnight(startDate);
         Timestamp a = new Timestamp(startDate.getTime());

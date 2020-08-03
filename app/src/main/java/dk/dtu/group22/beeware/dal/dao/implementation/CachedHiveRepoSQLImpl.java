@@ -239,7 +239,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         }
     }
 
-    private List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId) {
+    public List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId) {
         List<Measurement> measurements = new ArrayList<>();
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hiveId+""};

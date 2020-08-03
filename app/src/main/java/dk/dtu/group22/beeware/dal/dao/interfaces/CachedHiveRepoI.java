@@ -17,4 +17,6 @@ public interface CachedHiveRepoI {
     void saveNewMeasurements(Hive hive, List<Measurement> measurements);
 
     Hive getHiveWithinPeriod(int id, Timestamp since, Timestamp until);
+
+    List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId);
 }
