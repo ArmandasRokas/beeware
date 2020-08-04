@@ -610,7 +610,7 @@ public class Graph extends CustomActivity {
             // Check if some data is not found, and inform the user. This should only happen if there is incomplete data at the source (hivetool)
             if (graphViewModel.getHive() != null && from.before(graphViewModel.getHive().getMeasurements().get(0).getTimestamp())) {
                 // If hive exists and requested from date is not present, but no download is in progress
-                Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show(); // FIXME does not MAKE SENSE to show this message. Maybe better: "There is no data before dd-mm-yyyy"
             }
             // Try another download just in case.
   //          DownloadBGHiveAsyncTask bg2 = new DownloadBGHiveAsyncTask();  // Another download just freezes the app
@@ -768,14 +768,16 @@ public class Graph extends CustomActivity {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
             }catch (NoDataAvailableOnHivetoolException e){
+                // Do nothing, because NoDataAvailableOnHivetoolException means that all data has been already downloaded.
+
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
-                Runnable r2 = () -> {
+           /*     Runnable r2 = () -> {
                     if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
                         toastLackingData.setText(R.string.LackingData);
                         toastLackingData.show();
                     }
                 };
-                runOnUiThread(r2);
+                runOnUiThread(r2);*/
                 e.printStackTrace();
             }catch (Exception e) {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();

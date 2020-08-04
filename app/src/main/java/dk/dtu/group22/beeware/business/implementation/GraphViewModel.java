@@ -89,6 +89,19 @@ public class GraphViewModel extends ViewModel {
 
         backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
+        try{
+            logic.downloadOldDataInBackground(id);
+            backgroundDownloadInProgress = false;
+        } catch (NoDataAvailableOnHivetoolException e){
+            backgroundDownloadInProgress = false;
+            e.printStackTrace();
+            throw new NoDataAvailableOnHivetoolException(e.getMessage());
+        } catch (IOException e) {
+            backgroundDownloadInProgress = false;
+            e.printStackTrace();
+            throw new IOException(e.getMessage());
+        }
+        Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
 
 //        Timestamp endDate = new Timestamp(System.currentTimeMillis());
 //        Calendar cal = Calendar.getInstance();
@@ -136,10 +149,6 @@ public class GraphViewModel extends ViewModel {
 //                throw new IOException(e.getMessage());
 //            }
 //        }
-
-        logic.downloadOldDataInBackground(id);
-        backgroundDownloadInProgress = false;
-        Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
     }
 
     /**

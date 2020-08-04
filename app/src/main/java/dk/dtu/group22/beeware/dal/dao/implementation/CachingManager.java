@@ -292,7 +292,9 @@ public class CachingManager {
         Timestamp a = new Timestamp(startDate.getTime());
         Timestamp b = new Timestamp(endDate.getTime());
 
-        for (int i = 0; i < 53; i++) {
+//        for (int i = 0; i < 53; i++) {
+        // Download until there is still data on HiveTool
+        while(true){
             try {
 
                 a = new Timestamp(startDate.getTime());
