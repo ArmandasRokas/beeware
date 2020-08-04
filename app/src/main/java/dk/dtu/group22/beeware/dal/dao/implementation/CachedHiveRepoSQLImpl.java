@@ -25,7 +25,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 
     public CachedHiveRepoSQLImpl(Context ctx){
         this.ctx = ctx;
-        dbHelper = new HiveReaderDbHelper(ctx);
+        dbHelper = HiveReaderDbHelper.getInstance(ctx);
         readable = dbHelper.getReadableDatabase();
         writable = dbHelper.getWritableDatabase();
     }
@@ -101,7 +101,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
      * @param hive
      */
     @Override
-    public void createCachedHive(Hive hive) {
+    public synchronized void createCachedHive(Hive hive) {
 
         // Gets the data repository in write mode
    //     SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -129,13 +129,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_C_IN, hive.getMeasurements().get(i).getTempIn());
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_HUM, hive.getMeasurements().get(i).getHumidity());
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ILLUM, hive.getMeasurements().get(i).getIlluminance());
-            try {
-                // Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
-                long newRowId = writable.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
-            } catch (SQLiteConstraintException eConst){
-                eConst.printStackTrace();
-            }
-          //  System.out.println("newRowId: " + newRowId);
+            // Insert the new row, returning the primary key value of the new row. -1 if there was a problem to insert data
+            writable.insert(HiveEntry.TABLE_HIVE_MEASUREMENT, null, measurements);
         }
     }
 
@@ -318,6 +313,7 @@ final class HiveReaderContract {
 class HiveReaderDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
+    private static HiveReaderDbHelper instance = null;
     public static final String DATABASE_NAME = "hive.db";
     private static final String CREATE_TABLE_HIVE_MEASUREMENT =
             "CREATE TABLE " + HiveEntry.TABLE_HIVE_MEASUREMENT + " (" +
@@ -345,8 +341,14 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_HIVE_TABLE =
             "DROP TABLE IF EXISTS " + HiveEntry.TABLE_HIVE;
 
-    public HiveReaderDbHelper(Context context) {
+    private HiveReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+    public static HiveReaderDbHelper getInstance(Context ctx){
+        if (instance == null){
+            instance = new HiveReaderDbHelper(ctx);
+        }
+        return instance;
     }
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_HIVE_MEASUREMENT);
