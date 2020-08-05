@@ -231,21 +231,21 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                     //Updates the icons of the hives, according to each hives' Configuration values.
                     logic.calculateHiveStatus(hive);
                 }
-                List<String> notFetchedHives = logic.getNotFetchedHivesFromNetwork();
-                if(!notFetchedHives.isEmpty()){
-                    Collections.sort(notFetchedHives);
-                    String errMessage = getString(R.string.FailedToGetLatestData) +  " " + notFetchedHives.toString();
+                List<String> notFetchedHivesFromNetwork = logic.getNotFetchedHivesFromNetwork();
+                if(!notFetchedHivesFromNetwork.isEmpty()) {
+                    Collections.sort(notFetchedHivesFromNetwork);
+                    String errMessage = getString(R.string.FailedToGetLatestData) + " " + notFetchedHivesFromNetwork.toString();
                     //Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
-                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+                    if (getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
                         toastLatest.setText(errMessage);
                         toastLatest.show();
                     }
                     logic.clearNotFetchHivesFromNetwork();
                 }
-                List<String> notFetchedHivesFromFile = logic.getNotFetchedHivesFromFile();
-                if(!notFetchedHivesFromFile.isEmpty()){
-                    Collections.sort(notFetchedHivesFromFile);
-                    String errMessage = getString(R.string.FailedToGetData) +  " " + notFetchedHivesFromFile.toString();
+                List<String> notFetchedCachedHives = logic.getNotFetchedCachedHives();
+                if(!notFetchedCachedHives.isEmpty()){
+                    Collections.sort(notFetchedCachedHives);
+                    String errMessage = getString(R.string.FailedToGetData) +  " " + notFetchedCachedHives.toString();
                     if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
                         toastfailedFetchData.setText(errMessage);
                         toastfailedFetchData.show();

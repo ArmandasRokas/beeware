@@ -40,7 +40,7 @@ public class Logic {
     private Context ctx;
     private final static Logic logic = new Logic();
     private List<String> notFetchedHivesFromNetwork = new LinkedList<>();
-    private List<String> notFetchedHivesFromFile = new LinkedList<>();
+    private List<String> notFetchedCachedHives = new LinkedList<>();
 
 
     /**
@@ -81,15 +81,15 @@ public class Logic {
         return notFetchedHivesFromNetwork;
     }
 
-    public List<String> getNotFetchedHivesFromFile() {
-        return notFetchedHivesFromFile;
+    public List<String> getNotFetchedCachedHives() {
+        return notFetchedCachedHives;
     }
 
     public void clearNotFetchHivesFromNetwork(){
         notFetchedHivesFromNetwork = new LinkedList<>();
     }
     public void clearNotFetchHivesFromFile(){
-        notFetchedHivesFromFile = new LinkedList<>();
+        notFetchedCachedHives = new LinkedList<>();
     }
     /**
      * Subscribes a hive
@@ -159,12 +159,19 @@ public class Logic {
                     notFetchedHivesFromNetwork.add(subscriptionManager.getCachedNameIdPair(id).getName());
                     h = getHiveWithMostRecentDataAndSetCurrValues(id, 86400000 * daysDelta);
                 }
-                if(h!= null){
-                    hivesWithMeasurements.add(h);
-                } else {
-                    //     notFetchedHives.add(subscriptionManager.getCachedHiveName(id)); // TODO add to notFetchedHives in order to give error message to an user.
-                    // TODO maybe create empty hive in order to visualize that data is not fetched.
+                if(h == null){
+                    // If hive is still null it was not possible to fetch a hive either from network or cahced.
+                    // In this case create empty hive to visualize that there was something wrong in getting a hive.
+                    h = Hive.createEmptyHive(id,subscriptionManager.getCachedNameIdPair(id).getName(), 86400000 * daysDelta);
+                    notFetchedCachedHives.add(subscriptionManager.getCachedNameIdPair(id).getName());
                 }
+                hivesWithMeasurements.add(h);
+
+                //                if(h!= null){
+//
+//                } else {
+//                    //     notFetchedHives.add(subscriptionManager.getCachedHiveName(id)); //  add to notFetchedHives in order to give error message to an user.
+//                }
 
                 // if(h != null){
                 //    hivesWithMeasurements.add(h);

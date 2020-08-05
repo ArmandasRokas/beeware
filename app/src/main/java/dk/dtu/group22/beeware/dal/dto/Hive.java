@@ -1,6 +1,7 @@
 package dk.dtu.group22.beeware.dal.dto;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -287,5 +288,19 @@ public class Hive implements Serializable, Comparable<Hive> {
         this.measurements.addAll(ms);
         measurements.sort((e1, e2) -> e1.getTimestamp().compareTo(e2.getTimestamp()));
     }*/
+ public static Hive createEmptyHive(int id, String name, long timeDelta){
+     Hive h = new Hive(id, name);
+     List<Measurement> m = new ArrayList<>();
+
+     long now = System.currentTimeMillis();
+     long startTime = now - timeDelta;
+     long currTimestamp = startTime;
+     while(currTimestamp < now){
+         currTimestamp += 1000*60*5;
+         m.add(new Measurement(new Timestamp(currTimestamp), 0,0,0,0));
+     }
+     h.setMeasurements(m);
+     return h;
+ }
 
 }
