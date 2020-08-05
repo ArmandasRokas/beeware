@@ -520,6 +520,7 @@ public class Logic {
     public void downloadOldDataInBackground(int id)throws IOException, NoDataAvailableOnHivetoolException
             //, AccessLocalFileException
     {
+        // TODO check if download data is finished
         cachingManager.downloadOldDataInBackground(id);
     }
 

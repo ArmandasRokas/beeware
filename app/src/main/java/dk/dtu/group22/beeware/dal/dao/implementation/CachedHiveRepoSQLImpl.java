@@ -29,6 +29,9 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         readable = dbHelper.getReadableDatabase();
         writable = dbHelper.getWritableDatabase();
     }
+    public HiveReaderDbHelper getDbHelper() {
+        return dbHelper;
+    }
 
     // TODO updateHiveConfigurations(Hive hive) maybe not anymore. updateHive is enough
 
@@ -290,7 +293,13 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         return measurements;
     }
 
-    // TODO implement method. fetchMostRecentTwoDays(hiveId) for offline use, Sort by timestamp and  limit around for to days.
+    @Override
+    public Hive getHiveWithMostRecentData(int id, long timeDelta) {
+        List<Measurement> minMaxMeasurements = fetchMinMaxMeasurementsByTimestamp(id);
+        Timestamp endTime = minMaxMeasurements.get(1).getTimestamp();
+        Timestamp startTime = new Timestamp(endTime.getTime()-timeDelta);
+        return getHiveWithinPeriod(id, startTime, endTime);
+    }
 }
 
 final class HiveReaderContract {

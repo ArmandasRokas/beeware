@@ -1,5 +1,6 @@
 package dk.dtu.group22.beeware.dal.dao.implementation;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,11 @@ public class CachedHiveRepoSQLImplTest {
     @Before
     public void setUp(){
         repo = new CachedHiveRepoSQLImpl(RuntimeEnvironment.application);
+    }
+
+    @After
+    public void tearDown(){
+        (( CachedHiveRepoSQLImpl) repo).getDbHelper().close();
     }
 
     @Test
@@ -620,6 +626,40 @@ public class CachedHiveRepoSQLImplTest {
         List<Measurement> expected_data_measure = new ArrayList<>();
         expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*20), 38.0, 28.0, 88, 108));
         expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*5), 30.0, 20.0, 80.0, 100.0));
+
+        assertEquals(expected_data_measure.toString(), returnedHive.getMeasurements().toString());
+
+    }
+
+    @Test
+    public void queriedHiveWithPastDelta_returnHiveWithMeasurementsWithinTimeDelta(){
+        // Arrange
+        int id = 99997;
+        String hiveName = "testHive2";
+        Hive hive = new Hive(id,hiveName);
+        int weightIndicator = 20;
+        int tempIndicator = 40;
+        hive.setWeightIndicator(weightIndicator);
+        hive.setTempIndicator(tempIndicator);
+
+        List<Measurement> data_measure = new ArrayList<>();
+        long  currTime = System.currentTimeMillis();
+
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*20), 38.0, 28.0, 88, 108));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*15), 32.0, 22.0, 80, 100));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*6), 34.0, 24.0, 82, 102));
+        data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*3), 30.0, 20.0, 80.0, 100.0));
+
+        hive.setMeasurements(data_measure);
+        repo.createCachedHive(hive);
+
+        // Act
+        Hive returnedHive = repo.getHiveWithMostRecentData(id,  1000*60*60*24*7);
+
+        // Assert
+        List<Measurement> expected_data_measure = new ArrayList<>();
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*6), 34.0, 24.0, 82, 102));
+        expected_data_measure.add(new Measurement(new Timestamp(currTime-1000*60*60*24*3), 30.0, 20.0, 80.0, 100.0));
 
         assertEquals(expected_data_measure.toString(), returnedHive.getMeasurements().toString());
 
