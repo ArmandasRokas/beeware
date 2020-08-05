@@ -91,8 +91,12 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 
         //Construct the hive
         Hive hiveToReturn = fetchHiveMetaData(hiveId);
-        hiveToReturn.setMeasurements(measurements);
-        return hiveToReturn;
+        if(hiveToReturn != null ){
+            hiveToReturn.setMeasurements(measurements);
+            return hiveToReturn;
+        } else {
+            return null;
+        }
     }
 
     /**

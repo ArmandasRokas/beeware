@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
+//import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 
 public class ConfigurationFragment extends DialogFragment implements View.OnClickListener {
@@ -124,12 +124,13 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected Object doInBackground(Object[] objects) {
                 long now = System.currentTimeMillis();
                 long since = now - (86400000 * 2);
-                try {
+              //  try {
                     hive = logic.getCachedHive(hiveid);
-                } catch (AccessLocalFileException e) {
-                    failedToGetHive.show();
-                    e.printStackTrace();
-                }
+               // }
+//                catch (AccessLocalFileException e) {
+//                    failedToGetHive.show();
+//                    e.printStackTrace();
+//                }
                 if(hive==null) {
                     try {
                         hive = logic.getHiveNetworkAndSetCurrValues(hiveid, new Timestamp(since), new Timestamp(now));

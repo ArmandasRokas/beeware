@@ -20,7 +20,7 @@ import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.dal.dao.implementation.CachingManager;
 import dk.dtu.group22.beeware.dal.dao.implementation.NameIdPair;
 import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
-import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
+//import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionHivetool;
 import dk.dtu.group22.beeware.dal.dao.implementation.SubscriptionManager;
 import dk.dtu.group22.beeware.dal.dao.interfaces.ISubscription;
@@ -155,14 +155,19 @@ public class Logic {
                    // notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
                     notFetchedHivesFromNetwork.add(subscriptionManager.getCachedNameIdPair(id).getName());
 
-                    try {
                     Hive h = getCachedHive(id); // FIXME get cached hive with last data. That is since and until data it could not used because it is possible that there is not data stored within 8 days delta
                     if(h != null){
                         hivesWithMeasurements.add(h);
-                    }} catch(AccessLocalFileException re){
-                        re.printStackTrace();
-                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
                     }
+
+//                    try {
+//                    Hive h = getCachedHive(id);
+//                    if(h != null){
+//                        hivesWithMeasurements.add(h);
+//                    }} catch(AccessLocalFileException re){
+//                        re.printStackTrace();
+//                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
+//                    }
                 }
             };
             Thread thread = new Thread(runnable);
@@ -191,7 +196,9 @@ public class Logic {
      * @return
      * A hive, with data specified by the parameters.
      */
-    public Hive getHiveNetworkAndSetCurrValues(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public Hive getHiveNetworkAndSetCurrValues(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException
+            //, AccessLocalFileException
+        {
 
         Hive hive = cachingManager.getCachedHiveAndUpdateOrCreateUsesNetwork(id, sinceTime, untilTime);
         setCurrValues(hive);
@@ -209,7 +216,8 @@ public class Logic {
      * @return Hive with the identifier id, if it has been cached. Otherwise returns null.
      * The time complexity is linear with the number of hives that have been cached.
      */
-    public Hive getCachedHive(int id) throws AccessLocalFileException {
+    public Hive getCachedHive(int id)// throws AccessLocalFileException
+     {
         Hive hive = cachingManager.getCachedHive(id);
         if(hive != null){
             setCurrValues(hive);
@@ -509,7 +517,9 @@ public class Logic {
         return cachingManager.getCachedHiveWithinPeriod(hiveId, from, to);
     }
 
-    public void downloadOldDataInBackground(int id)throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException  {
+    public void downloadOldDataInBackground(int id)throws IOException, NoDataAvailableOnHivetoolException
+            //, AccessLocalFileException
+    {
         cachingManager.downloadOldDataInBackground(id);
     }
 
@@ -566,7 +576,8 @@ public class Logic {
         }
     }
 
-    public void setIsConfigured(int id, boolean conf) throws AccessLocalFileException {
+    public void setIsConfigured(int id, boolean conf) // throws AccessLocalFileException
+    {
         Hive hive = cachingManager.getCachedHive(id);
         hive.setHasBeenConfigured(conf); // FIXME update weightIndicator and tempIndicator values in SQLite.
 

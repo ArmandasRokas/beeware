@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
-import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
+//import dk.dtu.group22.beeware.dal.dao.implementation.AccessLocalFileException;
 import dk.dtu.group22.beeware.dal.dto.Hive;
 import dk.dtu.group22.beeware.dal.dto.Measurement;
 
@@ -57,7 +57,8 @@ public class GraphViewModel extends ViewModel {
      * @param id
      * ID of hive to download
      */
-    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+     {
         fromDate = roundDateToMidnight(fromDate);
         try{
             hive = logic.getHiveNetworkAndSetCurrValues(id, fromDate, new Timestamp(System.currentTimeMillis()));
@@ -85,7 +86,8 @@ public class GraphViewModel extends ViewModel {
      * @pre A hive ID is aquired
      * @post The hive is updated with one year's data.
      */
-    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+     {
 
         backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");

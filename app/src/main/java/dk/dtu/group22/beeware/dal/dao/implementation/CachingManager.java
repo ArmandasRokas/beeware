@@ -79,7 +79,9 @@ public class CachingManager {
         return CACHING_MANAGER;
     }
 
-    public Hive getCachedHiveAndUpdateOrCreateUsesNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public Hive getCachedHiveAndUpdateOrCreateUsesNetwork(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException
+            //, AccessLocalFileException
+            {
        // Hive hive = findCachedHive(id);
         initRepo();
       //  Hive hive = repo.getCachedHiveWithAllData(id);
@@ -102,7 +104,8 @@ public class CachingManager {
 //        return null;
 //    }
 
-    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    private void updateHive(Hive hive, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+     {
         initRepo();
         Timestamp sinceTimeDelta = new Timestamp(sinceTime.getTime() + 300000 * 2);
         Timestamp untilTimeDelta = new Timestamp(untilTime.getTime() - 300000 * 2);
@@ -146,7 +149,8 @@ public class CachingManager {
  //       return null;
     }*/
 
-    public Hive getCachedHive(int id) throws AccessLocalFileException {
+    public Hive getCachedHive(int id) //throws AccessLocalFileException
+     {
     //    Hive foundHive;
     //    foundHive = retrieveHiveFromList(id);
 
@@ -182,28 +186,29 @@ public class CachingManager {
         return null;
     }*/
 
-    private synchronized Hive retrieveHiveFromFile(int id) throws AccessLocalFileException {
-        File file = new File(ctx.getCacheDir(), String.valueOf(id));
-        if (file.exists()) {
-            try {
-                FileInputStream fis = new FileInputStream(file);
-                BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
-                ObjectInputStream is = new ObjectInputStream(bufferedInputStream);
-                Hive hive = (Hive) is.readObject();
-                is.close();
-                bufferedInputStream.close();
-                fis.close();
-            //    cachedHives.add(hive);
-                return hive;
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new AccessLocalFileException(e.getMessage());
-            }
-        }
-        return null;
-    }
+//    private synchronized Hive retrieveHiveFromFile(int id) throws AccessLocalFileException {
+//        File file = new File(ctx.getCacheDir(), String.valueOf(id));
+//        if (file.exists()) {
+//            try {
+//                FileInputStream fis = new FileInputStream(file);
+//                BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
+//                ObjectInputStream is = new ObjectInputStream(bufferedInputStream);
+//                Hive hive = (Hive) is.readObject();
+//                is.close();
+//                bufferedInputStream.close();
+//                fis.close();
+//            //    cachedHives.add(hive);
+//                return hive;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                throw new AccessLocalFileException(e.getMessage());
+//            }
+//        }
+//        return null;
+//    }
 
-    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    private Hive createHive(int id, Timestamp sinceTime, Timestamp untilTime) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+     {
 
         Pair<List<Measurement>, String> measurementsAndName = webScraper.getHiveMeasurements(id, sinceTime, untilTime);
         Hive hive = new Hive(id, measurementsAndName.second);
@@ -218,21 +223,21 @@ public class CachingManager {
         return hive;
     }
 
-    public synchronized void writeToFile(Hive hive) throws AccessLocalFileException {
-        File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
-        try {
-            FileOutputStream fos = new FileOutputStream(file, false);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
-            ObjectOutputStream os = new ObjectOutputStream(bufferedOutputStream);
-            os.writeObject(hive);
-            os.close();
-            bufferedOutputStream.close();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new AccessLocalFileException(e.getMessage());
-        }
-    }
+//    public synchronized void writeToFile(Hive hive) throws AccessLocalFileException {
+//        File file = new File(ctx.getCacheDir(), String.valueOf(hive.getId()));
+//        try {
+//            FileOutputStream fos = new FileOutputStream(file, false);
+//            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
+//            ObjectOutputStream os = new ObjectOutputStream(bufferedOutputStream);
+//            os.writeObject(hive);
+//            os.close();
+//            bufferedOutputStream.close();
+//            fos.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new AccessLocalFileException(e.getMessage());
+//        }
+//    }
 
     /**
      * Clean out old dates automatically on the first and fifteenth of the month.
@@ -243,40 +248,41 @@ public class CachingManager {
      * @pre The hive object has measurements
      * @post The hive object is guaranteed to have no older measurements than 16 months.
      */
-    // FIXME Do not need this method if the app is going to store more than one year's data.
-    private void trimMeasurements(Hive hive) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.MONTH, -16);
 
-        List<Measurement> measurements = hive.getMeasurements();
-        Timestamp sixteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
-
-        if (measurements.get(0).getTimestamp().before(sixteenMonthsAgo)) {
-
-            System.out.println("HiveObject: Cleaning up old data from hive " + hive.getId() + ", " + hive.getName() + ".");
-
-            cal.add(Calendar.MONTH, 2);
-            Timestamp fourteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
-
-            List<Measurement> temp = new ArrayList<Measurement>();
-            for (Measurement mes : measurements){
-                if (mes.getTimestamp().after(fourteenMonthsAgo)){
-                    temp.add(mes);
-                }
-            }
-
-            System.out.println("Oldest date: " + temp.get(0).getTimestamp().toString());
-            hive.setMeasurements(temp);
-        }
-    }
+//    private void trimMeasurements(Hive hive) {
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTimeInMillis(System.currentTimeMillis());
+//        cal.add(Calendar.MONTH, -16);
+//
+//        List<Measurement> measurements = hive.getMeasurements();
+//        Timestamp sixteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
+//
+//        if (measurements.get(0).getTimestamp().before(sixteenMonthsAgo)) {
+//
+//            System.out.println("HiveObject: Cleaning up old data from hive " + hive.getId() + ", " + hive.getName() + ".");
+//
+//            cal.add(Calendar.MONTH, 2);
+//            Timestamp fourteenMonthsAgo = new Timestamp(cal.getTimeInMillis());
+//
+//            List<Measurement> temp = new ArrayList<Measurement>();
+//            for (Measurement mes : measurements){
+//                if (mes.getTimestamp().after(fourteenMonthsAgo)){
+//                    temp.add(mes);
+//                }
+//            }
+//
+//            System.out.println("Oldest date: " + temp.get(0).getTimestamp().toString());
+//            hive.setMeasurements(temp);
+//        }
+//    }
 
     public void updateHive(Hive hive) {
         initRepo();
         repo.updateHive(hive);
     }
 
-    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException, AccessLocalFileException {
+    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+     {
 
      //   backgroundDownloadInProgress = true;
 //        System.out.println("downloadOldDataInBackground: Starting background download.");
@@ -296,17 +302,17 @@ public class CachingManager {
         // Download until there is still data on HiveTool
         while(true){
             try {
-
-                a = new Timestamp(startDate.getTime());
-                b = new Timestamp(endDate.getTime());
-                Hive junk = null;
-
                 System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
                         "from " + a.toString().substring(0, 10) + " " +
                         "to " + b.toString().substring(0, 10) + ".");
-                while (junk == null) {
-                    junk = getCachedHiveAndUpdateOrCreateUsesNetwork(id, a, b);
-                }
+
+                a = new Timestamp(startDate.getTime());
+                b = new Timestamp(endDate.getTime());
+           //     Hive junk = null;
+            //    while (junk == null) {
+           //         junk = getCachedHiveAndUpdateOrCreateUsesNetwork(id, a, b);
+            //    }
+                getCachedHiveAndUpdateOrCreateUsesNetwork(id, a, b);
                 // hive = junk;
 
                 // Iterate backwards
@@ -316,6 +322,7 @@ public class CachingManager {
                 cal.add(Calendar.DATE, -7); // substract 7 days
                 startDate = new Timestamp(cal.getTimeInMillis());
             } catch (NoDataAvailableOnHivetoolException e){
+                // TODO eat this exception here. And set boolean isOldDataDownloadFinished = true
              //   backgroundDownloadInProgress = false;
                 System.out.printf("downloadHiveData: No data available on hivetool to download hive data for hive " +
                         id + " from" + a + " to " + b + ".");
