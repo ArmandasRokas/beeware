@@ -286,7 +286,7 @@ public class CachingManager {
 
      //   backgroundDownloadInProgress = true;
 //        System.out.println("downloadOldDataInBackground: Starting background download.");
-
+         initRepo();
         List<Measurement> minMaxMeasurements = repo.fetchMinMaxMeasurementsByTimestamp(id);
      //   Timestamp endDate = new Timestamp(System.currentTimeMillis()); // FIXME start date last cached
         Timestamp endDate = minMaxMeasurements.get(0).getTimestamp();
@@ -366,5 +366,10 @@ public class CachingManager {
      */
     public void cleanCachedHives() {
         //cachedHives = new ArrayList<>();
+    }
+
+    public Hive getHiveWithMostRecentData(int id, long timeDelta) {
+        initRepo();
+        return repo.getHiveWithMostRecentData(id, timeDelta);
     }
 }

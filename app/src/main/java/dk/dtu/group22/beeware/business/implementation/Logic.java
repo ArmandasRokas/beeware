@@ -148,18 +148,29 @@ public class Logic {
         List<Thread> threads = new ArrayList<>();
         for (int id : subscribedHives) {
             Runnable runnable = () -> {
+                Hive h;
                 try {
-                    hivesWithMeasurements.add(getHiveNetworkAndSetCurrValues(id, new Timestamp(since), new Timestamp(now)));
+                    h = getHiveNetworkAndSetCurrValues(id, new Timestamp(since), new Timestamp(now));
+                    if(h == null){
+                        throw new Exception("Hive: " + id + " is null.");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                   // notFetchedHives.add(subscriptionManager.getCachedHiveName(id));
                     notFetchedHivesFromNetwork.add(subscriptionManager.getCachedNameIdPair(id).getName());
+                    h = getHiveWithMostRecentDataAndSetCurrValues(id, 86400000 * daysDelta);
+                }
+                if(h!= null){
+                    hivesWithMeasurements.add(h);
+                } else {
+                    //     notFetchedHives.add(subscriptionManager.getCachedHiveName(id)); // TODO add to notFetchedHives in order to give error message to an user.
+                    // TODO maybe create empty hive in order to visualize that data is not fetched.
+                }
 
-                    Hive h = getCachedHive(id); // FIXME get cached hive with last data. That is since and until data it could not used because it is possible that there is not data stored within 8 days delta
-                    if(h != null){
-                        hivesWithMeasurements.add(h);
-                    }
+                // if(h != null){
+                //    hivesWithMeasurements.add(h);
+                //}
 
+                //     Hive h = getCachedHive(id); //  get cached hive with last data. That is since and until data it could not used because it is possible that there is not data stored within 8 days delta
 //                    try {
 //                    Hive h = getCachedHive(id);
 //                    if(h != null){
@@ -168,7 +179,7 @@ public class Logic {
 //                        re.printStackTrace();
 //                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
 //                    }
-                }
+
             };
             Thread thread = new Thread(runnable);
             threads.add(thread);
@@ -182,6 +193,16 @@ public class Logic {
             }
         }
         return hivesWithMeasurements;
+    }
+
+    private Hive getHiveWithMostRecentDataAndSetCurrValues(int id, long timeDelta) {
+        Hive hive = cachingManager.getHiveWithMostRecentData(id, timeDelta);
+        if(hive != null){
+            setCurrValues(hive);
+            return hive;
+        } else{
+            return null;
+        }
     }
 
     /**
