@@ -6,26 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/newTime_from_text"
-        android:layout_width="150dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:background="@drawable/field_borderbox"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:drawableTint="@color/app_theme"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/datePlaceholder"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toEndOf="@+id/newTimeResetButton"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintVertical_bias="0.0" />
-
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:id="@+id/constraintLayout2"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="30dp"-->
@@ -50,19 +31,39 @@
 
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    <NumberPicker
-        android:id="@+id/periodPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+<!--    <NumberPicker-->
+<!--        android:id="@+id/periodPicker"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"></NumberPicker>-->
+
+    <TextView
+        android:id="@+id/newTime_from_text"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></NumberPicker>
+        android:layout_marginTop="8dp"
+        android:background="@drawable/field_borderbox"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:drawableTint="@color/app_theme"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="@string/datePlaceholder"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/newTime_to_text"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="88dp"
         android:background="@drawable/field_borderbox_greyed"
         android:drawableEnd="@drawable/ic_calendar"
         android:drawableTint="#26000000"
@@ -75,17 +76,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/newTime_calendar_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/newTime_from_text"
-        app:layout_constraintTop_toBottomOf="@+id/newTime_from_text"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
@@ -102,6 +102,7 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:srcCompat="@drawable/ic_settings" />-->
 
+
     <TextView
         android:id="@+id/newTime_settings"
         android:layout_width="wrap_content"
@@ -109,21 +110,18 @@
         android:contentDescription="@string/SettingsButtonDescription"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:padding="15dp"
-        android:text="Advanced"
+        android:text="Basic"
         android:textColor="@color/app_theme"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-<!--    android:layout_marginTop="5dp"-->
-<!--    android:layout_marginEnd="5dp"-->
-
     <TextView
         android:id="@+id/newTimeResetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="40dp"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:gravity="center"
         android:padding="10dp"
@@ -132,21 +130,36 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/newTime_from_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/newTime_from_text" />
+        app:layout_constraintTop_toTopOf="@+id/newTime_from_text"
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/newTime_viewperiod_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingEnd="15dp"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="15dp"
+        android:padding="0dp"
         android:text="@string/ViewPeriod"
         android:textColor="@color/app_theme"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newTime_to_text"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginBottom="15sp"
+        app:layout_constraintStart_toEndOf="@id/newTime_calendar_frame"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <EditText
+        android:id="@+id/daysEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="34dp"
+        android:ems="3"
+        android:hint="Days"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintStart_toEndOf="@id/newTime_calendar_frame"
+        app:layout_constraintBottom_toTopOf="@id/newTime_viewperiod_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

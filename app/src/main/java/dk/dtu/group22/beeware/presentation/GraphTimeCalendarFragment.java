@@ -44,7 +44,7 @@ public class GraphTimeCalendarFragment extends Fragment {
                 } catch (Exception e) {
                     System.out.println("Parse error in GraphTimeCalendarFragment!");
                 }
-                ((GraphTimeSelectionFragment) getParentFragment()).setSelectedDate(selectedDate);
+                ((GraphTimeAdvancedSelectionFrag) getParentFragment()).setSelectedDate(selectedDate);
             }
         });
 
