@@ -64,4 +64,10 @@ public interface CachedHiveRepoI {
      * @return Hive with most recent measurements in the defined range
      */
     Hive getHiveWithMostRecentData(int id, long timeDelta);
+
+    /**
+     * @param hiveId valid hiveId
+     * @return Hive only with meta data (without any measurements)
+     */
+    Hive fetchHiveMetaData(int hiveId);
 }

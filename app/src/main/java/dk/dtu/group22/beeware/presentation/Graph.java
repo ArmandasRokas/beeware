@@ -767,7 +767,7 @@ public class Graph extends CustomActivity {
         protected String doInBackground(Integer... id) {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
-            }catch (NoDataAvailableOnHivetoolException e){
+            }//catch (NoDataAvailableOnHivetoolException e){
                 // Do nothing, because NoDataAvailableOnHivetoolException means that all data has been already downloaded.
 
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
@@ -778,8 +778,9 @@ public class Graph extends CustomActivity {
                     }
                 };
                 runOnUiThread(r2);*/
-                e.printStackTrace();
-            }catch (Exception e) {
+               // e.printStackTrace();
+            //}
+            catch (Exception e) {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                 Runnable r2 = () -> {

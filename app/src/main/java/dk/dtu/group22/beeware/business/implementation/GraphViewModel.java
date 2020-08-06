@@ -86,7 +86,7 @@ public class GraphViewModel extends ViewModel {
      * @pre A hive ID is aquired
      * @post The hive is updated with one year's data.
      */
-    public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+    public void downloadOldDataInBackground(int id) throws IOException//, NoDataAvailableOnHivetoolException//, AccessLocalFileException
      {
 
         backgroundDownloadInProgress = true;
@@ -94,11 +94,12 @@ public class GraphViewModel extends ViewModel {
         try{
             logic.downloadOldDataInBackground(id);
             backgroundDownloadInProgress = false;
-        } catch (NoDataAvailableOnHivetoolException e){
-            backgroundDownloadInProgress = false;
-            e.printStackTrace();
-            throw new NoDataAvailableOnHivetoolException(e.getMessage());
-        } catch (IOException e) {
+        } //catch (NoDataAvailableOnHivetoolException e){
+         //   backgroundDownloadInProgress = false;
+       //     e.printStackTrace();
+      //      throw new NoDataAvailableOnHivetoolException(e.getMessage());
+      //  }
+        catch (IOException e) {
             backgroundDownloadInProgress = false;
             e.printStackTrace();
             throw new IOException(e.getMessage());

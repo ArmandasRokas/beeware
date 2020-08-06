@@ -55,7 +55,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 //                null               // The sort order
 //        );
 //        if(!hiveCursor.moveToNext()){
-//            return null;// TODO check for null
+//            return null;
 //        }
 //        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
 //        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
@@ -139,7 +139,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         }
     }
 
-    private Hive fetchHiveMetaData(int hiveId){
+    public Hive fetchHiveMetaData(int hiveId){
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hiveId+""};
 
@@ -153,7 +153,7 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
                 null               // The sort order
         );
         if(!hiveCursor.moveToNext()){
-            return null;// TODO check for null
+            return null;
         }
         int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
         String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));

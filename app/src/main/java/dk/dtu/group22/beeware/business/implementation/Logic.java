@@ -537,19 +537,30 @@ public class Logic {
         return midnight;
     }
 
-    public void updateHive(Hive hive) {
-        cachingManager.updateHive(hive);
+    public void updateHiveMetaData(Hive hive) {
+        cachingManager.updateHiveMetaData(hive);
     }
 
     public Hive getCachedHiveWithinPeriod(int hiveId, Timestamp from, Timestamp to) {
         return cachingManager.getCachedHiveWithinPeriod(hiveId, from, to);
     }
 
-    public void downloadOldDataInBackground(int id)throws IOException, NoDataAvailableOnHivetoolException
+    public void downloadOldDataInBackground(int id)throws IOException
+            //, NoDataAvailableOnHivetoolException
             //, AccessLocalFileException
     {
-        // TODO check if download data is finished
-        cachingManager.downloadOldDataInBackground(id);
+        // check if download data is finished
+        Hive hive = cachingManager.fetchHiveMetaData(id);
+        if(!hive.isCachingFinished()){
+            try {
+                cachingManager.downloadOldDataInBackground(id);
+            } catch (NoDataAvailableOnHivetoolException e){
+                // When NoDataAvailable is thrown, so it means that no more data is on HiveTool
+                // and caching is done.
+                hive.setCachingFinished(true);
+                cachingManager.updateHiveMetaData(hive);
+            }
+        }
     }
 
     class HivesToSubscribeNoFound extends RuntimeException {
@@ -605,14 +616,14 @@ public class Logic {
         }
     }
 
-    public void setIsConfigured(int id, boolean conf) // throws AccessLocalFileException
-    {
-        Hive hive = cachingManager.getCachedHive(id);
-        hive.setHasBeenConfigured(conf); // FIXME update weightIndicator and tempIndicator values in SQLite.
-
-
-        //cachingManager.writeToFile(hive);
-    }
+//    public void setIsConfigured(int id, boolean conf) // throws AccessLocalFileException
+//    {
+//        Hive hive = cachingManager.getCachedHive(id);
+//        hive.setHasBeenConfigured(conf); // update weightIndicator and tempIndicator values in SQLite.
+//
+//
+//        //cachingManager.writeToFile(hive);
+//    }
 
     public NameIdPair getCachedNameIdPair(int hiveId){
         return subscriptionManager.getCachedNameIdPair(hiveId);

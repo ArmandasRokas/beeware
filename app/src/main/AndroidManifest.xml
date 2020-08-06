@@ -37,8 +37,6 @@
 
         <activity android:name=".business.implementation.GraphViewModel" />
 
-        <activity android:name=".presentation.TesterHiveTool" />
-
         <receiver
             android:name=".dal.dao.implementation.NotificationBroadcaster"
             android:exported="true">

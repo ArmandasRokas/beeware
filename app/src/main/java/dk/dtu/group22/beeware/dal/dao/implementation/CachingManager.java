@@ -57,7 +57,7 @@ public class CachingManager {
           if(this.ctx != null){
               repo = new CachedHiveRepoSQLImpl(this.ctx);
           } else {
-              // FIXME Throw exception
+              throw new IllegalArgumentException("Context is null");
           }
         }
     }
@@ -267,7 +267,7 @@ public class CachingManager {
 //        }
 //    }
 
-    public void updateHive(Hive hive) {
+    public void updateHiveMetaData(Hive hive) {
         initRepo();
         repo.updateHiveMetaData(hive);
     }
@@ -279,7 +279,7 @@ public class CachingManager {
 //        System.out.println("downloadOldDataInBackground: Starting background download.");
          initRepo();
         List<Measurement> minMaxMeasurements = repo.fetchMinMaxMeasurementsByTimestamp(id);
-     //   Timestamp endDate = new Timestamp(System.currentTimeMillis()); // FIXME start date last cached
+     //   Timestamp endDate = new Timestamp(System.currentTimeMillis()); // start date last cached
         Timestamp endDate = minMaxMeasurements.get(0).getTimestamp();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(endDate.getTime());
@@ -312,8 +312,14 @@ public class CachingManager {
                 //cal.add(Calendar.MONTH, -2);
                 cal.add(Calendar.DATE, -7); // substract 7 days
                 startDate = new Timestamp(cal.getTimeInMillis());
-            } catch (NoDataAvailableOnHivetoolException e){
-                // TODO eat this exception here. And set boolean isOldDataDownloadFinished = true
+            }
+            catch (NoDataAvailableOnHivetoolException e){
+                // When NoDataAvailable is thrown, so it means that no more data is on HiveTool
+                // and caching is done.
+//                Hive hive = repo.fetchHiveMetaData(id);
+//                hive.setCachingFinished(true);
+//                repo.updateHiveMetaData(hive);
+                //  eat this exception here. And set boolean isOldDataDownloadFinished = true
              //   backgroundDownloadInProgress = false;
                 System.out.printf("downloadHiveData: No data available on hivetool to download hive data for hive " +
                         id + " from" + a + " to " + b + ".");
@@ -362,5 +368,9 @@ public class CachingManager {
     public Hive getHiveWithMostRecentData(int id, long timeDelta) {
         initRepo();
         return repo.getHiveWithMostRecentData(id, timeDelta);
+    }
+
+    public Hive fetchHiveMetaData(int hiveId){
+        return repo.fetchHiveMetaData(hiveId);
     }
 }

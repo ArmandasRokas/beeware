@@ -223,7 +223,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             failedToGetHive.show();
             e.printStackTrace();
         }*/
-      logic.updateHive(hive);
+      logic.updateHiveMetaData(hive);
 
         //if (hive.getHasBeenConfigured() == false) {
         //}
