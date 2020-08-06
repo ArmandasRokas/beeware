@@ -25,6 +25,16 @@ public class Hive implements Serializable, Comparable<Hive> {
     private int weightIndicator = 15;
     private int tempIndicator = 30;
     private boolean hasBeenConfigured = false;
+    private boolean isCachingFinished = false;
+
+
+    public boolean isCachingFinished() {
+        return isCachingFinished;
+    }
+
+    public void setCachingFinished(boolean cachingFinished) {
+        isCachingFinished = cachingFinished;
+    }
 
     public void setId(int id) {
         this.id = id;

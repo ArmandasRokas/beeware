@@ -1,20 +1,11 @@
 package dk.dtu.group22.beeware.dal.dao.implementation;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.core.util.Pair;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -278,7 +269,7 @@ public class CachingManager {
 
     public void updateHive(Hive hive) {
         initRepo();
-        repo.updateHive(hive);
+        repo.updateHiveMetaData(hive);
     }
 
     public void downloadOldDataInBackground(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException

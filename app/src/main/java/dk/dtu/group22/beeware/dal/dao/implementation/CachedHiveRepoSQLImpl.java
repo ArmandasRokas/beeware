@@ -33,8 +33,6 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         return dbHelper;
     }
 
-    // TODO updateHiveConfigurations(Hive hive) maybe not anymore. updateHive is enough
-
     @Override
     public Hive getCachedHiveWithAllData(int hiveId) {
 
@@ -161,27 +159,30 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
         String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
         int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
         int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
+        boolean returnedCachingFinished = (hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_IS_CACHING_FINISHED)) == 1);
         hiveCursor.close();
 
         Hive hiveToReturn = new Hive(returnedHiveId, returnedHiveName);
         hiveToReturn.setWeightIndicator(returnedWeightIndicator);
         hiveToReturn.setTempIndicator(returnedTempIndicator);
-
+        hiveToReturn.setCachingFinished(returnedCachingFinished);
         return  hiveToReturn;
     }
 
     @Override
-    public void updateHive(Hive hive) { // TODO change to be update hive configuration, not measurements
+    public void updateHiveMetaData(Hive hive) {
        // SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hive.getId()+""};
-        int deletedRows = writable.delete(HiveEntry.TABLE_HIVE_MEASUREMENT, selection, selectionArgs);
+       // int deletedRows = writable.delete(HiveEntry.TABLE_HIVE_MEASUREMENT, selection, selectionArgs);
      //   System.out.println("deletedRows" + deletedRows);
-        insertHiveMeasurements(hive);
+        //insertHiveMeasurements(hive);
         // Update indicators
         ContentValues indicators = new ContentValues();
         indicators.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR, hive.getWeightIndicator());
         indicators.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());
+        indicators.put(HiveEntry.COLUMN_NAME_HIVE_IS_CACHING_FINISHED, hive.isCachingFinished() ? 1 : 0);
+
         int count = writable.update(
                 HiveEntry.TABLE_HIVE,
                 indicators,
@@ -321,6 +322,7 @@ final class HiveReaderContract {
         public static final String COLUMN_NAME_HIVE_TEMP_C_OUT = "hive_temp_c_out";
         public static final String COLUMN_NAME_HIVE_HUM = "hive_hum";
         public static final String COLUMN_NAME_HIVE_ILLUM = "hive_illum";
+        public static final String COLUMN_NAME_HIVE_IS_CACHING_FINISHED = "hive_is_caching_finished";
     }
 }
 class HiveReaderDbHelper extends SQLiteOpenHelper {
@@ -346,7 +348,8 @@ class HiveReaderDbHelper extends SQLiteOpenHelper {
                     HiveEntry.COLUMN_NAME_HIVE_ID + " INTEGER PRIMARY KEY," +
                     HiveEntry.COLUMN_NAME_HIVE_NAME + " TEXT,"+
                     HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR + " INTEGER," +
-                    HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR + " INTEGER" +
+                    HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR + " INTEGER," +
+                    HiveEntry.COLUMN_NAME_HIVE_IS_CACHING_FINISHED + " INTEGER DEFAULT 0 " +
                     ")";
 
     private static final String SQL_DELETE_HIVE_MEASUREMENT_TABLE =

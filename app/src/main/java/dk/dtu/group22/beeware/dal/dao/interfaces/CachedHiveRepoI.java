@@ -8,16 +8,50 @@ import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public interface CachedHiveRepoI {
 
+    /**
+     * @param hiveId valid hive id
+     * @return returns hive with all meta data and measurements
+     */
     Hive getCachedHiveWithAllData(int hiveId);
 
+    /**
+     * Creates a new hive in cache
+     * @param hive hive with all meta data and measurements
+     */
     void createCachedHive(Hive hive);
 
-    void updateHive(Hive hive);
+    /**
+     * Updates only hive meta data, but not measurements.
+     * In order to store new measurements use
+     * saveNewMeasurements(Hive hive, List<Measurement> measurements)
+     * @param hive updated hive
+     */
+    void updateHiveMetaData(Hive hive);
 
+    /**
+     * Use this method to cache new measurements which
+     * has not been cached before.
+     * @param hive Hive with id in order to identify hive
+     * @param measurements new measurements which need to be cached
+     */
     void saveNewMeasurements(Hive hive, List<Measurement> measurements);
 
+    /**
+     * @param id valid hive id
+     * @param since since timestamp
+     * @param until until timestamp
+     * @return hive with meta data and measurements within since and until
+     */
     Hive getHiveWithinPeriod(int id, Timestamp since, Timestamp until);
 
+    /**
+     * Use this method when you don't know which period of a hive was
+     * cached.
+     * @param hiveId valid hive id.
+     * @return returns List<Measurement> of two elements.
+     * Index 0: a measurement with the minimum timestamp in the cache
+     * Index 1: a measurement with the maximum timestamp in the cache
+     */
     List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId);
 
     /**
