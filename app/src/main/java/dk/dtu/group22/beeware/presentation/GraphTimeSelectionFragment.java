@@ -192,12 +192,18 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     }
 
     public void updateFromDate(){
-        // TODO "Caching is done". In both basic and advanced.
         List<Measurement> minMaxMeasurements = logic.fetchMinMaxMeasurementsByTimestamp(hiveid);
         //  Timestamp availableFromDate = minMaxMeasurements.get(0).getTimestamp();
         Timestamp availableFromDate = new Timestamp(minMaxMeasurements.get(0).getTimestamp().getTime() + 1000*60*60*24); // Adds one day just in case
-        String availableFromDateText = getString(R.string.AvailableFromDate) +" " + availableFromDate.toString().substring(0,10) +
-                "\n " + getString(R.string.ThisDataIsStillDownloading);
+
+        String availableFromDateText = "";
+        if(logic.isBackgroundDownloadInProgress()){
+            availableFromDateText +=  getString(R.string.ThisDataIsStillDownloading);
+        } else {
+            availableFromDateText += getString(R.string.DownloadingIsFinished);
+        }
+        availableFromDateText += "\n" + getString(R.string.AvailableFromDate) +" " + availableFromDate.toString().substring(0,10) ;
+
         availableFromDateTV.setText(availableFromDateText);
     }
 
