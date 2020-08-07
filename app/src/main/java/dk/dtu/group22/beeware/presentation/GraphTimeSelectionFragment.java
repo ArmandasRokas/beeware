@@ -21,13 +21,16 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
+import java.util.List;
 import dk.dtu.group22.beeware.R;
+import dk.dtu.group22.beeware.business.implementation.Logic;
+import dk.dtu.group22.beeware.dal.dto.Measurement;
 
 public class GraphTimeSelectionFragment extends DialogFragment implements View.OnClickListener {
     private Fragment calendarFragment;
-    private TextView fromDate, toDate, viewPeriod, resetButton;
+    private TextView viewPeriod; //fromDate, toDate, , resetButton
     private TextView settingsButton;
+    private TextView availableFromDateTV;
    // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
@@ -37,6 +40,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     private int hiveid;
     private NumberPicker periodPicker;
     private String[] periods;
+    private Logic logic = Logic.getSingleton();
+    private Thread updateAvailableDateFrom;
 
     // Default empty constructor
     public GraphTimeSelectionFragment() {
@@ -59,20 +64,61 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        hiveid = getArguments().getInt("hiveID", 0);
+        long givenFromDate = this.getArguments().getLong("selected1");
+        long givenToDate = this.getArguments().getLong("selected2");
+        spinnerItem = this.getArguments().getInt("spinnerItem");
+/*
+        List<Measurement> minMaxMeasurements = logic.fetchMinMaxMeasurementsByTimestamp(hiveid);
+      //  Timestamp availableFromDate = minMaxMeasurements.get(0).getTimestamp();
+        Timestamp availableFromDate = new Timestamp(minMaxMeasurements.get(0).getTimestamp().getTime() + 1000*60*60*24); // Adds one day just in case
+        String availableFromDateText = getString(R.string.AvailableFromDate) +" " + availableFromDate.toString().substring(0,10) +
+                "\n " + getString(R.string.ThisDataIsStillDownloading);
+*/
+
+        updateAvailableDateFrom = new Thread (){
+            @Override
+            public void run() {
+                try {
+//                while (!updateAvailableDateFrom.isInterrupted()) {
+                    while (!isInterrupted()) {
+                        System.out.println("Thread is running");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateFromDate();
+                            }
+                        });
+                        // TODO updateAvailableDateFrom.interrupt(); if downloading is finished
+                        if(!logic.isBackgroundDownloadInProgress()){
+                            interrupt();
+                        }
+                        Thread.sleep(3000);
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println("Interrupted");
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+
+
+        updateAvailableDateFrom.start();
 
         // Initialisation
-        fromDate = view.findViewById(R.id.newTime_from_text);
-        toDate = view.findViewById(R.id.newTime_to_text);
+    //    fromDate = view.findViewById(R.id.newTime_from_text);
+//        toDate = view.findViewById(R.id.newTime_to_text);
        // spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         settingsButton = view.findViewById(R.id.newTime_settings);
-        resetButton = view.findViewById(R.id.newTimeResetButton);
-        // FIXME below
-        fromDate.setVisibility(View.INVISIBLE);
-        toDate.setVisibility(View.INVISIBLE);
-        resetButton.setVisibility(View.INVISIBLE);
+//        resetButton = view.findViewById(R.id.newTimeResetButton);
+        availableFromDateTV = view.findViewById(R.id.availableFromDateTV);
+//        fromDate.setVisibility(View.INVISIBLE);
+//        toDate.setVisibility(View.INVISIBLE);
+//        resetButton.setVisibility(View.INVISIBLE);
 
-        fromDate.setOnClickListener(this);
+
+    //    fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(view1 -> {
             GraphTimeAdvancedSelectionFrag gts = new GraphTimeAdvancedSelectionFrag();
@@ -98,19 +144,16 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
             }, 100);
         });
 
-        resetButton.setOnClickListener(this);
+//        resetButton.setOnClickListener(this);
 
-        hiveid = getArguments().getInt("hiveID", 0);
+
 
         // Set starting from and to date or just to date
-        long givenFromDate = this.getArguments().getLong("selected1");
-        long givenToDate = this.getArguments().getLong("selected2");
-        spinnerItem = this.getArguments().getInt("spinnerItem");
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
+//        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
         if (givenFromDate != 0L && givenToDate != 0L) {
             skipTwice = 0;
-            fromDate.setText(dateFormat.format(givenFromDate));
-            toDate.setText(dateFormat.format(givenToDate));
+//            fromDate.setText(dateFormat.format(givenFromDate));
+//            toDate.setText(dateFormat.format(givenToDate));
             selectedDate = givenFromDate;
             spinnerSelection = givenToDate - givenFromDate;
         }
@@ -148,6 +191,16 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         //   spinnerHandler(); // FIXME
     }
 
+    public void updateFromDate(){
+        // TODO "Caching is done". In both basic and advanced.
+        List<Measurement> minMaxMeasurements = logic.fetchMinMaxMeasurementsByTimestamp(hiveid);
+        //  Timestamp availableFromDate = minMaxMeasurements.get(0).getTimestamp();
+        Timestamp availableFromDate = new Timestamp(minMaxMeasurements.get(0).getTimestamp().getTime() + 1000*60*60*24); // Adds one day just in case
+        String availableFromDateText = getString(R.string.AvailableFromDate) +" " + availableFromDate.toString().substring(0,10) +
+                "\n " + getString(R.string.ThisDataIsStillDownloading);
+        availableFromDateTV.setText(availableFromDateText);
+    }
+
     /**
      * Updates the fromDate based on the time period selected in the spinner.
      */
@@ -159,8 +212,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     //                (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
     //            fromDate.setText(dateFormat.format(selectedDate));
    //         } else {
-                fromDate.setText(dateFormat
-                        .format(calendarObj.getTimeInMillis() - spinnerSelection));
+//                fromDate.setText(dateFormat
+//                        .format(calendarObj.getTimeInMillis() - spinnerSelection));
                 selectedDate = calendarObj.getTimeInMillis() - spinnerSelection;
     //        }
         }
@@ -189,8 +242,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         if (selectedDate > (calendarObj.getTimeInMillis() - spinnerSelection)) {
             // If the selected date is closer to 'today' when the spinner says it should not be
             selectedDate = calendarObj.getTimeInMillis() - spinnerSelection;
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-            fromDate.setText(dateFormat.format(selectedDate));
+//            DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
+//            fromDate.setText(dateFormat.format(selectedDate));
         } else {
             // If it is not closer to 'today' then send where it is at so the calendar fragment
             // can show it.
@@ -207,26 +260,27 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
      */
     @Override
     public void onClick(View v) {
-        if (v == fromDate) {
-            // User wants to see calendar to change date
-            if (calendarFragment != null) {
-                // If the user wants to close the shown calendar
-                getChildFragmentManager().beginTransaction().remove(calendarFragment).commit();
-                calendarFragment = null;
-            } else {
-                // If the user wants to open the calendar
-                Bundle bundle = new Bundle();
-                calendarFragment = new GraphTimeCalendarFragment();
-                bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
-                bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
-                if (selectedDate != 0L) {
-                    bundle.putLong("selected", selectedDate);
-                }
-                calendarFragment.setArguments(bundle);
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
-            }
-        } else if (v == viewPeriod) {
+//        if (v == fromDate) {
+//            // User wants to see calendar to change date
+//            if (calendarFragment != null) {
+//                // If the user wants to close the shown calendar
+//                getChildFragmentManager().beginTransaction().remove(calendarFragment).commit();
+//                calendarFragment = null;
+//            } else {
+//                // If the user wants to open the calendar
+//                Bundle bundle = new Bundle();
+//                calendarFragment = new GraphTimeCalendarFragment();
+//                bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
+//                bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
+//                if (selectedDate != 0L) {
+//                    bundle.putLong("selected", selectedDate);
+//                }
+//                calendarFragment.setArguments(bundle);
+//                getChildFragmentManager().beginTransaction()
+//                        .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
+//            }
+//        } else
+            if (v == viewPeriod) {
             // User wants to close fragment and see the updated time period
             ((Graph) getActivity())
                     .setPeriod(selectedDate, (selectedDate + spinnerSelection), spinnerItem);
@@ -241,13 +295,13 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
 //            fragment.setArguments(bundle);
 //            fragment.show(getFragmentManager(), "configurationDialog");
         }
-        else if (v == resetButton) {
-            spinnerSelection = 0;
-            selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
-            spinnerItem = 0;
-            skipTwice = 3;
-           // spinnerHandler(); FIXME
-        }
+//        else if (v == resetButton) {
+//            spinnerSelection = 0;
+//            selectedDate = calendarObj.getTimeInMillis() - DateUtils.WEEK_IN_MILLIS;
+//            spinnerItem = 0;
+//            skipTwice = 3;
+//           // spinnerHandler();
+//        }
     }
 
     /**
@@ -308,8 +362,16 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
      */
     public void setSelectedDate(long selectedDate) {
         this.selectedDate = selectedDate;
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-        fromDate.setText(dateFormat.format(selectedDate));
-        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
+//        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
+//        fromDate.setText(dateFormat.format(selectedDate));
+//        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(updateAvailableDateFrom!=null){
+            updateAvailableDateFrom.interrupt();
+        }
     }
 }

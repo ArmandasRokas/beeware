@@ -41,6 +41,7 @@ public class Logic {
     private final static Logic logic = new Logic();
     private List<String> notFetchedHivesFromNetwork = new LinkedList<>();
     private List<String> notFetchedCachedHives = new LinkedList<>();
+    private boolean backgroundDownloadInProgress = false;
 
 
     /**
@@ -553,14 +554,33 @@ public class Logic {
         Hive hive = cachingManager.fetchHiveMetaData(id);
         if(!hive.isCachingFinished()){
             try {
+                backgroundDownloadInProgress = true;
                 cachingManager.downloadOldDataInBackground(id);
+                backgroundDownloadInProgress = false;
             } catch (NoDataAvailableOnHivetoolException e){
                 // When NoDataAvailable is thrown, so it means that no more data is on HiveTool
                 // and caching is done.
+                backgroundDownloadInProgress = false;
                 hive.setCachingFinished(true);
                 cachingManager.updateHiveMetaData(hive);
+            }  catch (IOException e) {
+                backgroundDownloadInProgress = false;
+                e.printStackTrace();
+                throw new IOException(e.getMessage());
             }
         }
+    }
+
+    public List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId) {
+        return cachingManager.fetchMinMaxMeasurementsByTimestamp(hiveId);
+    }
+
+    public boolean isBackgroundDownloadInProgress() {
+        return backgroundDownloadInProgress;
+    }
+
+    public void setBackgroundDownloadInProgress(boolean inProgress) {
+        this.backgroundDownloadInProgress = inProgress;
     }
 
     class HivesToSubscribeNoFound extends RuntimeException {

@@ -53,9 +53,10 @@
     <string name="Sunlight">Sunlight</string>
     <string name="Humidity">Humidity</string>
     <string name="CouldNotLoadHiveData">Could not load hive data.</string>
-    <string name="ThisDataIsStillDownloading">This data is still downloading.</string>
+    <string name="ThisDataIsStillDownloading">This data is still downloading…</string>
     <string name="LackingData">Parts of the period may not have any data.</string>
     <string name="FailedToGetHive">Could not get hive data.</string>
+    <string name="AvailableFromDate">Data available from: </string>
 
     <!-- Subscribe menu -->
     <string name="active">Active</string>

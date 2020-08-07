@@ -28,7 +28,7 @@ public class GraphViewModel extends ViewModel {
     private int timeDelta = 1000 * 3600 * 24 * 7;
     private Timestamp toDate = new Timestamp(new Date().getTime());
     private Timestamp fromDate = new Timestamp(toDate.getTime() - timeDelta);
-    private boolean backgroundDownloadInProgress = false;
+//    private boolean backgroundDownloadInProgress = false;
 
     // State of visibility
     private boolean weightLineVisible = true, temperatureLineVisible = false,
@@ -57,26 +57,26 @@ public class GraphViewModel extends ViewModel {
      * @param id
      * ID of hive to download
      */
-    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
-     {
-        fromDate = roundDateToMidnight(fromDate);
-        try{
-            hive = logic.getHiveNetworkAndSetCurrValues(id, fromDate, new Timestamp(System.currentTimeMillis()));
-                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
-                        id + " from" + fromDate + " to " + toDate + ".");
-        } catch (NoDataAvailableOnHivetoolException e){
-            backgroundDownloadInProgress = false;
-            Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
-                    id + " from" + fromDate + " to " + toDate + ".");
-            throw new NoDataAvailableOnHivetoolException(e.getMessage());
-        }
-        catch (IOException e){
-                Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
-                        id + " from" + fromDate + " to " + toDate + ".");
-                hive = logic.getCachedHive(id); // fetch a cached hive instead.
-                throw new IOException(e.getMessage());
-        }
-    }
+//    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
+//     {
+//        fromDate = roundDateToMidnight(fromDate);
+//        try{
+//            hive = logic.getHiveNetworkAndSetCurrValues(id, fromDate, new Timestamp(System.currentTimeMillis()));
+//                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
+//                        id + " from" + fromDate + " to " + toDate + ".");
+//        } catch (NoDataAvailableOnHivetoolException e){
+//            backgroundDownloadInProgress = false;
+//            Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
+//                    id + " from" + fromDate + " to " + toDate + ".");
+//            throw new NoDataAvailableOnHivetoolException(e.getMessage());
+//        }
+//        catch (IOException e){
+//                Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
+//                        id + " from" + fromDate + " to " + toDate + ".");
+//                hive = logic.getCachedHive(id); // fetch a cached hive instead.
+//                throw new IOException(e.getMessage());
+//        }
+//    }
 
     /**
      * Downloads hive data for one year back in background, updates local object.
@@ -89,21 +89,21 @@ public class GraphViewModel extends ViewModel {
     public void downloadOldDataInBackground(int id) throws IOException//, NoDataAvailableOnHivetoolException//, AccessLocalFileException
      {
 
-        backgroundDownloadInProgress = true;
+//        backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
-        try{
+      //  try{
             logic.downloadOldDataInBackground(id);
-            backgroundDownloadInProgress = false;
-        } //catch (NoDataAvailableOnHivetoolException e){
+//            backgroundDownloadInProgress = false;
+      //  } //catch (NoDataAvailableOnHivetoolException e){
          //   backgroundDownloadInProgress = false;
        //     e.printStackTrace();
       //      throw new NoDataAvailableOnHivetoolException(e.getMessage());
       //  }
-        catch (IOException e) {
-            backgroundDownloadInProgress = false;
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
+//        catch (IOException e) {
+//            backgroundDownloadInProgress = false;
+//            e.printStackTrace();
+//            throw new IOException(e.getMessage());
+//        }
         Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
 
 //        Timestamp endDate = new Timestamp(System.currentTimeMillis());
@@ -544,7 +544,10 @@ public class GraphViewModel extends ViewModel {
     }
 
     public boolean isBackgroundDownloadInProgress() {
-        return backgroundDownloadInProgress;
+        return logic.isBackgroundDownloadInProgress();
+    }
+    public void setBackgroundDownloadInProgress(boolean inProgress) {
+        logic.setBackgroundDownloadInProgress(inProgress);
     }
 
 }

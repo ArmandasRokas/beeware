@@ -799,6 +799,7 @@ public class Graph extends CustomActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             hideProgressBar();
+            graphViewModel.setBackgroundDownloadInProgress(false);
             // Check if the activity is closed, when Async call is finished. If yes, not display delayed toasts.
             if(getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED){
                 toastPast.cancel();
@@ -826,6 +827,7 @@ public class Graph extends CustomActivity {
 
     @Override
     protected void onStop() {
+        graphViewModel.setBackgroundDownloadInProgress(false);
         downloadBGAsyncTask.cancel(true);
         toastPast.cancel();
         toastLatest.cancel();

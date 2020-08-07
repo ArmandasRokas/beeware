@@ -373,4 +373,8 @@ public class CachingManager {
     public Hive fetchHiveMetaData(int hiveId){
         return repo.fetchHiveMetaData(hiveId);
     }
+
+    public List<Measurement> fetchMinMaxMeasurementsByTimestamp(int hiveId) {
+        return repo.fetchMinMaxMeasurementsByTimestamp(hiveId);
+    }
 }
