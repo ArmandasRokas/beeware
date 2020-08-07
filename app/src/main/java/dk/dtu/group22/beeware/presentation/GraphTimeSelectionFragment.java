@@ -88,7 +88,6 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                                 updatePeriodPicker();
                             }
                         });
-                        // TODO updateAvailableDateFrom.interrupt(); if downloading is finished
                         if(!logic.isBackgroundDownloadInProgress()){
                             interrupt();
                         }
@@ -187,7 +186,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
 //        });
 
 
-        //   spinnerHandler(); // FIXME
+        //   spinnerHandler();
     }
 
     public void updatePeriodPicker(){
@@ -216,6 +215,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         periodPicker.setOnValueChangedListener((numberPicker, i, i1) -> {
             spinnerItem = numberPicker.getValue();
             switch (spinnerItem) {
+                // case 0:
+                // spinnerSelection = availablePeriod;
                 case 0:
                     spinnerSelection = DateUtils.WEEK_IN_MILLIS; // 1 week
                     break;
@@ -232,8 +233,9 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                     spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
                     break;
             }
-            setFromDate();
-            setSelectedFromDate(selectedFromDate);
+            selectedFromDate = calendarObj.getTimeInMillis() - spinnerSelection;
+            //setFromDate();
+            //setSelectedFromDate(selectedFromDate);
         });
     }
 
@@ -256,20 +258,20 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     /**
      * Updates the fromDate based on the time period selected in the spinner.
      */
-    public void setFromDate() {
-        if (calendarFragment == null) {
-        //} else {
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-    //        if (selectedDate != 0L && // Should be always used the selected period from the current date
-    //                (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
-    //            fromDate.setText(dateFormat.format(selectedDate));
-   //         } else {
-//                fromDate.setText(dateFormat
-//                        .format(calendarObj.getTimeInMillis() - spinnerSelection));
-                selectedFromDate = calendarObj.getTimeInMillis() - spinnerSelection;
-    //        }
-        }
-    }
+//    public void setFromDate() {
+//        if (calendarFragment == null) {
+//        //} else {
+////            DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
+//    //        if (selectedDate != 0L && // Should be always used the selected period from the current date
+//    //                (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
+//    //            fromDate.setText(dateFormat.format(selectedDate));
+//   //         } else {
+////                fromDate.setText(dateFormat
+////                        .format(calendarObj.getTimeInMillis() - spinnerSelection));
+//                selectedFromDate = calendarObj.getTimeInMillis() - spinnerSelection;
+//    //        }
+//        }
+//    }
 
     /**
      * Creates the CalendarFragment after moving the selected date to the last possible date. A
@@ -411,17 +413,17 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
 //        });
 //    }
 
-    /**
-     * Set by the calendar fragment, and when the spinner changes. Updates the fromDate and toDate
-     * according to period and start date.
-     * @param  selectedFromDate
-     */
-    public void setSelectedFromDate(long selectedFromDate) {
-        this.selectedFromDate = selectedFromDate;
-//        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-//        fromDate.setText(dateFormat.format(selectedDate));
-//        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
-    }
+//    /**
+//     * Set by the calendar fragment, and when the spinner changes. Updates the fromDate and toDate
+//     * according to period and start date.
+//     * @param  selectedFromDate
+//     */
+//    public void setSelectedFromDate(long selectedFromDate) {
+//        this.selectedFromDate = selectedFromDate;
+////        DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
+////        fromDate.setText(dateFormat.format(selectedDate));
+////        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
+//    }
 
     @Override
     public void onDestroyView() {
