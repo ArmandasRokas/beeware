@@ -249,7 +249,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     }
 
     private int getPickerMaxValue(long availablePeriod) {
-        int maxValue = 0;
+        int maxValue = 1;
         for(int i = 0; i < periodsLong.length; i++){
             if(availablePeriod > periodsLong[i]){
                 maxValue = i+1;
