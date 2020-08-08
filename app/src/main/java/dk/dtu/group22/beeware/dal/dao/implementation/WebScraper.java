@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,9 +93,9 @@ public class WebScraper {
      //   if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
      //       throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
      //   }
-        // If there is more than 9 days between requested timeinterval, it is assumed that there is no the data
+        // If there is more than 30 days between requested timeinterval, it is assumed that there is no the data
         // until this time point and stop downloading.
-        if(untilTime.getTime() - sinceTime.getTime() > 1000*9*24*60*60 ){
+        if(untilTime.getTime() - sinceTime.getTime() > 1000*30*24*60*60L ){
             throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
         }
         //Calculates number of days
@@ -105,6 +106,7 @@ public class WebScraper {
         String untilStr = untilTime.toString().split(" ")[0];
         String untilHours = untilTime.toString().split(" ")[1].split(":")[0];
         String untilMins = untilTime.toString().split(" ")[1].split(":")[1];
+        System.out.println("WebScrapper since: "+ sinceStr + ", until: " + untilStr);
         Document doc = null;
             String url = "http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
                     hiveID + "&start_time=" +
