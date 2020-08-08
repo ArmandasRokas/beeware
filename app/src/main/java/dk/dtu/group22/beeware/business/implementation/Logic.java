@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -145,7 +146,7 @@ public class Logic {
         long now = System.currentTimeMillis();
         long since = now - (86400000 * daysDelta);
         List<Integer> subscribedHives = this.getSubscriptionIDs();
-        List<Hive> hivesWithMeasurements = new ArrayList<>();
+        List<Hive> hivesWithMeasurements = Collections.synchronizedList(new ArrayList<>());
         List<Thread> threads = new ArrayList<>();
         for (int id : subscribedHives) {
             Runnable runnable = () -> {

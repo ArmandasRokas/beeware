@@ -28,6 +28,7 @@
     <string name="ViewPeriod">VIEW PERIOD</string>
     <string name="ResetButton">RESET</string>
     <string-array name="time_period">
+        <item>All</item>
         <item>1 week</item>
         <item>1 month</item>
         <item>3 months</item>

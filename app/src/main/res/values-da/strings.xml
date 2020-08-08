@@ -11,6 +11,7 @@
     <string name="ViewPeriod">SE PERIODE</string>
     <string name="ResetButton">NULSTIL</string>
     <string-array name="time_period">
+        <item>Hele</item>
         <item>1 uge</item>
         <item>1 måned</item>
         <item>3 måneder</item>

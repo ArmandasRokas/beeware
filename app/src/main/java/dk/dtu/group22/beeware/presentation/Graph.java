@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -34,21 +35,15 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import dk.dtu.group22.beeware.R;
 import dk.dtu.group22.beeware.business.implementation.CustomActivity;
 import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
-import dk.dtu.group22.beeware.business.implementation.Logic;
-import dk.dtu.group22.beeware.dal.dao.implementation.NoDataAvailableOnHivetoolException;
 
 import static java.util.Arrays.asList;
 
@@ -185,9 +180,10 @@ public class Graph extends CustomActivity {
                                 bundle.putLong("selected2", toDate);
                                 bundle.putInt("spinnerItem", spinnerItem);
                             } else {
-                                bundle.putLong("selected1", 0L);
-                                bundle.putLong("selected2", 0L);
-                                bundle.putInt("spinnerItem", 0);
+                                // Default 1 week period when nothing is selected
+                                bundle.putLong("selected1", System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS);
+                                bundle.putLong("selected2",  System.currentTimeMillis() );
+                                bundle.putInt("spinnerItem", 1);
                             }
                             gts.setArguments(bundle);
                             gts.show(getSupportFragmentManager(), "timeDialog");

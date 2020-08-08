@@ -31,8 +31,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
    // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
-    private long selectedFromDate = 0L;
-    private int spinnerItem = 0;
+    private long selectedFromDate;
+    private int spinnerItem;
     private int skipTwice = 3;
     private int hiveid;
     private NumberPicker periodPicker;
@@ -40,6 +40,12 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     private Logic logic = Logic.getSingleton();
     private Thread updateAvailableDateFrom;
     private Timestamp availableFromDate;
+    final long[] periodsLong = {
+            DateUtils.WEEK_IN_MILLIS,
+            DateUtils.YEAR_IN_MILLIS / 12,
+            DateUtils.YEAR_IN_MILLIS / 12 * 3,
+            DateUtils.YEAR_IN_MILLIS / 12 * 6,
+            DateUtils.YEAR_IN_MILLIS};
 
     // Default empty constructor
     public GraphTimeSelectionFragment() {
@@ -190,22 +196,24 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     }
 
     public void updatePeriodPicker(){
-        int maxValue = 0;
+//        int maxValue = 1;
         long availablePeriod = System.currentTimeMillis() - availableFromDate.getTime();
-        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12){
-            maxValue = 1;
-        }
-        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12 * 3){
-            maxValue = 2;
-        }
-        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12 * 6){
-            maxValue = 3;
-        }
-        if(availablePeriod > DateUtils.YEAR_IN_MILLIS){
-            maxValue = 4;
-        }
+        int maxValue = getPickerMaxValue(availablePeriod);
+
+//        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12){
+//            maxValue = 2;
+//        }
+//        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12 * 3){
+//            maxValue = 3;
+//        }
+//        if(availablePeriod > DateUtils.YEAR_IN_MILLIS / 12 * 6){
+//            maxValue = 4;
+//        }
+//        if(availablePeriod > DateUtils.YEAR_IN_MILLIS){
+//            maxValue = 5;
+//        }
         periods = getResources().getStringArray(R.array.time_period);
-        periods = Arrays.copyOf(periods, periods.length-(4-maxValue));
+        periods = Arrays.copyOf(periods, periods.length-(5-maxValue));
         periodPicker.setDisplayedValues(periods);
 
         periodPicker.setMinValue(0);
@@ -215,28 +223,39 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         periodPicker.setOnValueChangedListener((numberPicker, i, i1) -> {
             spinnerItem = numberPicker.getValue();
             switch (spinnerItem) {
-                // case 0:
-                // spinnerSelection = availablePeriod;
                 case 0:
-                    spinnerSelection = DateUtils.WEEK_IN_MILLIS; // 1 week
+                    spinnerSelection = availablePeriod;
                     break;
                 case 1:
-                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12; // 1 month
+                    spinnerSelection = periodsLong[0]; // 1 week
                     break;
                 case 2:
-                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 3; // 3 months
+                    spinnerSelection = periodsLong[1]; // 1 month
                     break;
                 case 3:
-                    spinnerSelection = DateUtils.YEAR_IN_MILLIS / 12 * 6; // 6 months
+                    spinnerSelection = periodsLong[2]; // 3 months
                     break;
                 case 4:
-                    spinnerSelection = DateUtils.YEAR_IN_MILLIS; // 1 year
+                    spinnerSelection = periodsLong[3]; // 6 months
+                    break;
+                case 5:
+                    spinnerSelection = periodsLong[4]; // 1 year
                     break;
             }
             selectedFromDate = calendarObj.getTimeInMillis() - spinnerSelection;
             //setFromDate();
             //setSelectedFromDate(selectedFromDate);
         });
+    }
+
+    private int getPickerMaxValue(long availablePeriod) {
+        int maxValue = 0;
+        for(int i = 0; i < periodsLong.length; i++){
+            if(availablePeriod > periodsLong[i]){
+                maxValue = i+1;
+            }
+        }
+        return maxValue;
     }
 
     public void updateFromDate(){
