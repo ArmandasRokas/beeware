@@ -78,6 +78,7 @@ public class Graph extends CustomActivity {
     private Context ctx;
     private Display display;
     private Point size;
+    private boolean isLastSelectionFragmentBasic = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +176,14 @@ public class Graph extends CustomActivity {
                         distanceX = event.getRawX()-startRawX;
                         distanceY = event.getRawY()-startRawY;
                         if (Math.abs(distanceX)< 10 && Math.abs(distanceY)<10){
-                            GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
+                            if(isLastSelectionFragmentBasic){
+                                GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
+                                gts.show(getSupportFragmentManager(), "timeDialog");
+                            } else {
+                                GraphTimeAdvancedSelectionFrag gts = new GraphTimeAdvancedSelectionFrag();
+                                gts.show(getSupportFragmentManager(), "timeAdvancedDialog");
+                            }
+
 //                            Bundle bundle = new Bundle();
 //                            bundle.putInt("hiveID", hiveId);
 //                            if (fromDate != 0L && toDate != 0L) {
@@ -189,7 +197,7 @@ public class Graph extends CustomActivity {
 //                                bundle.putInt("spinnerItem", 1);
 //                            }
 //                            gts.setArguments(bundle);
-                            gts.show(getSupportFragmentManager(), "timeDialog");
+
                         }
                         break;
                     case MotionEvent.ACTION_BUTTON_PRESS:
@@ -863,5 +871,9 @@ public class Graph extends CustomActivity {
 
     public void setToDate(long toDate) {
         this.toDate = toDate;
+    }
+
+    public void setLastSelectionFragmentBasic(boolean lastSelectionFragmentBasic) {
+        isLastSelectionFragmentBasic = lastSelectionFragmentBasic;
     }
 }

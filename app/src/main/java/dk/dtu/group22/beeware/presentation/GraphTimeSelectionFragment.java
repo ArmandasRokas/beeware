@@ -69,6 +69,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((Graph) getActivity()).setLastSelectionFragmentBasic(true);
         hiveid = ((Graph) getActivity()).getHiveId();
 //        hiveid = getArguments().getInt("hiveID", 0);
 //        long givenFromDate = this.getArguments().getLong("selected1");

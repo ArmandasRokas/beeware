@@ -58,6 +58,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((Graph) getActivity()).setLastSelectionFragmentBasic(false);
 
         // Initialisation
 //        fromDate = view.findViewById(R.id.newTime_from_text);
