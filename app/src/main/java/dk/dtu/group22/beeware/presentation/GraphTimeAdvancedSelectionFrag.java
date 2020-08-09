@@ -22,7 +22,7 @@ import dk.dtu.group22.beeware.R;
 
 public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements View.OnClickListener {
     private Fragment calendarFragment;
-    private TextView fromDate, toDate, viewPeriod, resetButton;
+    private TextView  viewPeriod, resetButton; // fromDate, toDate,
     private TextView settingsButton;
     // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
@@ -59,8 +59,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         super.onViewCreated(view, savedInstanceState);
 
         // Initialisation
-        fromDate = view.findViewById(R.id.newTime_from_text);
-        toDate = view.findViewById(R.id.newTime_to_text);
+//        fromDate = view.findViewById(R.id.newTime_from_text);
+//        toDate = view.findViewById(R.id.newTime_to_text);
         // spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         settingsButton = view.findViewById(R.id.newTime_settings);
@@ -71,7 +71,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //        toDate.setVisibility(View.INVISIBLE);
 //        resetButton.setVisibility(View.INVISIBLE);
 
-        fromDate.setOnClickListener(this);
+//        fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(view1 -> {
             GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
@@ -109,8 +109,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
         if (givenFromDate != 0L && givenToDate != 0L) {
             skipTwice = 0;
-            fromDate.setText(dateFormat.format(givenFromDate));
-            toDate.setText(dateFormat.format(givenToDate));
+//            fromDate.setText(dateFormat.format(givenFromDate));
+//            toDate.setText(dateFormat.format(givenToDate));
             selectedDate = givenFromDate;
             spinnerSelection = givenToDate - givenFromDate;
         }
@@ -143,9 +143,19 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //            setFromDate();
 //            setSelectedDate(selectedDate);
 //        });
+        createCalendar();
+
+        int selectedNumberOfDays = (int)((givenToDate-givenFromDate) / (1000*60*60*24));
+        daysEditText.setText(String.valueOf(selectedNumberOfDays));
+
+        //   spinnerHandler();
+    }
+
+    private void createCalendar() {
         Bundle bundle = new Bundle();
         calendarFragment = new GraphTimeCalendarFragment();
-        bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
+        // bundle.putLong("min", (calendarObj.getTimeInMillis() - DateUtils.YEAR_IN_MILLIS));
+        bundle.putLong("min", (0));
         //    bundle.putLong("max", (calendarObj.getTimeInMillis() - spinnerSelection));
         bundle.putLong("max", (calendarObj.getTimeInMillis() - DateUtils.DAY_IN_MILLIS));
         if (selectedDate != 0L) {
@@ -154,9 +164,6 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         calendarFragment.setArguments(bundle);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
-
-
-        //   spinnerHandler(); // FIXME
     }
 
     /**
@@ -170,8 +177,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
             //                (selectedDate + spinnerSelection) < calendarObj.getTimeInMillis()) {
             //            fromDate.setText(dateFormat.format(selectedDate));
             //         } else {
-            fromDate.setText(dateFormat
-                    .format(calendarObj.getTimeInMillis() - spinnerSelection));
+//            fromDate.setText(dateFormat
+//                    .format(calendarObj.getTimeInMillis() - spinnerSelection));
             selectedDate = calendarObj.getTimeInMillis() - spinnerSelection;
             //        }
         }
@@ -201,7 +208,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
             // If the selected date is closer to 'today' when the spinner says it should not be
             selectedDate = calendarObj.getTimeInMillis() - spinnerSelection;
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-            fromDate.setText(dateFormat.format(selectedDate));
+//            fromDate.setText(dateFormat.format(selectedDate));
         } else {
             // If it is not closer to 'today' then send where it is at so the calendar fragment
             // can show it.
@@ -218,7 +225,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
      */
     @Override
     public void onClick(View v) {
-        if (v == fromDate) {
+//        if (v == fromDate) {
 //            // User wants to see calendar to change date
 //            if (calendarFragment != null) {
 //                // If the user wants to close the shown calendar
@@ -238,7 +245,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //                getChildFragmentManager().beginTransaction()
 //                        .replace(R.id.newTime_calendar_frame, calendarFragment).commit();
 //            }
-        } else if (v == viewPeriod) {
+//        } else
+            if (v == viewPeriod) {
             // User wants to close fragment and see the updated time period
 //            ((Graph) getActivity())
 //                    .setPeriod(selectedDate, (selectedDate + spinnerSelection), spinnerItem);
@@ -326,7 +334,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     public void setSelectedDate(long selectedDate) {
         this.selectedDate = selectedDate;
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-y");
-        fromDate.setText(dateFormat.format(selectedDate));
-        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
+//        fromDate.setText(dateFormat.format(selectedDate));
+//        toDate.setText(dateFormat.format(selectedDate + spinnerSelection));
     }
 }
