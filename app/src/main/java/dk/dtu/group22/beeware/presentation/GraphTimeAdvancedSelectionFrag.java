@@ -258,11 +258,12 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //                    .setPeriod(selectedDate, (selectedDate + spinnerSelection), spinnerItem);
 //            ((Graph) getActivity()).showWithNewTimeDelta(new Timestamp(selectedDate),
 //                    new Timestamp(selectedDate + spinnerSelection));
-            daysEntered = Integer.parseInt(daysEditText.getText().toString());
+                 calculateToDate();
             ((Graph) getActivity())
-                    .setPeriod(fromDate, (fromDate + daysEntered*DateUtils.DAY_IN_MILLIS));
+                    .setPeriod(fromDate,toDate);
+         //           .setPeriod(fromDate, (fromDate + daysEntered*DateUtils.DAY_IN_MILLIS));
             ((Graph) getActivity()).showWithNewTimeDelta(new Timestamp(fromDate),
-                    new Timestamp(fromDate + daysEntered*DateUtils.DAY_IN_MILLIS));
+                    new Timestamp(toDate));
             this.dismiss();
         } else if (v == toBasicFragmentButton) {
 //            Bundle bundle = new Bundle();
@@ -279,6 +280,12 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //            skipTwice = 3;
 //            // spinnerHandler();
 //        }
+    }
+
+    private void calculateToDate() {
+        daysEntered = Integer.parseInt(daysEditText.getText().toString());
+        long insertedToDate = fromDate + daysEntered*DateUtils.DAY_IN_MILLIS;
+        toDate = Math.min(insertedToDate, System.currentTimeMillis());
     }
 
     /**
