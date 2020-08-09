@@ -48,8 +48,11 @@ import dk.dtu.group22.beeware.business.implementation.GraphViewModel;
 import static java.util.Arrays.asList;
 
 public class Graph extends CustomActivity {
-    private long fromDate = 0L, toDate = 0L;
-    private int spinnerItem;
+    // Default period when the graph opened first time is ONE WEEK
+    private long fromDate = System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS;
+    private long toDate = System.currentTimeMillis();
+    private int spinnerItem = 1;
+
     private GraphViewModel graphViewModel;
     private Switch weightSwitch, tempSwitch, lightSwitch, humidSwitch;
     private ConstraintLayout progressBarLayout;
@@ -173,19 +176,19 @@ public class Graph extends CustomActivity {
                         distanceY = event.getRawY()-startRawY;
                         if (Math.abs(distanceX)< 10 && Math.abs(distanceY)<10){
                             GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("hiveID", hiveId);
-                            if (fromDate != 0L && toDate != 0L) {
-                                bundle.putLong("selected1", fromDate);
-                                bundle.putLong("selected2", toDate);
-                                bundle.putInt("spinnerItem", spinnerItem);
-                            } else {
+//                            Bundle bundle = new Bundle();
+//                            bundle.putInt("hiveID", hiveId);
+//                            if (fromDate != 0L && toDate != 0L) {
+//                                bundle.putLong("selected1", fromDate);
+//                                bundle.putLong("selected2", toDate);
+//                                bundle.putInt("spinnerItem", spinnerItem);
+//                            } else {
                                 // Default 1 week period when nothing is selected
-                                bundle.putLong("selected1", System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS);
-                                bundle.putLong("selected2",  System.currentTimeMillis() );
-                                bundle.putInt("spinnerItem", 1);
-                            }
-                            gts.setArguments(bundle);
+//                                bundle.putLong("selected1", System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS);
+//                                bundle.putLong("selected2",  System.currentTimeMillis() );
+//                                bundle.putInt("spinnerItem", 1);
+//                            }
+//                            gts.setArguments(bundle);
                             gts.show(getSupportFragmentManager(), "timeDialog");
                         }
                         break;
@@ -252,9 +255,12 @@ public class Graph extends CustomActivity {
     /**
      * Setter called from the GraphTimeSelctionFragment to update local fromDate and toDate.
      */
-    public void setPeriod(long fromDate, long toDate, int spinnerItem) {
+    public void setPeriod(long fromDate, long toDate) {
         this.fromDate = fromDate;
         this.toDate = toDate;
+    }
+    public void setPeriod(long fromDate, long toDate, int spinnerItem) {
+        setPeriod(fromDate, toDate);
         this.spinnerItem = spinnerItem;
     }
 
@@ -830,5 +836,32 @@ public class Graph extends CustomActivity {
         toastLackingData.cancel();
         toastFailed.cancel();
         super.onStop();
+    }
+
+    public int getSpinnerItem() {
+        return spinnerItem;
+    }
+
+    public void setSpinnerItem(int spinnerItem) {
+        this.spinnerItem = spinnerItem;
+    }
+    public int getHiveId() {
+        return hiveId;
+    }
+
+    public long getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(long fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public long getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(long toDate) {
+        this.toDate = toDate;
     }
 }

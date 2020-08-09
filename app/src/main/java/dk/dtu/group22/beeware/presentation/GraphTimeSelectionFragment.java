@@ -69,10 +69,12 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        hiveid = getArguments().getInt("hiveID", 0);
+        hiveid = ((Graph) getActivity()).getHiveId();
+//        hiveid = getArguments().getInt("hiveID", 0);
 //        long givenFromDate = this.getArguments().getLong("selected1");
 //        long givenToDate = this.getArguments().getLong("selected2");
-        spinnerItem = this.getArguments().getInt("spinnerItem");
+//        spinnerItem = this.getArguments().getInt("spinnerItem");
+        spinnerItem = ((Graph) getActivity()).getSpinnerItem();
         extractFromDateFromSpinnerItem();
 /*
         List<Measurement> minMaxMeasurements = logic.fetchMinMaxMeasurementsByTimestamp(hiveid);
@@ -128,18 +130,18 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
         viewPeriod.setOnClickListener(this);
         settingsButton.setOnClickListener(view1 -> {
             GraphTimeAdvancedSelectionFrag gts = new GraphTimeAdvancedSelectionFrag();
-            Bundle bundle = new Bundle();
-            bundle.putInt("hiveID", hiveid);
-            if (selectedFromDate != 0L && selectedFromDate +spinnerSelection != 0L) {
-                bundle.putLong("selected1", selectedFromDate);
-                bundle.putLong("selected2", selectedFromDate +spinnerSelection);
-                bundle.putInt("spinnerItem", spinnerItem);
-            } else {
-                bundle.putLong("selected1", 0L);
-                bundle.putLong("selected2", 0L);
-                bundle.putInt("spinnerItem", 0);
-            }
-            gts.setArguments(bundle);
+//            Bundle bundle = new Bundle();
+//            bundle.putInt("hiveID", hiveid);
+//            if (selectedFromDate != 0L && selectedFromDate +spinnerSelection != 0L) {
+//                bundle.putLong("selected1", selectedFromDate);
+//                bundle.putLong("selected2", selectedFromDate +spinnerSelection);
+////                bundle.putInt("spinnerItem", spinnerItem);
+//            } else {
+//                bundle.putLong("selected1", 0L);
+//                bundle.putLong("selected2", 0L);
+////                bundle.putInt("spinnerItem", 0);
+//            }
+//            gts.setArguments(bundle);
             gts.show(getFragmentManager(), "timeAdvancedDialog");
             // Delayed in order to avoid the flashing screen when dismiss() is called
             (new Handler()).postDelayed(new Runnable() {
@@ -226,6 +228,8 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
             spinnerItem = numberPicker.getValue();
             // extractFromDateFromSpinnerItem
             extractFromDateFromSpinnerItem();
+            ((Graph) getActivity()).setSpinnerItem(spinnerItem);
+            ((Graph) getActivity()).setFromDate(selectedFromDate);
             //setFromDate();
             //setSelectedFromDate(selectedFromDate);
         });

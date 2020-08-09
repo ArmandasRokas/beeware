@@ -16,16 +16,21 @@ import dk.dtu.group22.beeware.R;
 
 public class GraphTimeCalendarFragment extends Fragment {
     private CalendarView calendar;
+    private final long min = 0, max = System.currentTimeMillis(); // Default values
+    private long fromDate;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View popup = inflater.inflate(R.layout.fragment_newtime_calendar, container, false);
 
         calendar = popup.findViewById(R.id.newTime_calendarView);
-        calendar.setMinDate(this.getArguments().getLong("min"));
-        calendar.setMaxDate(this.getArguments().getLong("max"));
-        long selectedDate = this.getArguments().getLong("selected", 0L);
-        if (selectedDate != 0L) {
-            calendar.setDate(selectedDate);
+        calendar.setMinDate(min);
+        calendar.setMaxDate(max);
+//        long selectedDate = this.getArguments().getLong("selected", 0L);
+        this.fromDate= ((Graph)getActivity()).getFromDate();
+//        if (selectedDate != 0L) {
+//            calendar.setDate(selectedDate);
+        if (this.fromDate != 0L) {
+            calendar.setDate(this.fromDate);
         } else {
             calendar.setDate(calendar.getMaxDate());
         }
@@ -44,7 +49,7 @@ public class GraphTimeCalendarFragment extends Fragment {
                 } catch (Exception e) {
                     System.out.println("Parse error in GraphTimeCalendarFragment!");
                 }
-                ((GraphTimeAdvancedSelectionFrag) getParentFragment()).setSelectedDate(selectedDate);
+                ((GraphTimeAdvancedSelectionFrag) getParentFragment()).setFromDate(selectedDate);
             }
         });
 
