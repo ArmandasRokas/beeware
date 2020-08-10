@@ -32,13 +32,12 @@
 
 
     <TextView
-        android:id="@+id/newTime_settings"
+        android:id="@+id/toAdvancedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/SettingsButtonDescription"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:padding="15dp"
-        android:text="Advanced"
+        android:text="@string/Advanced"
         android:textColor="@color/app_theme"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"

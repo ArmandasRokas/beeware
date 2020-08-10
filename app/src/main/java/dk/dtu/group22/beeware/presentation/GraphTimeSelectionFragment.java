@@ -14,8 +14,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -26,7 +24,7 @@ import dk.dtu.group22.beeware.dal.dto.Measurement;
 public class GraphTimeSelectionFragment extends DialogFragment implements View.OnClickListener {
     private Fragment calendarFragment;
     private TextView viewPeriod; //fromDate, toDate, , resetButton
-    private TextView settingsButton;
+    private TextView toAdvancedButton;
     private TextView availableFromDateTV;
    // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
@@ -119,7 +117,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
 //        toDate = view.findViewById(R.id.newTime_to_text);
        // spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
-        settingsButton = view.findViewById(R.id.newTime_settings);
+        toAdvancedButton = view.findViewById(R.id.toAdvancedButton);
 //        resetButton = view.findViewById(R.id.newTimeResetButton);
         availableFromDateTV = view.findViewById(R.id.availableFromDateTV);
 //        fromDate.setVisibility(View.INVISIBLE);
@@ -129,7 +127,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
 
     //    fromDate.setOnClickListener(this);
         viewPeriod.setOnClickListener(this);
-        settingsButton.setOnClickListener(view1 -> {
+        toAdvancedButton.setOnClickListener(view1 -> {
             GraphTimeAdvancedSelectionFrag gts = new GraphTimeAdvancedSelectionFrag();
 //            Bundle bundle = new Bundle();
 //            bundle.putInt("hiveID", hiveid);
@@ -376,7 +374,7 @@ public class GraphTimeSelectionFragment extends DialogFragment implements View.O
                 ((Graph) getActivity()).showWithNewTimeDelta(new Timestamp(selectedFromDate),
                         new Timestamp(System.currentTimeMillis()));
             this.dismiss();
-        } else if (v == settingsButton) {
+        } else if (v == toAdvancedButton) {
 //            Bundle bundle = new Bundle();
 //            bundle.putBoolean("isFromGraph", false);
 //            bundle.putInt("hiveID", hiveid);

@@ -27,6 +27,8 @@
     <!-- Period prompts on graphs -->
     <string name="ViewPeriod">VIEW PERIOD</string>
     <string name="ResetButton">RESET</string>
+    <string name="Advanced">Advanced</string>
+    <string name="Basic">Basic</string>
     <string-array name="time_period">
         <item>All</item>
         <item>1 week</item>

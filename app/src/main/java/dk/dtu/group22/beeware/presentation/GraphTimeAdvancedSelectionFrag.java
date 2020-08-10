@@ -14,15 +14,13 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import dk.dtu.group22.beeware.R;
 
 public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements View.OnClickListener {
     private Fragment calendarFragment;
-    private TextView  viewPeriod, resetButton; // fromDate, toDate,
+    private TextView  viewPeriod; //, resetButton; // fromDate, toDate,
     private TextView toBasicFragmentButton;
     // private Spinner spinner;
     private Calendar calendarObj = Calendar.getInstance();
@@ -65,8 +63,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //        toDate = view.findViewById(R.id.newTime_to_text);
         // spinner = view.findViewById(R.id.newTime_spinner);
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
-        toBasicFragmentButton = view.findViewById(R.id.newTime_settings);
-        resetButton = view.findViewById(R.id.newTimeResetButton);
+        toBasicFragmentButton = view.findViewById(R.id.toBasicButton);
+//        resetButton = view.findViewById(R.id.newTimeResetButton);
         daysEditText = view.findViewById(R.id.daysEditText);
 //        fromDate.setVisibility(View.INVISIBLE);
 //        toDate.setVisibility(View.INVISIBLE);
@@ -98,7 +96,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
             }, 100);
         });
 
-        resetButton.setOnClickListener(this);
+//        resetButton.setOnClickListener(this);
 
 //        hiveid = getArguments().getInt("hiveID", 0);
         hiveid = ((Graph) getActivity()).getHiveId();
