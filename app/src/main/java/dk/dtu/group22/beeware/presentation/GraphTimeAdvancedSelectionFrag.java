@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -26,8 +27,9 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     private Calendar calendarObj = Calendar.getInstance();
     private long spinnerSelection;
     private int daysEntered;
-    private EditText daysEditText;
+//    private EditText daysEditText;
     private long fromDate, toDate;
+    private NumberPicker dayPicker100, dayPicker10, dayPicker1;
     private long fromDateChosenInBasic;
 //    private int spinnerItem = 0;
     private int skipTwice = 3;
@@ -65,7 +67,7 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
         viewPeriod = view.findViewById(R.id.newTime_viewperiod_btn);
         toBasicFragmentButton = view.findViewById(R.id.toBasicButton);
 //        resetButton = view.findViewById(R.id.newTimeResetButton);
-        daysEditText = view.findViewById(R.id.daysEditText);
+//        daysEditText = view.findViewById(R.id.daysEditText);
 //        fromDate.setVisibility(View.INVISIBLE);
 //        toDate.setVisibility(View.INVISIBLE);
 //        resetButton.setVisibility(View.INVISIBLE);
@@ -146,13 +148,32 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
 //            setFromDate();
 //            setSelectedDate(selectedDate);
 //        });
+        setupPickers(view);
         createCalendar();
 
 //        int selectedNumberOfDays = (int)((givenToDate-givenFromDate) / (1000*60*60*24));
-        int selectedNumberOfDays = (int)((toDate-fromDate) / (1000*60*60*24));
-        daysEditText.setText(String.valueOf(selectedNumberOfDays));
+//        int selectedNumberOfDays = (int)((toDate-fromDate) / (1000*60*60*24));
+//        daysEditText.setText(String.valueOf(selectedNumberOfDays));
 
         //   spinnerHandler();
+    }
+
+    private void setupPickers(View view) {
+        dayPicker100  = view.findViewById(R.id.dayPicker100);
+        dayPicker10  = view.findViewById(R.id.dayPicker10);
+        dayPicker1  = view.findViewById(R.id.dayPicker1);
+
+        dayPicker100.setMinValue(0);
+        dayPicker100.setMaxValue(9);
+        dayPicker10.setMinValue(0);
+        dayPicker10.setMaxValue(9);
+        dayPicker1.setMinValue(0);
+        dayPicker1.setMaxValue(9);
+
+        int selectedNumberOfDays = (int)((toDate-fromDate) / (1000*60*60*24));
+        dayPicker100.setValue(selectedNumberOfDays/100);
+        dayPicker10.setValue(selectedNumberOfDays % 100 / 10);
+        dayPicker1.setValue(selectedNumberOfDays % 100 % 10);
     }
 
     private void createCalendar() {
@@ -281,7 +302,8 @@ public class GraphTimeAdvancedSelectionFrag extends DialogFragment implements Vi
     }
 
     private void calculateToDate() {
-        daysEntered = Integer.parseInt(daysEditText.getText().toString());
+//        daysEntered = Integer.parseInt(daysEditText.getText().toString());
+        daysEntered = dayPicker1.getValue() + dayPicker10.getValue()*10 + dayPicker100.getValue()*100;
         long insertedToDate = fromDate + daysEntered*DateUtils.DAY_IN_MILLIS;
         toDate = Math.min(insertedToDate, System.currentTimeMillis());
     }

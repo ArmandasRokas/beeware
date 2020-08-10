@@ -11,7 +11,8 @@
     <string name="ViewPeriod">SE PERIODE</string>
     <string name="ResetButton">NULSTIL</string>
     <string name="Advanced">Avanceret</string>
-    <string name="Basic">Basis</string>
+    <string name="Basic">Normal</string>
+    <string name="NumberOfDays">Antal dage:</string>
     <string-array name="time_period">
         <item>Hele</item>
         <item>1 uge</item>
