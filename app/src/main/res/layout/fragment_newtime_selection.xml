@@ -11,9 +11,11 @@
     <NumberPicker
         android:id="@+id/periodPicker"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="125dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@id/availableFromDateTV"
+        app:layout_constraintTop_toBottomOf="@id/toAdvancedButton"
+        app:layout_constraintBottom_toTopOf="@id/newTime_viewperiod_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></NumberPicker>
 
 
@@ -67,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="15dp"
+        android:padding="5dp"
         android:text="@string/ViewPeriod"
         android:textColor="@color/app_theme"
         android:textSize="16sp"
@@ -75,7 +77,7 @@
         android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@id/availableFromDateTV"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/periodPicker"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
     <!--        app:layout_constraintTop_toBottomOf="@+id/newTime_to_text"-->
     <TextView
