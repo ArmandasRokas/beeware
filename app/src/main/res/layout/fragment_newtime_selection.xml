@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/newTimeFragment"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/border">
 
 
 
@@ -80,15 +81,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
     <!--        app:layout_constraintTop_toBottomOf="@+id/newTime_to_text"-->
+
     <TextView
         android:id="@+id/availableFromDateTV"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:padding="5dp"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/border"
  />
     <!--    <ImageView-->
     <!--        android:id="@+id/newTime_settings"-->
