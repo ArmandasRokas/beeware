@@ -1,6 +1,8 @@
 package dk.dtu.group22.beeware.presentation
 
 import android.graphics.Canvas
+import android.graphics.Path
+import android.graphics.RectF
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.renderer.XAxisRenderer
 import com.github.mikephil.charting.utils.MPPointF
@@ -45,5 +47,35 @@ class SpecificPositionLabelsXAxisRenderer(
                 drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees)
             }
         }
+    }
+
+    override fun renderGridLines(c: Canvas) {
+        if (!mXAxis.isDrawGridLinesEnabled() || !mXAxis.isEnabled()) return
+        val clipRestoreCount = c.save()
+        c.clipRect(getGridClippingRect()!!)
+//        if (mRenderGridLinesBuffer.size != mAxis.mEntryCount * 2) {
+//            mRenderGridLinesBuffer = FloatArray(mXAxis.mEntryCount * 2)
+//        }
+        val positions: FloatArray = FloatArray(specificLabelPositions.size * 2)
+        run {
+            var i = 0
+            while (i < positions.size) {
+//                positions[i] = mXAxis.mEntries.get(i / 2)
+//                positions[i + 1] = mXAxis.mEntries.get(i / 2)
+                positions[i] = specificLabelPositions.get(i / 2)
+                positions[i + 1] = specificLabelPositions.get(i / 2)
+                i += 2
+            }
+        }
+        mTrans.pointValuesToPixel(positions)
+        setupGridPaint()
+        val gridLinePath: Path = mRenderGridLinesPath
+        gridLinePath.reset()
+        var i = 0
+        while (i < positions.size) {
+            drawGridLine(c, positions[i], positions[i + 1], gridLinePath)
+            i += 2
+        }
+        c.restoreToCount(clipRestoreCount)
     }
 }
