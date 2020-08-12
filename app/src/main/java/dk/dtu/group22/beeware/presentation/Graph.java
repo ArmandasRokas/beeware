@@ -288,7 +288,7 @@ public class Graph extends CustomActivity {
     public void renderGraph() {
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
-     // Chart interaction settings
+        // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
         lineChart.setScaleYEnabled(true);
@@ -358,9 +358,13 @@ public class Graph extends CustomActivity {
 
         // Format X- Axis values to strings displaying date and time
         XAxis xAxis = lineChart.getXAxis();
-
-        float[] everyDayLabels = calculateEveryDayLabels();
-        float[] everyHourLabels = calculateEveryHourLabels();
+        float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
+        SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
+        lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+       // specificPositionLabelsXAxisRenderer.setSpecificLabelPositions(everyHourLabels);
+//
+//        float[] everyDayLabels = calculateEveryDayLabels();
+//        float[] everyHourLabels = calculateEveryHourLabels();
         xAxis.setGranularity(900000f); // minimum axis-step (interval) is 15 minutes
 //        xAxis.setValueFormatter(new DateFormatter());
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
@@ -370,7 +374,8 @@ public class Graph extends CustomActivity {
         xAxis.setAxisMaximum(toDate - fromDate);
         // Set text size for dates on x axis
         lineChart.getXAxis().setTextSize(11);
-        lineChart.setXAxisRenderer(new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()),everyDayLabels));
+
+
 
         //Set Y Axis dependencies, left or right
         for (LineDataSet list : lineDataSetWeight) {
