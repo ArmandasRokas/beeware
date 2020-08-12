@@ -341,7 +341,7 @@ public class GraphViewModel extends ViewModel {
         leftAxisMin = 99;
         leftAxisMax = -99;
         for (Measurement measure : hive.getMeasurements()) {
-            float time = (float) measure.getTimestamp().getTime();
+            float time = (float) measure.getTimestamp().getTime()-fromDate.getTime();
             if (isInInterval(measure.getTimestamp())) {
                 // If this data is in requested interval
                 float weight = (float) measure.getWeight();
@@ -362,7 +362,7 @@ public class GraphViewModel extends ViewModel {
         rightAxisMin = 99;
         rightAxisMax = -99;
         for (Measurement measure : hive.getMeasurements()) {
-            float time = (float) measure.getTimestamp().getTime();
+            float time = (float) measure.getTimestamp().getTime()-fromDate.getTime();
             if (isInInterval(measure.getTimestamp())) {
                 // If this data is in requested interval
                 float temp = (float) measure.getTempIn();
@@ -396,7 +396,7 @@ public class GraphViewModel extends ViewModel {
         float range = rightAxisMax - rightAxisMin;
         // Populate list
         for (Measurement measure : hive.getMeasurements()) {
-            float time = (float) measure.getTimestamp().getTime();
+            float time = (float) measure.getTimestamp().getTime()-fromDate.getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float illum = (float) (measure.getIlluminance() + 1.1);
                 if (illum > 0) {
@@ -418,7 +418,7 @@ public class GraphViewModel extends ViewModel {
     public List<Entry> extractHumidity() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
-            float time = (float) measure.getTimestamp().getTime();
+            float time = (float) measure.getTimestamp().getTime()-fromDate.getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float humid = (float) measure.getHumidity();
                 res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height

@@ -32,13 +32,16 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import dk.dtu.group22.beeware.R;
@@ -285,8 +288,7 @@ public class Graph extends CustomActivity {
     public void renderGraph() {
         // Find chart in xml
         lineChart = findViewById(R.id.lineChart);
-
-        // Chart interaction settings
+     // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
         lineChart.setScaleYEnabled(true);
@@ -356,12 +358,19 @@ public class Graph extends CustomActivity {
 
         // Format X- Axis values to strings displaying date and time
         XAxis xAxis = lineChart.getXAxis();
+
+        float[] everyDayLabels = calculateEveryDayLabels();
+        float[] everyHourLabels = calculateEveryHourLabels();
         xAxis.setGranularity(900000f); // minimum axis-step (interval) is 15 minutes
-        xAxis.setValueFormatter(new DateFormatter());
-        xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
-        xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+//        xAxis.setValueFormatter(new DateFormatter());
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+//        xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
+//        xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(toDate - fromDate);
         // Set text size for dates on x axis
         lineChart.getXAxis().setTextSize(11);
+        lineChart.setXAxisRenderer(new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()),everyDayLabels));
 
         //Set Y Axis dependencies, left or right
         for (LineDataSet list : lineDataSetWeight) {
@@ -492,6 +501,56 @@ public class Graph extends CustomActivity {
         for (LineDataSet list : lineDataSetHumidity) {
             list.setVisible(graphViewModel.isHumidityLineVisible());
         }
+    }
+    private float[] calculateEveryDayLabels() {
+        Calendar date = new GregorianCalendar();
+// reset hour, minutes, seconds and millis
+        date.setTime(new Date(fromDate));
+        date.set(Calendar.HOUR_OF_DAY, 12);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 30);
+        date.set(Calendar.MILLISECOND, 0);
+// next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+        System.out.println("date.getTimeInMillis(): " + date.getTimeInMillis());
+        System.out.println("timestamp from date: " + new Timestamp(date.getTimeInMillis()).toString());
+        float firstLabel =date.getTimeInMillis() -fromDate;
+//        long currentTime=  System.currentTimeMillis();
+//        int currentTime=1597127165234L;
+        float[] everyDayLabels = new float[]{
+                firstLabel,
+                firstLabel+1000*60*60*24,
+                firstLabel+1000*60*60*24*2,
+                firstLabel+1000*60*60*24*3,
+                firstLabel+1000*60*60*24*4,
+                firstLabel+1000*60*60*24*5,
+                firstLabel+1000*60*60*24*6,
+        };
+        return everyDayLabels;
+    }
+
+    private float[] calculateEveryHourLabels(){
+        Calendar date = new GregorianCalendar();
+// reset hour, minutes, seconds and millis
+        date.setTime(new Date(fromDate));
+        //   date.set(Calendar.HOUR_OF_DAY, 12);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 30);
+        date.set(Calendar.MILLISECOND, 0);
+// next day
+        date.add(Calendar.HOUR, 1);
+        float firstLabel =date.getTimeInMillis() -fromDate;
+        ArrayList<Float> everyHourLabelsArrayList = new ArrayList<>();
+        // while firstLabel+ ***** < toDate
+        for(int i = 0 ; fromDate + firstLabel+1000*60*60*i < toDate; i++  ){
+            everyHourLabelsArrayList.add(firstLabel + 1000*60*60*i);
+        }
+        float[] everyHourLabels = new float[everyHourLabelsArrayList.size()];
+        int i = 0;
+        for(Float f: everyHourLabelsArrayList){
+            everyHourLabels[i++] = f;
+        }
+        return everyHourLabels;
     }
 
     /**
@@ -683,12 +742,26 @@ public class Graph extends CustomActivity {
     /**
      * Format dates locally for graph X axis
      */
-    private class DateFormatter extends ValueFormatter {
+//    private class DateFormatter extends ValueFormatter {
+//        @Override
+//        public String getAxisLabel(float value, AxisBase axis) {
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
+//
+//            String date = simpleDateFormat.format(new Date(fromDate+ (long) value));
+//            return date; //.substring(0, 5);
+//        }
+//    }
+
+    public class MyXAxisValueFormatter extends ValueFormatter implements IAxisValueFormatter {
         @Override
-        public String getAxisLabel(float value, AxisBase axis) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
-            String date = simpleDateFormat.format(new Date((long) value));
-            return date; //.substring(0, 5);
+        public String getFormattedValue(float value, AxisBase axis) {
+            try {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm");
+                return sdf.format(new Date(fromDate+ (long)value));
+            } catch (Exception e) {
+                return  value+"Nan";
+            }
         }
     }
 

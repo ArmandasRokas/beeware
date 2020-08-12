@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 // Firebase
 apply plugin: 'com.google.gms.google-services'
 // Firebase crashlytics
@@ -30,6 +32,9 @@ android {
 
 dependencies {
     implementation "com.android.support:support-compat:29.0.0"
+    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 dependencies {
@@ -56,6 +61,8 @@ dependencies {
 
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    mavenCentral()
 }
 
 dependencies {
