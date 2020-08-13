@@ -547,8 +547,10 @@ public class Graph extends CustomActivity {
         float firstLabel =date.getTimeInMillis() -fromDate;
         ArrayList<Float> everyHourLabelsArrayList = new ArrayList<>();
         // while firstLabel+ ***** < toDate
-        for(int i = 0 ; fromDate + firstLabel+1000*60*60*i < toDate; i++  ){
-            everyHourLabelsArrayList.add(firstLabel + 1000*60*60*i);
+        long currAdditionToFirstLabel = 0;
+        for(long i = 0 ; fromDate + firstLabel+currAdditionToFirstLabel< toDate; i++  ){
+            currAdditionToFirstLabel = 1000*60*60*i;
+            everyHourLabelsArrayList.add(firstLabel +currAdditionToFirstLabel);
         }
         float[] everyHourLabels = new float[everyHourLabelsArrayList.size()];
         int i = 0;
