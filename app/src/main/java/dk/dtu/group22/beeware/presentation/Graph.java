@@ -35,6 +35,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -82,6 +83,7 @@ public class Graph extends CustomActivity {
     private Display display;
     private Point size;
     private boolean isLastSelectionFragmentBasic = true;
+    private XAxisRenderer xAxisRendererDefault;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,9 @@ public class Graph extends CustomActivity {
         leftAxisUnit = findViewById(R.id.axisLeftLegend);
         rightAxisUnit = findViewById(R.id.axisRightLegend);
         noGraphSelectedText = findViewById(R.id.noGraphShownTV);
+        lineChart = findViewById(R.id.lineChart);
+        xAxisRendererDefault = lineChart.getRendererXAxis();
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -287,7 +292,7 @@ public class Graph extends CustomActivity {
      */
     public void renderGraph() {
         // Find chart in xml
-        lineChart = findViewById(R.id.lineChart);
+//        lineChart = findViewById(R.id.lineChart);
         // Chart interaction settings
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
@@ -358,22 +363,40 @@ public class Graph extends CustomActivity {
 
         // Format X- Axis values to strings displaying date and time
         XAxis xAxis = lineChart.getXAxis();
-        float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
-        SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
-        lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+        
        // specificPositionLabelsXAxisRenderer.setSpecificLabelPositions(everyHourLabels);
 //
 //        float[] everyDayLabels = calculateEveryDayLabels();
 //        float[] everyHourLabels = calculateEveryHourLabels();
         xAxis.setGranularity(900000f); // minimum axis-step (interval) is 15 minutes
 //        xAxis.setValueFormatter(new DateFormatter());
-        xAxis.setValueFormatter(new MyXAxisValueFormatter());
-//        xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
-//        xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(toDate - fromDate);
+
+
         // Set text size for dates on x axis
         lineChart.getXAxis().setTextSize(11);
+
+        if( spinnerItem == 1 &&isLastSelectionFragmentBasic ){
+            xAxis.setAxisMinimum(0);
+            xAxis.setAxisMaximum(toDate - fromDate);
+            xAxis.setValueFormatter(new MyXAxisValueFormatter());
+            float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
+            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
+            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+
+        } else if(spinnerItem == 2 && isLastSelectionFragmentBasic){
+            xAxis.setAxisMinimum(0);
+            xAxis.setAxisMaximum(toDate - fromDate);
+            xAxis.setValueFormatter(new MyXAxisValueFormatter());
+            float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
+            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
+            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+        }else {
+            xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
+            xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
+            xAxis.setValueFormatter(new DateFormatter());
+            lineChart.setXAxisRenderer(xAxisRendererDefault);
+        }
+
 
 
 
@@ -749,15 +772,15 @@ public class Graph extends CustomActivity {
     /**
      * Format dates locally for graph X axis
      */
-//    private class DateFormatter extends ValueFormatter {
-//        @Override
-//        public String getAxisLabel(float value, AxisBase axis) {
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
-//
-//            String date = simpleDateFormat.format(new Date(fromDate+ (long) value));
-//            return date; //.substring(0, 5);
-//        }
-//    }
+    private class DateFormatter extends ValueFormatter {
+        @Override
+        public String getAxisLabel(float value, AxisBase axis) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
+
+            String date = simpleDateFormat.format(new Date(fromDate+ (long) value));
+            return date; //.substring(0, 5);
+        }
+    }
 
     public class MyXAxisValueFormatter extends ValueFormatter implements IAxisValueFormatter {
         @Override
