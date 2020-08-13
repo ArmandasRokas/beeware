@@ -84,6 +84,8 @@ public class Graph extends CustomActivity {
     private Point size;
     private boolean isLastSelectionFragmentBasic = true;
     private XAxisRenderer xAxisRendererDefault;
+    public enum LabelsInterval {EVERY_DAY, EVERY_HOUR };
+    private LabelsInterval currLabels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,7 @@ public class Graph extends CustomActivity {
         rightAxisUnit = findViewById(R.id.axisRightLegend);
         noGraphSelectedText = findViewById(R.id.noGraphShownTV);
         lineChart = findViewById(R.id.lineChart);
+        lineChart.setOnChartGestureListener(new MyOnChartGestureListener(lineChart.getViewPortHandler(), this));
         xAxisRendererDefault = lineChart.getRendererXAxis();
 
 
@@ -375,25 +378,27 @@ public class Graph extends CustomActivity {
         // Set text size for dates on x axis
         lineChart.getXAxis().setTextSize(11);
 
-        if( spinnerItem == 1 &&isLastSelectionFragmentBasic ){
+        if( spinnerItem == 1 && isLastSelectionFragmentBasic ){ // 1 week in Basic
             xAxis.setAxisMinimum(0);
             xAxis.setAxisMaximum(toDate - fromDate);
             xAxis.setValueFormatter(new MyXAxisValueFormatter());
-            float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
-            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
-            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+            changeLabels(LabelsInterval.EVERY_DAY);
+//            float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
+//            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
+//            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
 
-        } else if(spinnerItem == 2 && isLastSelectionFragmentBasic){
+        } else if(spinnerItem == 2 && isLastSelectionFragmentBasic){ // 1 month in Basic
             xAxis.setAxisMinimum(0);
             xAxis.setAxisMaximum(toDate - fromDate);
-            xAxis.setValueFormatter(new MyXAxisValueFormatter());
-            float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
-            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
-            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
+            xAxis.setValueFormatter(new DateFormatter());
+            lineChart.setXAxisRenderer(xAxisRendererDefault);
+//            float[] currentLabelsPositions = calculateEveryHourLabels();
+//            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
+//            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
         }else {
             xAxis.setAxisMinimum(graphViewModel.getFromDate().getTime());
             xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
-            xAxis.setValueFormatter(new DateFormatter());
+            xAxis.setValueFormatter(new DateFormatterOriginal());
             lineChart.setXAxisRenderer(xAxisRendererDefault);
         }
 
@@ -530,6 +535,30 @@ public class Graph extends CustomActivity {
             list.setVisible(graphViewModel.isHumidityLineVisible());
         }
     }
+    public void changeLabels(LabelsInterval labelsInterval){
+        if(labelsInterval == currLabels || spinnerItem != 1){ // FIXME works only for one week at the moment
+            return;
+        }
+        switch (labelsInterval){
+            case EVERY_HOUR:
+            //    float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen
+        //        SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), calculateEveryHourLabels());
+                lineChart.setXAxisRenderer(
+                        new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()),
+                                calculateEveryHourLabels()));
+                currLabels = LabelsInterval.EVERY_HOUR;
+                break;
+            case EVERY_DAY:
+          //      float[] currentLabelsPositions = calculateEveryDayLabels(); // TODO implement to check which labels should be chosen
+         //       SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), calculateEveryDayLabels());
+                lineChart.setXAxisRenderer(
+                        new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()),
+                                calculateEveryDayLabels()));
+                currLabels = LabelsInterval.EVERY_DAY;
+                break;
+        }
+    }
+
     private float[] calculateEveryDayLabels() {
         Calendar date = new GregorianCalendar();
 // reset hour, minutes, seconds and millis
@@ -781,6 +810,15 @@ public class Graph extends CustomActivity {
             return date; //.substring(0, 5);
         }
     }
+    private class DateFormatterOriginal extends ValueFormatter {
+        @Override
+        public String getAxisLabel(float value, AxisBase axis) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.GERMAN);//Locale.ENGLISH);
+
+            String date = simpleDateFormat.format(new Date((long) value));
+            return date; //.substring(0, 5);
+        }
+    }
 
     public class MyXAxisValueFormatter extends ValueFormatter implements IAxisValueFormatter {
         @Override
@@ -980,3 +1018,4 @@ public class Graph extends CustomActivity {
         isLastSelectionFragmentBasic = lastSelectionFragmentBasic;
     }
 }
+
