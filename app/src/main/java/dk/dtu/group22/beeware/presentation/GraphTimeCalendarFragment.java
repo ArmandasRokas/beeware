@@ -25,10 +25,7 @@ public class GraphTimeCalendarFragment extends Fragment {
         calendar = popup.findViewById(R.id.newTime_calendarView);
         calendar.setMinDate(min);
         calendar.setMaxDate(max);
-//        long selectedDate = this.getArguments().getLong("selected", 0L);
         this.fromDate= ((Graph)getActivity()).getFromDate();
-//        if (selectedDate != 0L) {
-//            calendar.setDate(selectedDate);
         if (this.fromDate != 0L) {
             calendar.setDate(this.fromDate);
         } else {

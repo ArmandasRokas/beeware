@@ -169,26 +169,6 @@ public class Logic {
                 }
                 hivesWithMeasurements.add(h);
 
-                //                if(h!= null){
-//
-//                } else {
-//                    //     notFetchedHives.add(subscriptionManager.getCachedHiveName(id)); //  add to notFetchedHives in order to give error message to an user.
-//                }
-
-                // if(h != null){
-                //    hivesWithMeasurements.add(h);
-                //}
-
-                //     Hive h = getCachedHive(id); //  get cached hive with last data. That is since and until data it could not used because it is possible that there is not data stored within 8 days delta
-//                    try {
-//                    Hive h = getCachedHive(id);
-//                    if(h != null){
-//                        hivesWithMeasurements.add(h);
-//                    }} catch(AccessLocalFileException re){
-//                        re.printStackTrace();
-//                        notFetchedHivesFromFile.add(subscriptionManager.getCachedNameIdPair(id).getName());
-//                    }
-
             };
             Thread thread = new Thread(runnable);
             threads.add(thread);
@@ -548,8 +528,6 @@ public class Logic {
     }
 
     public void downloadOldDataInBackground(int id)throws IOException
-            //, NoDataAvailableOnHivetoolException
-            //, AccessLocalFileException
     {
         // check if download data is finished
         Hive hive = cachingManager.fetchHiveMetaData(id);
@@ -636,15 +614,6 @@ public class Logic {
             not.createNotificationChannel(channel);
         }
     }
-
-//    public void setIsConfigured(int id, boolean conf) // throws AccessLocalFileException
-//    {
-//        Hive hive = cachingManager.getCachedHive(id);
-//        hive.setHasBeenConfigured(conf); // update weightIndicator and tempIndicator values in SQLite.
-//
-//
-//        //cachingManager.writeToFile(hive);
-//    }
 
     public NameIdPair getCachedNameIdPair(int hiveId){
         return subscriptionManager.getCachedNameIdPair(hiveId);

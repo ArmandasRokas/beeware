@@ -36,33 +36,6 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
     @Override
     public Hive getCachedHiveWithAllData(int hiveId) {
 
-     //  SQLiteDatabase db = dbHelper.getReadableDatabase();
-    /*    String[] projection = {
-                BaseColumns._ID,
-                HiveEntry.COLUMN_NAME_HIVE_ID,
-                HiveEntry.COLUMN_NAME_TIMESTAMP,
-                HiveEntry.COLUMN_NAME_HIVE_WEIGHT_KGS
-        };*/
-//
-//        // Fetch hive data
-//        Cursor hiveCursor = readable.query(
-//                HiveEntry.TABLE_HIVE,   // The table to query
-//                null,             // The array of columns to return (pass null to get all)
-//                selection,              // The columns for the WHERE clause
-//                selectionArgs,          // The values for the WHERE clause
-//                null,                   // don't group the rows
-//                null,                   // don't filter by row groups
-//                null               // The sort order
-//        );
-//        if(!hiveCursor.moveToNext()){
-//            return null;
-//        }
-//        int returnedHiveId = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_ID));
-//        String returnedHiveName = hiveCursor.getString(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_NAME));
-//        int returnedWeightIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR));
-//        int returnedTempIndicator = hiveCursor.getInt(hiveCursor.getColumnIndexOrThrow(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR));
-//        hiveCursor.close();
-
         // Fetch measurements of a hive
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hiveId+""};
@@ -123,9 +96,6 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
     }
 
     private void insertHiveMeasurements(Hive hive) {
-   //     SQLiteDatabase db = dbHelper.getWritableDatabase();
-        // Create a new map of values, where column names are the keys
-  //      System.out.println(hive.getMeasurements().toString());
         for (int i = 0; i<hive.getMeasurements().size(); i++ ){
             ContentValues measurements = new ContentValues();
             measurements.put(HiveEntry.COLUMN_NAME_HIVE_ID, hive.getId());
@@ -171,13 +141,8 @@ public class CachedHiveRepoSQLImpl implements CachedHiveRepoI {
 
     @Override
     public void updateHiveMetaData(Hive hive) {
-       // SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = HiveEntry.COLUMN_NAME_HIVE_ID + " = ? ";
         String[] selectionArgs = {hive.getId()+""};
-       // int deletedRows = writable.delete(HiveEntry.TABLE_HIVE_MEASUREMENT, selection, selectionArgs);
-     //   System.out.println("deletedRows" + deletedRows);
-        //insertHiveMeasurements(hive);
-        // Update indicators
         ContentValues indicators = new ContentValues();
         indicators.put(HiveEntry.COLUMN_NAME_HIVE_WEIGHT_INDICATOR, hive.getWeightIndicator());
         indicators.put(HiveEntry.COLUMN_NAME_HIVE_TEMP_INDICATOR, hive.getTempIndicator());

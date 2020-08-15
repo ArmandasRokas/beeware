@@ -79,7 +79,6 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         listEmptyTv = findViewById(R.id.emptyListTV);
         progressBar = findViewById(R.id.progressBarOverview);
         subHiveButton = findViewById(R.id.subHiveBtn);
-    //    subHiveButton.setOnClickListener(this);
 
         float subHiveButtonX = sharedPref.getFloat("subHiveButtonX",0);
         float subHiveButtonY = sharedPref.getFloat("subHiveButtonY",0);
@@ -180,10 +179,6 @@ public class Overview extends CustomActivity //implements View.OnClickListener
 
                 }
                 return null;
-               // } catch (Exception e) {
-               //     e.printStackTrace();
-               //     return e;
-                //}
             }
 
             @Override
@@ -199,11 +194,6 @@ public class Overview extends CustomActivity //implements View.OnClickListener
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-           /*     if (cachingManager.isConnectionFailed()) { // Always true????
-                    Toast toast = Toast.makeText(ctx, R.string.UnableToFetchNewestData, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                }*/
                 if (logic.getSubscriptionIDs().size() == 0) {
                     listEmptyTv.setText(R.string.YouHaveNotSubscribedToAnyHives);
                     listEmptyTv.setVisibility(View.VISIBLE);
@@ -235,7 +225,6 @@ public class Overview extends CustomActivity //implements View.OnClickListener
                 if(!notFetchedHivesFromNetwork.isEmpty()) {
                     Collections.sort(notFetchedHivesFromNetwork);
                     String errMessage = getString(R.string.FailedToGetLatestData) + " " + notFetchedHivesFromNetwork.toString();
-                    //Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
                     if (getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
                         toastLatest.setText(errMessage);
                         toastLatest.show();
@@ -276,13 +265,6 @@ public class Overview extends CustomActivity //implements View.OnClickListener
         toastfailedFetchData.cancel();
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        if (view == subHiveButton) {
-//            Intent ID = new Intent(this, Subscribe.class);
-//            startActivity(ID);
-//        }
-//    }
 
     public void setConfigureNow(boolean configureNow) {
         this.configureNow = configureNow;

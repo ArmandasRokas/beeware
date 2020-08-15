@@ -65,10 +65,8 @@ public class Graph extends CustomActivity {
     private int hiveId;
     private String hiveName;
     private float currentWeight;
-   // private DownloadHiveAsyncTask downloadAsyncTask;
     private DownloadBGHiveAsyncTask downloadBGAsyncTask;
     private FloatingActionButton graphMenuButton;
-  //  private FloatingActionButton hiveSettingsButton;
     private final String TAG = "Graph";
     private Toast toastPast;
     private Toast toastLatest;
@@ -183,21 +181,6 @@ public class Graph extends CustomActivity {
                                 GraphTimeAdvancedSelectionFrag gts = new GraphTimeAdvancedSelectionFrag();
                                 gts.show(getSupportFragmentManager(), "timeAdvancedDialog");
                             }
-
-//                            Bundle bundle = new Bundle();
-//                            bundle.putInt("hiveID", hiveId);
-//                            if (fromDate != 0L && toDate != 0L) {
-//                                bundle.putLong("selected1", fromDate);
-//                                bundle.putLong("selected2", toDate);
-//                                bundle.putInt("spinnerItem", spinnerItem);
-//                            } else {
-                                // Default 1 week period when nothing is selected
-//                                bundle.putLong("selected1", System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS);
-//                                bundle.putLong("selected2",  System.currentTimeMillis() );
-//                                bundle.putInt("spinnerItem", 1);
-//                            }
-//                            gts.setArguments(bundle);
-
                         }
                         break;
                     case MotionEvent.ACTION_BUTTON_PRESS:
@@ -207,35 +190,6 @@ public class Graph extends CustomActivity {
                 return true;
             }
         });
-        /*
-        graphMenuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GraphTimeSelectionFragment gts = new GraphTimeSelectionFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("hiveID", hiveId);
-                if (fromDate != 0L && toDate != 0L) {
-                    bundle.putLong("selected1", fromDate);
-                    bundle.putLong("selected2", toDate);
-                    bundle.putInt("spinnerItem", spinnerItem);
-                } else {
-                    bundle.putLong("selected1", 0L);
-                    bundle.putLong("selected2", 0L);
-                    bundle.putInt("spinnerItem", 0);
-                }
-                gts.setArguments(bundle);
-                gts.show(getSupportFragmentManager(), "timeDialog");
-            }
-        }); */
-
-   /*     hiveSettingsButton.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFromGraph", false);
-            bundle.putInt("hiveID", hiveId);
-            ConfigurationFragment fragment = new ConfigurationFragment();
-            fragment.setArguments(bundle);
-            fragment.show(getSupportFragmentManager(), "configurationDialog");
-        });*/
 
         // Render the graph with predefined fromData and ToDate
         showWithNewTimeDelta(graphViewModel.getFromDate(), getGraphViewModel().getToDate());
@@ -244,20 +198,8 @@ public class Graph extends CustomActivity {
         name.setText(hiveName);
 
         // Get current hive and store in graphViewModel. Graph is drawn in 'onPostExecute'
-     //   downloadAsyncTask = new DownloadHiveAsyncTask(); // Download first month
         downloadBGAsyncTask = new DownloadBGHiveAsyncTask(); // Download the rest
         downloadBGAsyncTask.execute();
-     //   downloadAsyncTask.execute(hiveId);
-
-/*
-        if (!Logic.getSingleton().getCachedHive(hiveId).getHasBeenConfigured()) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFromGraph", true);
-            bundle.putInt("hiveID", hiveId);
-            ConfigurationFragment fragment = new ConfigurationFragment();
-            fragment.setArguments(bundle);
-            fragment.show(getSupportFragmentManager(), "configurationDialog");
-        }*/
     }
 
     /**
@@ -622,17 +564,6 @@ public class Graph extends CustomActivity {
                 // If hive exists and requested from date is not present, but no download is in progress
                 Toast.makeText(this, R.string.LackingData, Toast.LENGTH_LONG).show(); // FIXME does not MAKE SENSE to show this message. Maybe better: "There is no data before dd-mm-yyyy"
             }
-            // Try another download just in case.
-  //          DownloadBGHiveAsyncTask bg2 = new DownloadBGHiveAsyncTask();  // Another download just freezes the app
-  //          bg2.execute(hiveId);
-//            try {  // Commented out because of:  NetworkOnMainThreadException. Creating new Async task resolves problem
-//                graphViewModel.downloadHiveData(hiveId);
-//                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
-//                        hiveId + " from" + fromDate + " to " + toDate + "."); //  check if fromDate and toDate is correct values. If it makes sense that the data is downloaded between these two dates (that time interval)
-//                } catch (Exception e) {
-//                Log.d(TAG, "showWithNewTimeDelta: Failed to get new data for rendering.");
-//                e.printStackTrace();
-//            }
             renderGraph();
             System.out.println("Rendered graph from " + graphViewModel.getFromDate() + " to " + to + ".");
         }
@@ -691,77 +622,6 @@ public class Graph extends CustomActivity {
             return date; //.substring(0, 5);
         }
     }
-
-    /**
-     * This Class downloads data and initializes drawing of graphs.
-     * @pre
-     * The Activity has a valid hive ID and connection to Hive tool.
-     * @post
-     * First week of data is downloaded, and rendergraph() is called.
-     */
-    /*
-    private class DownloadHiveAsyncTask extends AsyncTask<Integer, Integer, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBarLayout.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(Integer... id) {
-            try {
-                if (graphViewModel.getHive() == null) {
-                    // Downloads recent data.
-                    graphViewModel.downloadHiveData(hiveId);
-                }
-            } catch (NoDataAvailableOnHivetoolException e){
-                //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
-                Runnable r2 = () -> {
-                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
-                        toastLackingData.setText(R.string.LackingData);
-                        toastLackingData.show();
-                    }
-                };
-                runOnUiThread(r2);
-                e.printStackTrace();
-            } catch (Exception e) {
-                String errMessage = getString(R.string.FailedToGetLatestData) +  graphViewModel.getHive().getName();
-              //  Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();
-                Runnable r2 = () -> {
-                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
-                        toastLatest.setText(errMessage);
-                        toastLatest.show();
-                    }
-                };
-                runOnUiThread(r2);
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            try {
-                setSwitchListeners();
-                TextView name = findViewById(R.id.hiveNameTextView);
-                name.setText(hiveName);
-                renderGraph();
-                // Start download of whole hive in bg.
-                if (!graphViewModel.isBackgroundDownloadInProgress()) {
-                    downloadBGAsyncTask.execute();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
-                    toastFailed.setText(R.string.FailedToGetHive);
-                    toastFailed.show();
-                }
-//                        Toast.makeText(getApplicationContext(), R.string.FailedToGetHive, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-     */
     /**
      * This class controls download of the data not immediately shown when a graph view is opened.
      */
@@ -777,19 +637,7 @@ public class Graph extends CustomActivity {
         protected String doInBackground(Integer... id) {
             try {
                 graphViewModel.downloadOldDataInBackground(hiveId);
-            }//catch (NoDataAvailableOnHivetoolException e){
-                // Do nothing, because NoDataAvailableOnHivetoolException means that all data has been already downloaded.
-
-                //Runnable r2 = () -> Toast.makeText(getApplicationContext(), R.string.LackingData, Toast.LENGTH_LONG).show();
-           /*     Runnable r2 = () -> {
-                    if(getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
-                        toastLackingData.setText(R.string.LackingData);
-                        toastLackingData.show();
-                    }
-                };
-                runOnUiThread(r2);*/
-               // e.printStackTrace();
-            //}
+            }
             catch (Exception e) {
                 String errMessage = getString(R.string.FailedToGetPastData) +  graphViewModel.getHive().getName();
                 //Runnable r2 = () -> Toast.makeText(getApplicationContext(), errMessage, Toast.LENGTH_LONG).show();

@@ -81,16 +81,10 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         });
         activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
         activeTextbutton.setOnClickListener(this);
-//        activeTextbutton = findViewById(R.id.subscribe_active_textbutton);
-//        activeTextbutton.setOnClickListener(this);
         subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
         subscriptionsTextbutton.setOnClickListener(this);
-//        subscriptionsTextbutton = findViewById(R.id.subscribe_subscriptions_textbutton);
-//        subscriptionsTextbutton.setOnClickListener(this);
         inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
         inactiveTextbutton.setOnClickListener(this);
-//        inactiveTextbutton = findViewById(R.id.subscribe_inactive_textbutton);
-//        inactiveTextbutton.setOnClickListener(this);
         underlineOne = findViewById(R.id.subscribe_underline1);
         underlineTwo = findViewById(R.id.subscribe_underline2);
         underlineThree = findViewById(R.id.subscribe_underline3);
@@ -98,20 +92,8 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         // If the user has subscribed some hive, so by default open "Subscriptions", otherwise "Active"
         subsIds = logic.getSubscriptionIDs();
         if(subsIds.isEmpty()){
-//            activeTextbutton_NotEmpty.setVisibility(View.GONE);
-//            inactiveTextbutton_NotEmpty.setVisibility(View.GONE);
-//            subscriptionsTextbutton_NotEmpty.setVisibility(View.GONE);
-//            activeTextbutton.setVisibility(View.VISIBLE);
-//            inactiveTextbutton.setVisibility(View.VISIBLE);
-//            subscriptionsTextbutton.setVisibility(View.VISIBLE);
             tab = 1;
         } else {
-//            activeTextbutton.setVisibility(View.GONE);
-//            inactiveTextbutton.setVisibility(View.GONE);
-//            subscriptionsTextbutton.setVisibility(View.GONE);
-//            activeTextbutton_NotEmpty.setVisibility(View.VISIBLE);
-//            inactiveTextbutton_NotEmpty.setVisibility(View.VISIBLE);
-//            subscriptionsTextbutton_NotEmpty.setVisibility(View.VISIBLE);
             loadOnlySubscribedList();
             tab = 3;
         }
@@ -132,13 +114,6 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
         });
 
     }
-/*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("onResume");
-        loadListElements(true);
-    }*/
 
     @Override
     protected void onPause() {
@@ -240,10 +215,6 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
     private void loadOnlySubscribedList(){
 
         for(Integer id: subsIds){
-           // Hive h = logic.getCachedHive(id);
-//            if(h != null){
-//                subscriptions.add(new NameIdPair(h.getName(), id, true, ""));
-//            }
             NameIdPair nameIdPair = logic.getCachedNameIdPair(id);
             if(!nameIdPair.getName().contentEquals("Unknown hive")){
                 subscriptions.add(nameIdPair);
@@ -301,25 +272,12 @@ public class Subscribe extends AppCompatActivity implements View.OnClickListener
                 currentAdapter = new SubscribeAdapter(active, ctx, getSessionSubs(), tab);
                 recyclerView.setAdapter(currentAdapter);
             }
-//            if (active.size() == 0) {
-//                status.setVisibility(View.VISIBLE);
-//                status.setText(getString(R.string.EmptyList));
-//            } else {
-//                status.setVisibility(View.INVISIBLE);
-//            }
             searchField.setText("");
             underlineOne.setVisibility(View.VISIBLE);
             underlineTwo.setVisibility(View.INVISIBLE);
             underlineThree.setVisibility(View.INVISIBLE);
             prevTab = 0;
         } else if (tab == 2) {
-            // User wants to see the inactive hives
-//            if (inactive.size() == 0) {
-//                status.setVisibility(View.VISIBLE);
-//                status.setText(getString(R.string.EmptyList));
-//            } else {
-//                status.setVisibility(View.INVISIBLE);
-//            }
             if(allHives.isEmpty()){
                 // Clear the list before fetching
                 currentAdapter = new SubscribeAdapter(new ArrayList<NameIdPair>(), ctx, getSessionSubs(), tab);

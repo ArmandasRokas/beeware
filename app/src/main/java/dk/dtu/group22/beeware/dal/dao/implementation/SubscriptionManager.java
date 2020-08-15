@@ -78,16 +78,6 @@ public class SubscriptionManager implements ISubscriptionManager {
             hiveLocation.edit().putString(e.getID()+"", e.getLocation()).apply();
         }
     }
-/*
-    public String getCachedHiveName(int hiveId) {
-            String hiveName = sharedPreferences.getString(hiveId+"", "");
-            if(!hiveName.isEmpty()){
-                return hiveName;
-            } else {
-                return "Unknown hive";
-            }
-    }
- */
     public NameIdPair getCachedNameIdPair(int hiveId){
         SharedPreferences hiveNames = ctx.getSharedPreferences(String.valueOf("hiveNames"), Context.MODE_PRIVATE);
         SharedPreferences hiveLocation = ctx.getSharedPreferences(String.valueOf("hiveLocation"), Context.MODE_PRIVATE);

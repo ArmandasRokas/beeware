@@ -124,13 +124,7 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
             protected Object doInBackground(Object[] objects) {
                 long now = System.currentTimeMillis();
                 long since = now - (86400000 * 2);
-              //  try {
                     hive = logic.getCachedHive(hiveid);
-               // }
-//                catch (AccessLocalFileException e) {
-//                    failedToGetHive.show();
-//                    e.printStackTrace();
-//                }
                 if(hive==null) {
                     try {
                         hive = logic.getHiveNetworkAndSetCurrValues(hiveid, new Timestamp(since), new Timestamp(now));
@@ -173,20 +167,6 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
                         }
                     }.start();
                 }
-                // some junk below.
-             /*   cameFromGraphAct = getArguments().getBoolean("isFromGraph", false);
-                if (cameFromGraphAct) {
-                    configTV.setText(getString(R.string.FromGraphConfigTitle));
-                    configInfo.setText(getString(R.string.FromGraphConfigInfo));
-                }*/
-                /*if (hiveid != 0) {
-                    hive = logic.getCachedHive(hiveid);
-                }*/
-//                hiveNameTV.setText(hive.getName());
-//                weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
-//                weightNumberPicker.setValue(hive.getWeightIndicator());
-//                tempNumberPicker.setValue(hive.getTempIndicator());
-                //tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
             }
         };
         asyncTask.execute();
@@ -204,30 +184,9 @@ public class ConfigurationFragment extends DialogFragment implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        // Some junk
-//        if (weightIndicatorNum.getText().toString().isEmpty()) {
-//            weightIndicatorNum.setText(Integer.toString(hive.getWeightIndicator()));
-//        }
-//        if (tempIndicatorNum.getText().toString().isEmpty()) {
-//            tempIndicatorNum.setText(Integer.toString(hive.getTempIndicator()));
-//        }
-       // hive.setWeightIndicator(Integer.parseInt(weightIndicatorNum.getText().toString()));
-//        hive.setTempIndicator(Integer.parseInt(tempIndicatorNum.getText().toString()));
-
-        // Only when saveButton is clicked, save new values
         hive.setWeightIndicator(weightNumberPicker.getValue());
         hive.setTempIndicator(tempNumberPicker.getValue()+minTempValue);
-      /*  try {
-            logic.setIsConfigured(hive.getId(), true);
-        } catch (AccessLocalFileException e) {
-            failedToGetHive.show();
-            e.printStackTrace();
-        }*/
       logic.updateHiveMetaData(hive);
-
-        //if (hive.getHasBeenConfigured() == false) {
-        //}
-
         // Close fragment
         onDismiss(getDialog());
     }

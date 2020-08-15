@@ -28,7 +28,6 @@ public class GraphViewModel extends ViewModel {
     private int timeDelta = 1000 * 3600 * 24 * 7;
     private Timestamp toDate = new Timestamp(new Date().getTime());
     private Timestamp fromDate = new Timestamp(toDate.getTime() - timeDelta);
-//    private boolean backgroundDownloadInProgress = false;
 
     // State of visibility
     private boolean weightLineVisible = true, temperatureLineVisible = false,
@@ -53,32 +52,6 @@ public class GraphViewModel extends ViewModel {
     }
 
     /**
-     * Gets a hive object from Logic, updates local object to this value.
-     * @param id
-     * ID of hive to download
-     */
-//    public void downloadHiveData(int id) throws IOException, NoDataAvailableOnHivetoolException//, AccessLocalFileException
-//     {
-//        fromDate = roundDateToMidnight(fromDate);
-//        try{
-//            hive = logic.getHiveNetworkAndSetCurrValues(id, fromDate, new Timestamp(System.currentTimeMillis()));
-//                Log.d(TAG, "downloadHiveData: Downloaded hive data for hive " +
-//                        id + " from" + fromDate + " to " + toDate + ".");
-//        } catch (NoDataAvailableOnHivetoolException e){
-//            backgroundDownloadInProgress = false;
-//            Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
-//                    id + " from" + fromDate + " to " + toDate + ".");
-//            throw new NoDataAvailableOnHivetoolException(e.getMessage());
-//        }
-//        catch (IOException e){
-//                Log.d(TAG, "downloadHiveData: FAILED to download hive data for hive " +
-//                        id + " from" + fromDate + " to " + toDate + ".");
-//                hive = logic.getCachedHive(id); // fetch a cached hive instead.
-//                throw new IOException(e.getMessage());
-//        }
-//    }
-
-    /**
      * Downloads hive data for one year back in background, updates local object.
      * Uses network.
      * @param id
@@ -89,69 +62,9 @@ public class GraphViewModel extends ViewModel {
     public void downloadOldDataInBackground(int id) throws IOException//, NoDataAvailableOnHivetoolException//, AccessLocalFileException
      {
 
-//        backgroundDownloadInProgress = true;
         System.out.println("downloadOldDataInBackground: Starting background download.");
-      //  try{
-            logic.downloadOldDataInBackground(id);
-//            backgroundDownloadInProgress = false;
-      //  } //catch (NoDataAvailableOnHivetoolException e){
-         //   backgroundDownloadInProgress = false;
-       //     e.printStackTrace();
-      //      throw new NoDataAvailableOnHivetoolException(e.getMessage());
-      //  }
-//        catch (IOException e) {
-//            backgroundDownloadInProgress = false;
-//            e.printStackTrace();
-//            throw new IOException(e.getMessage());
-//        }
+        logic.downloadOldDataInBackground(id);
         Log.d(TAG, "downloadOldDataInBackground: Background download Done.");
-
-//        Timestamp endDate = new Timestamp(System.currentTimeMillis());
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis(endDate.getTime());
-//        cal.add(Calendar.DATE, -14);
-//        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
-//        startDate = roundDateToMidnight(startDate);
-//        Timestamp a = new Timestamp(startDate.getTime());
-//        Timestamp b = new Timestamp(endDate.getTime());
-//
-//        for (int i = 0; i < 53; i++) {
-//            try {
-//
-//                a = new Timestamp(startDate.getTime());
-//                b = new Timestamp(endDate.getTime());
-//                Hive junk = null;
-//
-//                System.out.println("downloadOldDataInBackground: Downloaded Hive " + id + ", " +
-//                        "from " + a.toString().substring(0, 10) + " " +
-//                        "to " + b.toString().substring(0, 10) + ".");
-//                while (junk == null) {
-//                    junk = logic.getHiveNetworkAndSetCurrValues(id, a, b);
-//                }
-//               // hive = junk;
-//
-//                // Iterate backwards
-//                endDate = new Timestamp(startDate.getTime());
-//                cal.setTimeInMillis(endDate.getTime());
-//                //cal.add(Calendar.MONTH, -2);
-//                cal.add(Calendar.DATE, -7); // substract 7 days
-//                startDate = new Timestamp(cal.getTimeInMillis());
-//            } catch (NoDataAvailableOnHivetoolException e){
-//                backgroundDownloadInProgress = false;
-//                Log.d(TAG, "downloadHiveData: No data available on hivetool to download hive data for hive " +
-//                        id + " from" + fromDate + " to " + toDate + ".");
-//                e.printStackTrace();
-//                throw new NoDataAvailableOnHivetoolException(e.getMessage());
-//            }
-//            catch (IOException e) {
-//                backgroundDownloadInProgress = false;
-//                System.out.println("downloadOldDataInBackground: FAILED to download Hive " + id + ", " +
-//                        "from " + a.toString().substring(0, 10) + " " +
-//                        "to " + b.toString().substring(0, 10) + ".");
-//                e.printStackTrace();
-//                throw new IOException(e.getMessage());
-//            }
-//        }
     }
 
     /**

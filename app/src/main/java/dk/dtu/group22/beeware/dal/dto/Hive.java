@@ -79,14 +79,6 @@ public class Hive implements Serializable, Comparable<Hive> {
     public String getLastUpdated() {
         String lastUpdateStr =  measurements.get(measurements.size() - 1).getTimestamp().toString();
         return lastUpdateStr.substring(0, lastUpdateStr.length()-5);
-        // long lastUpdatedTime = measurements.get(measurements.size() - 1).getTimestamp().getTime();
-        //  long day = 60 * 60 * 1000 * 24;
-        //      DateFormat dateFormatter;
-        //      DateFormat timeFormatter;
-        //    dateFormatter = new SimpleDateFormat("dd-MM-y");
-        //     timeFormatter = new SimpleDateFormat("HH:mm");
-        // String dateFormatted = dateFormatter.format(lastUpdatedTime) + " kl. ".concat(timeFormatter.format(lastUpdatedTime % day));
-        //return dateFormatted;
     }
 
     public boolean getHasBeenConfigured() {

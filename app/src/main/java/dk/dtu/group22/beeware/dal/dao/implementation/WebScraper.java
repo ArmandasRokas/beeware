@@ -66,7 +66,6 @@ public class WebScraper {
                     Date date = dateFormat.parse(raw_data[timestampIndex]);
                     timestamp = new Timestamp(date.getTime());
                 } catch (ParseException pe) {
-                    //pe.printStackTrace();
                     System.out.println("Parse Exception.");
                     // If timestamp is nonsense, go to next data
                     continue;
@@ -90,9 +89,6 @@ public class WebScraper {
      * @return A string array, where each indice is a CSV line, and a name of the hive as displayed by HiveTool
      */
     private Pair<String[], String> getDataLines(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException, NoDataAvailableOnHivetoolException {
-     //   if (!isDataAvailableOnHiveTool(sinceTime, untilTime, hiveID)){
-     //       throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
-     //   }
         // If there is more than 30 days between requested timeinterval, it is assumed that there is no the data
         // until this time point and stop downloading.
         if(untilTime.getTime() - sinceTime.getTime() > 1000*30*24*60*60L ){
@@ -116,23 +112,6 @@ public class WebScraper {
         System.out.println("Henter URL: "+url);
             doc = Jsoup.connect(url)
                     .timeout(100 * 1000).maxBodySize(4000000).get();
-            /* Catch-blokke fjernet af Jacob:
-            Send de exceptions der opstår videre til rette modtager i stedet for at æde som og få følgefejl
-        } catch (UnknownHostException u) {
-            //u.printStackTrace();
-            System.out.println("Unknown host.");
-        } catch (HttpStatusException e) {
-            //e.printStackTrace();
-            System.out.println("HTTP status exception.");
-        } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("IO Exception");
-        }
-             */
-            //Check if document contains h1 element with "Sorry, no data for hive...."
-//        if(!doc.body().getElementsByTag("h1").isEmpty()){
-//            throw new NoDataAvailableOnHivetoolException("Data is not availabe on HiveTool in a selected time interval");
-//        }
         Elements nameElement = doc.getElementsByTag("title"); // her kom en nullpointerexception som følgefejl af problemer med at hente data
         String name = nameElement.get(0).wholeText().split(": ")[1];
 
@@ -142,36 +121,6 @@ public class WebScraper {
 
         return new Pair<String[], String>(lines, name);
     }
-
-    /**
-     * Checks if data is available for a given time interval.
-     * @param sinceTime
-     * @param untilTime no used yet, but should be considered to be checked to in order to push sinceTime more in future
-     *                  in case of untilTime is on HiveTool.
-     * @param hiveID
-     * @return
-     * @throws IOException
-     */
-    /*public boolean isDataAvailableOnHiveTool(Timestamp sinceTime, Timestamp untilTime, int hiveID) throws IOException {
-
-        String sinceStr = sinceTime.toString().split(" ")[0];
-
-        Document doc = null;
-        String url = "http://hivetool.net/db/hive_graph706.pl?chart=Temperature&new_hive_id=" +
-                hiveID + "&start_time=&end_time=&hive_id=" +
-                hiveID + "&number_of_days=&last_max_dwdt_lbs_per_hour=30&weight_filter=Raw&max_dwdt_lbs_per_hour=&days=3&begin=" +
-                sinceStr+ "&end=&units=Metric&undefined=Skip&download_data=Download&download_file_format=csv";
-
-        doc = Jsoup.connect(url)
-                .timeout(30 * 1000).maxBodySize(4000000).get();
-
-        if(doc.body().getElementsByTag("h1").isEmpty()){
-            return true;
-        } else{
-            //System.out.println(doc.body().getElementsByTag("h1").get(0).text().contains("Sorry, no data"));
-            return false;
-        }
-    }*/
 
     /**
      * @param string
