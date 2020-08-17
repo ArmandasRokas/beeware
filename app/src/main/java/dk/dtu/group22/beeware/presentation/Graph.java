@@ -84,7 +84,7 @@ public class Graph extends CustomActivity {
     private Point size;
     private boolean isLastSelectionFragmentBasic = true;
     private XAxisRenderer xAxisRendererDefault;
-    public enum LabelsInterval {EVERY_DAY, EVERY_HOUR };
+    public enum LabelsInterval {EVERY_DAY, EVERY_HOUR, OTHER };
     private LabelsInterval currLabels;
 
     @Override
@@ -319,7 +319,14 @@ public class Graph extends CustomActivity {
             List<List<Entry>> tmpLight = new ArrayList<>();
             List<List<Entry>> tmpHumid = new ArrayList<>();
 
-            if (!graphViewModel.useMidnightData()) {
+            if(spinnerItem == 1 && isLastSelectionFragmentBasic){
+                acceptedDelta = 30 * 60 * 1000; // 30 minutes
+                tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight_Minimalized(), acceptedDelta);
+                tmpTemp.add(graphViewModel.extractTemperature_Minimalized());
+                tmpLight.add(graphViewModel.extractIlluminance_Minimalized());
+                tmpHumid.add(graphViewModel.extractHumidity_Minimalized());
+            }
+            else if (!graphViewModel.useMidnightData()) {
                 // Split weight dataset to show gaps in data correctly
                 acceptedDelta = 30 * 60 * 1000; // 30 minutes
                 tmpWeight = graphViewModel.makeMultiListBasedOnDelta(graphViewModel.extractWeight(), acceptedDelta);
@@ -379,6 +386,7 @@ public class Graph extends CustomActivity {
         lineChart.getXAxis().setTextSize(11);
 
         if( spinnerItem == 1 && isLastSelectionFragmentBasic ){ // 1 week in Basic
+            currLabels = LabelsInterval.EVERY_HOUR;
             xAxis.setAxisMinimum(0);
             xAxis.setAxisMaximum(toDate - fromDate);
             xAxis.setValueFormatter(new MyXAxisValueFormatter());
@@ -387,11 +395,11 @@ public class Graph extends CustomActivity {
 //            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
 //            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
 
-        } else if(spinnerItem == 2 && isLastSelectionFragmentBasic){ // 1 month in Basic
-            xAxis.setAxisMinimum(0);
-            xAxis.setAxisMaximum(toDate - fromDate);
-            xAxis.setValueFormatter(new DateFormatter());
-            lineChart.setXAxisRenderer(xAxisRendererDefault);
+//        } else if(spinnerItem == 2 && isLastSelectionFragmentBasic){ // 1 month in Basic
+//            xAxis.setAxisMinimum(0);
+//            xAxis.setAxisMaximum(toDate - fromDate);
+//            xAxis.setValueFormatter(new DateFormatter());
+//            lineChart.setXAxisRenderer(xAxisRendererDefault);
 //            float[] currentLabelsPositions = calculateEveryHourLabels();
 //            SpecificPositionLabelsXAxisRenderer specificPositionLabelsXAxisRenderer= new SpecificPositionLabelsXAxisRenderer(lineChart.getViewPortHandler(), lineChart.getXAxis(), lineChart.getTransformer(lineChart.getAxisLeft().getAxisDependency()), currentLabelsPositions);
 //            lineChart.setXAxisRenderer(specificPositionLabelsXAxisRenderer);
@@ -400,6 +408,7 @@ public class Graph extends CustomActivity {
             xAxis.setAxisMaximum(graphViewModel.getToDate().getTime());
             xAxis.setValueFormatter(new DateFormatterOriginal());
             lineChart.setXAxisRenderer(xAxisRendererDefault);
+            currLabels = LabelsInterval.OTHER;
         }
 
 
@@ -536,9 +545,11 @@ public class Graph extends CustomActivity {
         }
     }
     public void changeLabels(LabelsInterval labelsInterval){
-        if(labelsInterval == currLabels || spinnerItem != 1){ // FIXME works only for one week at the moment
+        if(labelsInterval == currLabels || spinnerItem != 1 || currLabels == LabelsInterval.OTHER){ // FIXME works only for one week at the moment
+            System.out.println("return from change labels");
             return;
         }
+        System.out.println("not returned from change labels");
         switch (labelsInterval){
             case EVERY_HOUR:
             //    float[] currentLabelsPositions = calculateEveryHourLabels(); // TODO implement to check which labels should be chosen

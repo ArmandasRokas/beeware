@@ -336,7 +336,7 @@ public class GraphViewModel extends ViewModel {
      * linear time.
      * @return A list of weight values as Entries
      */
-    public List<Entry> extractWeight() {
+    public List<Entry> extractWeight_Minimalized() {
         List<Entry> res = new ArrayList<>();
         leftAxisMin = 99;
         leftAxisMax = -99;
@@ -357,7 +357,7 @@ public class GraphViewModel extends ViewModel {
      * linear time.
      * @return A list of temperature values as Entries
      */
-    public List<Entry> extractTemperature() {
+    public List<Entry> extractTemperature_Minimalized() {
         List<Entry> res = new ArrayList<>();
         rightAxisMin = 99;
         rightAxisMax = -99;
@@ -381,7 +381,7 @@ public class GraphViewModel extends ViewModel {
      * Runs in linear time.
      * @return A list of illuminance values as Entries
      */
-    public List<Entry> extractIlluminance() {
+    public List<Entry> extractIlluminance_Minimalized() {
         List<Entry> res = new ArrayList<>();
         // Find max and min
         for (Measurement measure : hive.getMeasurements()) {
@@ -415,10 +415,106 @@ public class GraphViewModel extends ViewModel {
      * linear time.
      * @return A list of humidity values as Entries
      */
-    public List<Entry> extractHumidity() {
+    public List<Entry> extractHumidity_Minimalized() {
         List<Entry> res = new ArrayList<>();
         for (Measurement measure : hive.getMeasurements()) {
             float time = (float) measure.getTimestamp().getTime()-fromDate.getTime();
+            if (isInInterval(measure.getTimestamp())) {
+                float humid = (float) measure.getHumidity();
+                res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extract weight, all data points from fromDate to toDate. Used for shorter periods. Runs in
+     * linear time.
+     * @return A list of weight values as Entries
+     */
+    public List<Entry> extractWeight() {
+        List<Entry> res = new ArrayList<>();
+        leftAxisMin = 99;
+        leftAxisMax = -99;
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            if (isInInterval(measure.getTimestamp())) {
+                // If this data is in requested interval
+                float weight = (float) measure.getWeight();
+                res.add(new Entry(time, weight));
+                checkMaxMin(weight, 'l');
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extract temperature, all data points from fromDAte to toDate. For shorter periods. Runs in
+     * linear time.
+     * @return A list of temperature values as Entries
+     */
+    public List<Entry> extractTemperature() {
+        List<Entry> res = new ArrayList<>();
+        rightAxisMin = 99;
+        rightAxisMax = -99;
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            if (isInInterval(measure.getTimestamp())) {
+                // If this data is in requested interval
+                float temp = (float) measure.getTempIn();
+                if (temp < 0) {
+                    temp = 0;
+                }
+                res.add(new Entry(time, temp));
+                checkMaxMin(temp, 'r');
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extract illuminance, all data points from fromDate to toDate. For shorter periods.
+     * Runs in linear time.
+     * @return A list of illuminance values as Entries
+     */
+    public List<Entry> extractIlluminance() {
+        List<Entry> res = new ArrayList<>();
+        // Find max and min
+        for (Measurement measure : hive.getMeasurements()) {
+            if (isInInterval(measure.getTimestamp())) {
+                float illum = (float) (measure.getIlluminance() + 1.2);
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+                    checkMaxMin(illum, 'i');
+                }
+            }
+        }
+        float range = rightAxisMax - rightAxisMin;
+        // Populate list
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
+            if (isInInterval(measure.getTimestamp())) {
+                float illum = (float) (measure.getIlluminance() + 1.1);
+                if (illum > 0) {
+                    illum = (float) Math.log(illum);
+                    res.add(new Entry(time, (illum / illumMax) * (range) + rightAxisMin));
+                } else {
+                    res.add(new Entry(time, 0));
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Extract humidity, all data points from fromDate to toDate. For shorter periods. Runs in
+     * linear time.
+     * @return A list of humidity values as Entries
+     */
+    public List<Entry> extractHumidity() {
+        List<Entry> res = new ArrayList<>();
+        for (Measurement measure : hive.getMeasurements()) {
+            float time = (float) measure.getTimestamp().getTime();
             if (isInInterval(measure.getTimestamp())) {
                 float humid = (float) measure.getHumidity();
                 res.add(new Entry(time, (humid / 102) * (rightAxisMax - rightAxisMin) + rightAxisMin)); // Percentage of matrix height
